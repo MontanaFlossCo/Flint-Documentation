@@ -1,0 +1,14 @@
+## Getting started
+
+To use Flint in your own project, use [Carthage](https://github.com/Carthage/Carthage) to add the dependency to your `Cartfile`:
+
+```
+github "MontanaFlossCo/Flint"
+```
+
+Then run `carthage bootstrap`. For faster builds you can limit to one platform and use caching, e.g.:
+
+```
+carthage bootstrap --platform iOS --cache-builds
+```
+
