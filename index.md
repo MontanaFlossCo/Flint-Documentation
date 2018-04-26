@@ -6,7 +6,7 @@ Actions and conventions to make app development and debugging more productive.
 
 If you don't know what Feature Driven Development can give you, please [read this linked blog post](https://www.montanafloss.co/blog/feature-driven-development) for a detailed explanation. The TL;DR description of FDD is:
 
-> Expressing information about the Features and Actions of your application in the code itself, and using this information to make your apps better   
+> Expressing information about the Features and Actions of your application in the code itself, and using this information to make your apps better 
 
 Have you ever tried to implement deep-linking URLs? Have you had to sprinkle analytics reporting code here and there throughout your app? Dealt with the request to feature-flag or A/B test your new features? Implemented Handoff or Siri Suggestion integration?
 
@@ -31,31 +31,16 @@ Flint is in an “early access” phase at the moment to shake down the public A
 
 ## Documentation and sample code
 
-If you want to see a sample project that uses Flint, there is the  [FlintDemo-iOS][] project here on Github. You can browse that to get an
+If you want to see a sample project that uses Flint, there is the [FlintDemo-iOS][] project here on Github. You can browse that to get an
 idea of how a real app might use Flint.
 
-We're currently writing guides to the various aspects of Flint:
+We're currently writing the documentation for Flint as we finalise the 1.0 release.
 
-* [Features and Actions](guides/features_and_actions.md)
-* [Activities](guides/activities.md)
-* [Routes](guides/routes.md)
-* [Analytics](guides/analytics.md)
-* [FlintUI](guides/flint_ui.md)
-* [Focus](guides/focus.md)
-* [Timeline](guides/timeline.md)
-* [Action Stacks](guides/action_stacks.md)
+### Version 1.0 — "early access" 
 
+[Guides and How-to's](1.0/index.md)
 
-
-## Unit Testing
-
-Yes, we will have lots of unit tests on Flint. Not just yet though as we don't want to waste time when the API may still fluctuate significantly. Once there has been time for people to try out and comment on the APIs, things will settle down and the tests will be put together over the coming weeks.
-
-Testing of your Flint-based code should be simple enough - but we likely have to build a few mock classes for you. Work will be ongoing here. 
-
-Actions should be simple enough to unit test. You create an `[ActionContext](blob/master/FlintCore/Actions/ActionContext.swift)` and pass it to the action's `perform` function, along with your test input and presenter.
-
-Examples will follow soon.
+API Reference (coming soon)
 
 ## The roadmap to 1.0 final release
 
