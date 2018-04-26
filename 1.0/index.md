@@ -6,7 +6,7 @@ If you don't know what Feature Driven Development can give you, please [read thi
 
 ## Guides
 
-* [Getting Started](guides/getting_tarted.md)
+* [Getting Started](guides/getting_started.md)
 * [Features and Actions](guides/features_and_actions.md)
 * [Timeline](guides/timeline.md)
 * [Focus](guides/focus.md)
