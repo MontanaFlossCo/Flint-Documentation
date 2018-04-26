@@ -4,7 +4,7 @@ Flint is a pure Swift framework for building iOS, tvOS, watchOS or macOS apps th
 
 This is the documentation repository for Flint, to keep reference and guide documentation out of the main code repository.
 
-To view the documentation please visit [flint.tools/docs](http://flint.tools/docs).
+To view the documentation [start here]((index.md).
 
 ## Community and Contributing
 
