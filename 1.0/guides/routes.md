@@ -88,7 +88,7 @@ class SimplePresentationRouter: PresentationRouter {
 }
 ```
 
-Now the app will respond to and be able to generate URLs referring to those actions, including arguments. So for example the [Flint Demo]() app has this code and could respond to `flint-demo://open?name=hello.md` as well as `https://demo-app.flint.tools/open?name=hello.md`. Pretty neat, isn’t it?
+Now the app will respond to and be able to generate URLs referring to those actions, including arguments. So for example the [Flint Demo](https://github.com/MontanaFlossCo/FlintDemo-iOS) app has this code and could respond to `flint-demo://open?name=hello.md` as well as `https://demo-app.flint.tools/open?name=hello.md`. Pretty neat, isn’t it?
 
 ## Deep linking using web URLs with Associated Domains
 

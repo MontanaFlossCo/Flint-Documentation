@@ -10,13 +10,15 @@ You will get information about every action they performed in time order per fea
 
 ## Enabling Action Stacks
 
-TBD
+Doc coming soon
 
 ## Browsing active stacks with Flint UI
 
-TBD
+Doc coming soon
 
 ## Generating a debug report containing the stacks
+
+Doc coming soon about how you can:
 
 * Generate the full Flint report
 * Generate just the Stacks report

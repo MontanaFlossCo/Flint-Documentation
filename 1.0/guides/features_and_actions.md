@@ -35,7 +35,7 @@ You can register more than one root-level feature group, for example if you have
 
 Now you can define a real feature and add it to the root feature's subfeatures.
 
-A single `Feature` in Flint lets you describe some functionality that your app offers, the actions that can be performed on that feature, and other conventions that alter app behaviour. Information about this feature is output in logs and you can use [Focus]() to limit all logging on only a subset of features.
+A single `Feature` in Flint lets you describe some functionality that your app offers, the actions that can be performed on that feature, and other conventions that alter app behaviour. Information about this feature is output in logs and you can use [Focus](focus.md) to limit all logging on only a subset of features.
 
 A regular `Feature` is always available, it cannot be turned off. This means your code can always perform the actions that belong to it, without you having to think twice. Later we will cover conditional features that can be feature flagged or enabled only through purchases or user preferences.
 
@@ -97,7 +97,7 @@ final class DocumentOpenAction: Action {
 }
 ```
 
-The action's `perform` function receives a `context`, which includes the input and access to [context specific loggers](), a presenter and a completion callback. Note that your `perform` function must use your `InputType` and `PresenterType`. So the `context` argument must be an `ActionContext<...>` with the ellipsis replaced with your specific input type *or* you can go with the `InputType` alias if you so prefer. The same applies to the `presenter` argument. You will get confusing Swift compiler errors if these types do not match up, so always check that, or always explicitly use `InputType` and `PresenterType` if you want to be safe, if a little less clear.
+The action's `perform` function receives a `context`, which includes the input and access to [context specific loggers](contextual_logging.md), a presenter and a completion callback. Note that your `perform` function must use your `InputType` and `PresenterType`. So the `context` argument must be an `ActionContext<...>` with the ellipsis replaced with your specific input type *or* you can go with the `InputType` alias if you so prefer. The same applies to the `presenter` argument. You will get confusing Swift compiler errors if these types do not match up, so always check that, or always explicitly use `InputType` and `PresenterType` if you want to be safe, if a little less clear.
 
 Actions *must* call completion at some point, usually synchronously, indicating the outcome of the action. However inputs can be nil or a `NoInput`, and the presenter can be `NoPresenter`. These are special Flint types that let you indicate that you don't need either the input or presenter.
 
