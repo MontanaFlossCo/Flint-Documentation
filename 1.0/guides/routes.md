@@ -48,7 +48,7 @@ func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpe
 
 The presentation router part needs to look at your current UI's state and do any work required to shuffle around view controllers to achieve the behaviour you want when your app receives a request for an action when it is already in a different UI state. This can be tricky, but it's the nature of the beast. It can often be quite simple – the key is to make clear decisions about how you want the app to behave for each kind of action that it can receive from an external stimulus like this. 
 
-Here's the example from the [FlintDemo-iOS][] sample project:
+Here's the example from the [FlintDemo-iOS](https://github.com/MontanaFlossCo/FlintDemo-iOS) sample project:
 
 ```swift
 /// A presentation router for setting up the UI and returning the appropriate presenter instance for
