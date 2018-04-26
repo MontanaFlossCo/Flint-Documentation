@@ -6,16 +6,16 @@ If you don't know what Feature Driven Development can give you, please [read thi
 
 ## Guides
 
-[Getting Started](guides/getting_tarted.md)
-[Features and Actions](guides/features_and_actions.md)
-[Timeline](guides/timeline.md)
-[Focus](guides/focus.md)
-[Activities](guides/activites.md)
-[Analytics](guides/analytics.md)
-[Routes](guides/routes.md)
-[Flint UI](guides/flint_ui.md)
-[Action Stacks](guides/actions_stacks.md)
-[Unit Testing](guides/testing.md)
+* [Getting Started](guides/getting_tarted.md)
+* [Features and Actions](guides/features_and_actions.md)
+* [Timeline](guides/timeline.md)
+* [Focus](guides/focus.md)
+* [Activities](guides/activites.md)
+* [Analytics](guides/analytics.md)
+* [Routes](guides/routes.md)
+* [Flint UI](guides/flint_ui.md)
+* [Action Stacks](guides/actions_stacks.md)
+* [Unit Testing](guides/testing.md)
 
 ## Reference
 
