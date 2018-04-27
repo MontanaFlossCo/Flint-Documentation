@@ -1,8 +1,8 @@
 # 💥 Flint Documentation
 
-Flint is a pure Swift framework for building iOS, tvOS, watchOS or macOS apps that implement [Feature Driven Development](http://montanafloss.co/feature-driven-development) and uses the power of Features, Actions and conventions to make app development and debugging more productive. 
+Flint is a pure Swift framework for building iOS, tvOS, watchOS or macOS apps that implement [Feature Driven Development](http://montanafloss.co/feature-driven-development) and uses the power of Features, Actions and conventions to make app development and debugging more productive. See the [main Flint repository](https://github.com/MontanaFlossCo/Flint) for the code.
 
-This is the documentation repository for Flint, to keep reference and guide documentation out of the main code repository.
+This is the documentation repository for Flint, to keep reference and guide documentation out of the [main code repository](https://github.com/MontanaFlossCo/Flint).
 
 To view the documentation [start here](index.md).
 
