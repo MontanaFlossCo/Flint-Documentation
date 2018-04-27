@@ -12,4 +12,4 @@ We have a community Slack you can join to get help and discuss ideas. Join at [f
 
 We would love your contributions — whether they are issues raised, questions asked, code or documentation written. Please raise issues here in Github and discuss your problems and suggestions. We look forward to your ideas and pull requests.
 
-Flint is copyright Montana Floss Co. 2018 with an MIT open source licence.
+Flint is copyright [Montana Floss Co. Ltd.](http://montanafloss.co) 2018 with an [MIT open source licence](LICENSE).
