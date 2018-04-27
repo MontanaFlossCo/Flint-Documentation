@@ -1,12 +1,12 @@
 # Activities
 
-Apple platforms is `NSUserActivity` for a variety of purposes to tell the operating system about something the user is doing. It is used across the platforms to make the user experience more efficient. This includes support for Handoff, Siri Suggestions (AKA Siri Proactive), Spotlight Search, and even ClassKit for education apps.
+Apple platforms use `NSUserActivity` for a variety of purposes to tell the operating system about something the user is doing. It is used across the platforms to make the user experience more efficient. This includes support for Handoff, Siri Suggestions (AKA Siri Proactive), Spotlight Search, deep linking and even ClassKit for education apps.
 
 Flint’s Activities feature can automatically register `NSUserActivity` for you when users perform actions in your app. You can determine which actions qualify for this (“Save” is not something that makes sense for a Handoff action), and control the attributes passed to the operating system.
 
 ## Enabling Activities on an Action
 
-Building on this, we can enable the [Activities](guides/activities.md) feature of Flint itself, and we get Siri suggestions, Handoff and Spotlight integration with a tiny amount of code. This is a smart wrapper around Apple’s `NSUserActivity` functionality. Let’s add the declaration for a new “Document Open” action that supports just Handoff and Siri Suggestions/Pro-active:
+We can enable the Activities feature of Flint itself, and we get Siri suggestions, Handoff and Spotlight integration with a tiny amount of code. Let’s add the declaration for a new “Document Open” action that supports just Handoff and Siri Suggestions/Pro-active:
 
 ```swift
 final class DocumentOpenAction: Action {
@@ -16,8 +16,6 @@ final class DocumentOpenAction: Action {
     static var description = "Open a document"
     
     /// Declare the types of activity we want published.
-    /// This is all we have to do, aside from add `NSUserActivityTypes` to Info.plist
-    /// and list the activity IDs. See docs for details
     static var activityTypes: Set<ActivityEligibility> = [.perform, .handoff]
     
     static func perform(with context: ActionContext<DocumentRef>, using presenter: DocumentPresenter, completion: ((ActionPerformOutcome) -> ())) {
@@ -26,11 +24,29 @@ final class DocumentOpenAction: Action {
 }
 ```
 
-Now when the app is run, it will automatically publish an `NSUserActivity` when that action occurs, and if you run the app on two devices, it will show a Handoff icon when you have the document open. You’ll need to add a [single function call from Flint.swift](FlintCore/Core/Flint.swift) to `application(:continue:restorationHandler:)` to pass the incoming activity to Flint, but that’s it! Of course you can customise the other properties of the `NSUserActivity` easily if you need to.
+If you have already mapped this action with URL Routes, when the app is run it will automatically publish an `NSUserActivity` when that action occurs, and if you run the app on two devices, it will show a Handoff icon when you have the document open. Flint uses your URL routes to automatically map the `NSUserActivity` to the action.
 
-## Adding code so your app handles incoming activities
+You’ll need to add a [single function call from Flint.swift](https://github.com/MontanaFlossCo/Flint/blob/master/FlintCore/Core/Flint.swift) to `application(:continue:restorationHandler:)` to pass the incoming activity to Flint, but that’s it! Of course you can customise the other properties of the `NSUserActivity` easily if you need to.
 
-Docs coming soon
+## Updating your app so it handles incoming activities
+
+When the operating system asks your app to conitnue an activity from Handoff, Siri suggestions, Deep Linking or similar, it will call into
+your application delegate and pass in the activity. You need to wire this up to Flint like so:
+
+```swift
+func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([Any]?) -> Void) -> Bool {
+    return Flint.continueActivity(activity: userActivity, with: presentationRouter) == .success
+}
+```
+
+You do need to update your `Info.plist` and the key `NSUserActivityTypes` to include the identifier for every activity you support. Flint generates automatic activity types using the app's bundle ID and action name (split from camel case into tokens), lowercased. In future we'll have a helper to output all the IDs for you so you can enter them into `Info.plist` but for now here's some examples of how the IDs map:
+
+* A `BeepAction` in app with bundle id "co.montanafloss.test" would have ID `co.montanafloss.test.beep`
+* A `SaveDocumentAction` in app with bundle id "co.montanafloss.test" would have ID `co.montanafloss.test.save document`
+
+Note that Flint will crash with a `preconditionFailure` if it finds the activity ID for an automatic activity is not in the `Info.plist`. We are tryingto save you from yourself!
+
+You can also explicitly set the ID yourself by implementing `prepare(:)` on your `Action`. Either way all the types have to be listed in your app’s `Info.plist`, and sadly Flint cannot do this for you.
 
 ## Setting custom attributes on an Activity
 
@@ -58,18 +74,13 @@ final class DocumentOpenAction: Action {
 }
 ```
 
-Now when run, any document that is opened will automatically be registered for search indexing. Go to the home screen, pull down for search and type “Flint Demo” and you will find the document. Tap it and the app will open at that document. This is a slightly odd arrangement — you’d normally submit these items for indexing separately when loading your data store, and reference that from the `NSUserActivity` — but it demonstrates the possibilities.
-
-This is all just scratching the surface of what is possible. For more details see the documentation for [Features and Actions](guides/features_and_actions.md), [Timeline](guides/timeline.md), [Focus](guides/focus.md), [Activities](guides/activites.md), [Routes](guides/routes.md) and [Action Stacks](guides/action_stacks.md).
-
-For a more detailed working example you can check out and build the [FlintDemo-iOS](https://github.com/MontanaFlossCo/FlintDemo-iOS) project which demonstrates many of the capabilities of Flint.
-
-## Things Flint cannot do for you
-
-You need to update Info.plist `NSUserActivityTypes`. Flint generates automatic activity types using the pattern XXXXXXXXXXXX, but you can also explicitly set the ID yourself. Either way all the types have to be listed in your app’s `Info.plist`
+Now when run, any document that is opened will automatically be registered for search indexing. Go to the home screen, pull down for search and type “Flint Demo” and you will find the document. Tap it and the app will open at that document. This is a slightly odd arrangement — you’d normally submit these items to Core Spotlight for indexing separately when loading your data store, and reference that from the `NSUserActivity` — but it demonstrates the possibilities, and Apple has support for this.
 
 ## Troubleshooting and testing
 
+Docs coming soon
+
 * Activities that also register the item for Spotlight search *must* have a title. Flint will alert you to this if you forget.
-* If Handoff or other activity
+* If Handoff or other activity doesn't happen - what to check
+
 
