@@ -2,11 +2,13 @@
 
 Most apps need to handle some URLs, whether for e-mail sign-in confirmations, deep linking or custom workflow URL schemes. 
 
-Flint’s Routes feature makes it easy to implement these. You have only two steps to carry out in code. What it will do is take a URL like:
+Flint’s Routes feature makes it easy to implement these. You have only three steps to carry out in code. What this will do is take a URL like:
 
 `my-app://send?tweet=Hello%20World`
 
-…and route that to the appropriate Action in your app, pull out the information from the URL to create an instance of the `InputType` required for the Action, and then perform the action for you.
+…and route that to the appropriate Action in your app, pull out the information from the URL to create an instance of the `InputType` required for the Action, and then perform the action for you. The same Action that you use to perform the code internally in your app, that has its availability controlled by the Feature it is bound to.
+
+So for example if you have an in-app purchase to unlock advanced workflow features, there's nothing more to do other than make sure the workflow URLs are define on the conditional feature. The URLs will not work unless they have paid for the feature.
 
 Routes can also work automatically behind the scenes with the [Activities](activities.md) feature so that you get `NSUserActivity` support for free.
 
