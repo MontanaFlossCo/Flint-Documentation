@@ -10,6 +10,15 @@ Flint’s Routes feature makes it easy to implement these. You have only three s
 
 So for example if you have an in-app purchase to unlock advanced workflow features, there's nothing more to do other than make sure the workflow URLs are defined on the conditional feature. The URLs will not work unless they have paid for the feature.
 
+Flint's Routes support:
+
+* Multiple custom app URL schemes
+* Multiple associated domains
+* Multiple URL paths to the same action
+* Multiple schemes and associated domains for the same URL path
+* Custom marshalling of URL arguments
+* Reuse of existing app Actions — URLs are just another way to perform them
+
 Routes can also work automatically behind the scenes with the [Activities](activities.md) feature so that you get `NSUserActivity` support for free.
 
 ## Declaring the URL routes for your Feature’s actions
@@ -34,7 +43,7 @@ class DocumentManagementFeature: Feature, URLMapped {
 }
 ```
 
-That's all you need to do to define some URLs that will invoke actions for URLs. If your app has configured a custom URL scheme  `x-your-app` and an associated domain `your-app-domain.com` like this:
+That's all — you have now defined some URLs that will invoke actions. If your app has configured a custom URL scheme `x-your-app` and an associated domain `your-app-domain.com`, your URLs might look like this:
 
 * `x-your-app://create?name=MyFile1`
 * `https://your-app-domain.com/open?docRef=456643564563634643643`
