@@ -8,13 +8,15 @@ Flint’s Routes feature makes it easy to implement these. You have only three s
 
 …and route that to the appropriate Action in your app, pull out the information from the URL to create an instance of the `InputType` required for the Action, and then perform the action for you. The same Action that you use to perform the code internally in your app, that has its availability controlled by the Feature it is bound to.
 
-So for example if you have an in-app purchase to unlock advanced workflow features, there's nothing more to do other than make sure the workflow URLs are define on the conditional feature. The URLs will not work unless they have paid for the feature.
+So for example if you have an in-app purchase to unlock advanced workflow features, there's nothing more to do other than make sure the workflow URLs are defined on the conditional feature. The URLs will not work unless they have paid for the feature.
 
 Routes can also work automatically behind the scenes with the [Activities](activities.md) feature so that you get `NSUserActivity` support for free.
 
 ## Declaring the URL routes for your Feature’s actions
 
-URL routes for actions are declared on the Feature, so that actions can be reused across features without fixing the mappings in the action. You need to add conformance to the `URLMapped` protocol to your `Feature` and add an implementation of the `urlMappings` function:
+URL routes for actions are declared on the Feature, so that actions can be reused across features without fixing the mappings in the action. This also means the availability of the URLs is controlled by the Feature's availability.
+
+All you need to do is add conformance to the `URLMapped` protocol to your `Feature` and add an implementation of the `urlMappings` function:
 
 ```swift
 /// Add the `URLMapped` conformance to get support for Routes
