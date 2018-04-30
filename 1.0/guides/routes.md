@@ -2,9 +2,13 @@
 
 Most apps need to handle some URLs, whether for e-mail sign-in confirmations, deep linking or custom workflow URL schemes. 
 
-Flint’s Routes feature makes it easy to implement these. You have only two steps to carry out in code.
+Flint’s Routes feature makes it easy to implement these. You have only two steps to carry out in code. What it will do is take a URL like:
 
-Routes can work automatically behind the scenes with the [Activities](activities.md) feature so that you get `NSUserActivity` support for free.
+`my-app://send?tweet=Hello%20World`
+
+…and route that to the appropriate Action in your app, pull out the information from the URL to create an instance of the `InputType` required for the Action, and then perform the action for you.
+
+Routes can also work automatically behind the scenes with the [Activities](activities.md) feature so that you get `NSUserActivity` support for free.
 
 ## Declaring the URL routes for your Feature’s actions
 
@@ -28,15 +32,15 @@ class DocumentManagementFeature: Feature, URLMapped {
 
 That's all you need to do to define some URLs that will invoke actions for URLs. If your app has configured a custom URL scheme  `x-your-app` and an associated domain `your-app-domain.com` like this:
 
-* x-your-app://create?name=MyFile1
-* https://your-app-domain.com/open?docRef=456643564563634643643
+* `x-your-app://create?name=MyFile1`
+* `https://your-app-domain.com/open?docRef=456643564563634643643`
 
 ## Adding the code your app needs to handle URLs and present the UI
 
 To actually make this work, there are a few more one-off things to do:
 
 1. If you haven't done so already you have to declare your App's custom URL schemes in your `Info.plist`
-2. For universal link / associated domains you need to set up the entitlements and a file on your server. See the Apple docs for this.
+2. For universal link / associated domains you need to set up the entitlements and a file on your server. [See the Apple docs for this](https://developer.apple.com/library/content/documentation/General/Conceptual/AppSearch/UniversalLinks.html#//apple_ref/doc/uid/TP40016308-CH12-SW1).
 3. You need your application delegate to handle requests to open URLs and pass them to Flint.
 4. Implement an object to get your UI ready and return a presenter.
 
@@ -185,9 +189,11 @@ Testing associated domains is harder. You must have the server set up correctly 
 
 **💡 TIP**: You should test the case where your app is not already running on the device. In Xcode you can do this by terminating the app first, and then in the "Run" options for your app's scheme, set the "Launch" option to "Wait for executable to be launcher". Then when you open a URL from Safari Xcode will be able to stop on breakpoints you set in your `PresentationRouter` so you can debug any issues there.
 
-## Deep linking using web URLs with Associated Domains
+## Deep linking using Universal Link URLs with Associated Domains
 
-Depending on where the user interacts with an associated website URL, you may receive a call to `application:openURL:…` or `application:continueActivity:…`. For deep linking that works with the `continueActivity` variant you will need to also enable the [Activities](activities.md) feature of Flint.
+Depending on where the user interacts with an associated website URL, you may receive a call to `application:openURL:…` or `application:continueActivity:…`.
+
+For deep linking that works with the `continueActivity` variant you will need to also enable the [Activities](activities.md) feature of Flint and add the required call to your app delegate.
 
 ## Updating your `Info.plist` and Entitlements for URL schemes and Associated Domains
 
