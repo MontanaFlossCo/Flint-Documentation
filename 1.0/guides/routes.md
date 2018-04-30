@@ -1,16 +1,14 @@
 # Routes
 
-Most apps need to handle some URLs, whether for e-mail sign-in confirmations, deep linking or custom workflow URL schemes.
+Most apps need to handle some URLs, whether for e-mail sign-in confirmations, deep linking or custom workflow URL schemes. 
 
 Flint’s Routes feature makes it easy to implement these. You have only two steps to carry out in code.
 
-Routes can work automatically behind the scenes with the [Activities](activities.md) feature.
+Routes can work automatically behind the scenes with the [Activities](activities.md) feature so that you get `NSUserActivity` support for free.
 
 ## Declaring the URL routes for your Feature’s actions
 
-Using Flint’s [Routes](guides/routes.md) feature we can add URL routes for any actions. This gives us custom app URL scheme and universal link support with minimal effort. 
-
-URL mappings are declared on the Feature, so that actions can be reused across features without fixing the mappings in the action. Let's add conformance to `URLMapped` and add an implementation of the `urlMappings` function:
+URL routes for actions are declared on the Feature, so that actions can be reused across features without fixing the mappings in the action. You need to add conformance to the `URLMapped` protocol to your `Feature` and add an implementation of the `urlMappings` function:
 
 ```swift
 /// Add the `URLMapped` conformance to get support for Routes
@@ -20,25 +18,21 @@ class DocumentManagementFeature: Feature, URLMapped {
 
     /// Add the URL mappings for the actions.
     static func urlMappings(routes: URLMappingsBuilder) {
-        // Note that there is full support for mapping to specific app URL schemes and specific universal link
-        // domains. By default it maps to the primary app scheme and primary associated domain.
-        // Primary means first in the list — See `FlintAppInfo`
         routes.send("create", to: createNew)
         routes.send("open", to: openDocument)
     }
 }
 ```
 
-That's all you need to do to define some URLs that will invoke actions for URLs like this:
+That's all you need to do to define some URLs that will invoke actions for URLs. If your app has configured a custom URL scheme  `x-your-app` and an associated domain `your-app-domain.com` like this:
 
 * x-your-app://create?name=MyFile1
-* https://your-app-domain.com/account/confirm?token=456643564563634643643
-
-Your app won't invoke them yet, as you need to tell Flint when URLs are received and allow it to perform the action for you, and you need to make sure your app is configured to receive the custom URL scheme and associated domains.
+* https://your-app-domain.com/open?docRef=456643564563634643643
 
 ## Adding the code your app needs to handle URLs and present the UI
 
 To actually make this work, there are a few more one-off things to do:
+
 1. If you haven't done so already you have to declare your App's custom URL schemes in your `Info.plist`
 2. For universal link / associated domains you need to set up the entitlements and a file on your server. See the Apple docs for this.
 3. You need your application delegate to handle requests to open URLs and pass them to Flint.
@@ -53,7 +47,7 @@ func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpe
 }
 ```
 
-The presentation router part needs to look at your current UI's state and do any work required to shuffle around view controllers to achieve the behaviour you want when your app receives a request for an action when it is already in a different UI state. This can be tricky, but it's the nature of the beast. It can often be quite simple – the key is to make clear decisions about how you want the app to behave for each kind of action that it can receive from an external stimulus like this. 
+The presentation router part needs to look at your current UI's state and do any work required to shuffle around view controllers to achieve the behaviour you want when your app receives a request for an action when it is already in a different UI state. This can be tricky, but it's the nature of the beast. You can make simple in many cases – the key is to make clear decisions about how you want the app to behave for each kind of action that it can receive from an external stimulus like this. 
 
 An example strategy is that maybe for all actions you want to present the view controller modally, unless there is already a modally presented view controller in which case you would fail the routing request rather than interrupt the user again.
 
@@ -99,20 +93,111 @@ class SimplePresentationRouter: PresentationRouter {
 
 Now the app will respond to and be able to generate URLs referring to those actions, including arguments. So for example the [Flint Demo](https://github.com/MontanaFlossCo/FlintDemo-iOS) app has this code and could respond to `flint-demo://open?name=hello.md` as well as `https://demo-app.flint.tools/open?name=hello.md`. Pretty neat, isn’t it?
 
+## Creating the Input for your Action from the URLs
+
+In order to respond to URLs and perform the Action defined by your routes, Flint needs to be able to create an instance of your `InputType` type from the URL.
+
+Flint provides three protocols to support this:
+
+* `QueryParametersDecodable`
+* `QueryParametersEncodable`
+* `QueryParametersCodable` (combines both of the above)
+ 
+You need to make your action's `InputType` conform to one or two of these protocols as appropriate for your needs. If you never create URL links in your app but only have to handle them, you can conform to just `QueryParametersDecodable`. If you need to create links you can conform to `QueryParametersDecodable` or `QueryParametersCodable`. 
+
+It is nice to do this in an extension separate from your `InputType` definition. So for an `InputType` of `DocumentRef` we might have something like this:
+
+```swift
+extension DocumentRef: QueryParametersCodable {
+    init?(from queryParameters: QueryParameters?) {
+        guard let name = queryParameters?["name"] else {
+            return nil
+        }
+        self.name = name
+    }
+    
+    func encodeAsQueryParameters() -> QueryParameters? {
+        return ["name": name]
+    }
+}
+```
+
+This will allow the `DocumentRef` to be used to create links and to parse them to create an instance of `DocumentRef` to pass to the `Action` (that is the part that the `RoutesFeature` of Flint does for you).
+
+## Customising the URL schemes and Associated Domains per-Action
+
+The `urlMappings(routes:)` function is passed a builder that you use to set up the routes. The build supports a single `send` function that takes a URL path and a `to:` argument of the action binding to use. It has an optional `in:` argument for the scopes:
+
+```swift
+routes.send(_ path: String,
+            to actionBinding: …binding type… ,
+            in scopes: Set<RouteScope> = [.appAny, .universalAny])
+```
+
+There is full support for mapping to specific app URL schemes and specific universal link domains using the `scopes`. By default it maps to the all app schemes and associated domains handled by your app. To route differently, say to some legacy URLs you would write something like this:
+
+```swift
+class DocumentManagementFeature: Feature, URLMapped {
+
+	... 
+
+    /// Add the URL mappings for the actions.
+    static func urlMappings(routes: URLMappingsBuilder) {
+        // Legacy URL action
+        routes.send("create", to: createNew, in: [
+	        .app(scheme: "x-test"),
+	        .app(scheme:"internal-test"),
+	        .universal(domain: "yourdomain.com")])
+	
+        // Current URL action
+        routes.send("create-document", to: createNew)
+
+        // Current URL action, with just legacy domain
+        routes.send("open", to: openDocument, in: [
+	        .appAny,
+	        .universal(domain: "legacydomain.com"),
+	        .universal(domain: FlintAppInfo.urlSchemes.first)])
+    }
+}
+```
+
+See [`FlintAppInfo`](https://github.com/MontanaFlossCo/Flint/blob/master/FlintCore/Core/FlintAppInfo) for access to the known domains and schemes for the app. 
+
+As you can see there is support for declaring multiple scopes, and you can declare the same route multiple times to different destinations if need be, so long as the scopes differ. The URL mapping will choose the most specific match, so an explicit scheme or domain match wins even if you have `.appAny` or `.universalAny` defined.
+
+Your app won't invoke URLs you have defined yet, as you need to tell Flint when URLs are received and allow it to perform the action for you, and you need to make sure your app is configured to receive the custom URL scheme and associated domains.
+
+## How to test URL routes
+
+The easiest way to test URL routes manually is to create a suitable URL and paste it into Safari on the device where the app is installed. You should be prompted to open your app. If you press OK it should then open the app and invoke your action. If you did all the `PresentationRouter` stuff right you should see the correct UI!
+
+Typing URLs is particularly painful on iOS devices, so other alternatives include:
+
+* sending yourself the URL via iMessage or by Email
+* storing the URLs you want to test in a note in the Notes app, using iCloud sync, and just tap them to test them again
+* build an internal HTML page somewhere describing all the URLs your app should support, so they can easily be tested by tapping one after another
+
+Testing associated domains is harder. You must have the server set up correctly for the associated domain and be running the app on a real device. You will need to take care to avoid clashing with production releases of your app, so you must either remove the production apps or use subdomains for each flavour of your app build (e.g. development vs. beta vs. production).
+
+**💡 TIP**: You should test the case where your app is not already running on the device. In Xcode you can do this by terminating the app first, and then in the "Run" options for your app's scheme, set the "Launch" option to "Wait for executable to be launcher". Then when you open a URL from Safari Xcode will be able to stop on breakpoints you set in your `PresentationRouter` so you can debug any issues there.
+
 ## Deep linking using web URLs with Associated Domains
 
-Docs coming soon
+Depending on where the user interacts with an associated website URL, you may receive a call to `application:openURL:…` or `application:continueActivity:…`. For deep linking that works with the `continueActivity` variant you will need to also enable the [Activities](activities.md) feature of Flint.
 
-## Customising the URL schemes and Associated Domains per-Action Route
+## Updating your `Info.plist` and Entitlements for URL schemes and Associated Domains
 
-Docs coming soon
+For custom URL schemes to work, you must list each scheme in the "URL Types" section of your `Info.plist` (or the "Info" tab of your app target in Xcode). The schemes must go in the "Schemes" box.
 
-## Updating your `Info.plist` for URL schemes and Associated Domains
+Associated domains on the other hand require entitlements. You must go to the "Capabilities" tab and open the "Associated Domains" section. There you can add the domains you require, with the `applinks:` prefix e.g. `applinks:yourdomain.com`. You must also create and upload the `apple-site-association` file to your server on that domain.
 
-Docs coming soon
+**💡 TIP**: Do your users a favour while you are here — if you have website logins that the users require in the native app, add `webcredentials:` associations at the same time as this!
+
+For more details see [Supporting Universal Links](https://developer.apple.com/library/content/documentation/General/Conceptual/AppSearch/UniversalLinks.html#//apple_ref/doc/uid/TP40016308-CH12-SW1) on the Apple documentation site.
 
 ## Next
 
+* Set up [Activities](activities.md) handling for Handoff, deep linking and more
 * Add [Analytics](analytics.md) tracking
 * Use the [Timeline](timeline.md) to see what is going on in your app when things go wrong
 * Start using [Focus](focus.md) to pare down your logging
