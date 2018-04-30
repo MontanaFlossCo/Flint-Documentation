@@ -66,11 +66,11 @@ func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpe
 }
 ```
 
-The presentation router part needs to look at your current UI's state and do any work required to shuffle around view controllers to achieve the behaviour you want when your app receives a request for an action when it is already in a different UI state. This can be tricky, but it's the nature of the beast. You can make it simple in many cases – the key is to make clear decisions about how you want the app to behave for each kind of action that it can receive from an external stimulus like this. 
+The [`PresentationRouter`](https://github.com/MontanaFlossCo/Flint/blob/master/FlintCore/Routes/PresentationRouter.swift) component needs to look at your current UI's state and do any work required to shuffle around view controllers to achieve the behaviour you want when your app receives a request for an action when it is already in a different UI state. This can be tricky, but it's the nature of the beast. You can make it simple in many cases – the key is to make clear decisions about how you want the app to behave for each kind of action that it can receive from an external stimulus like this. 
 
 An example strategy is that maybe for all actions you want to present the view controller modally, unless there is already a modally presented view controller in which case you would fail the routing request rather than interrupt the user again.
 
-Here's a simple example from the [FlintDemo-iOS](https://github.com/MontanaFlossCo/FlintDemo-iOS) sample project, which only supports presenting actions if the app's main `UINavigationController` has a specific `MasterViewController` at the top of its view controller list:
+Here's a simple example [`PresentationRouter`](https://github.com/MontanaFlossCo/Flint/blob/master/FlintCore/Routes/PresentationRouter.swift) implementation from the [FlintDemo-iOS](https://github.com/MontanaFlossCo/FlintDemo-iOS) sample project, which only supports presenting actions if the app's main `UINavigationController` has a specific `MasterViewController` at the top of its view controller list:
 
 ```swift
 /// A presentation router for setting up the UI and returning the appropriate presenter instance for
