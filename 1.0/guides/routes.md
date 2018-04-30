@@ -14,7 +14,9 @@ URL routes for actions are declared on the Feature, so that actions can be reuse
 /// Add the `URLMapped` conformance to get support for Routes
 class DocumentManagementFeature: Feature, URLMapped {
 
-	... 
+    ... 
+    static let createNew = action(DocumentCreateAction.self)
+    static let openDocument = action(DocumentOpenAction.self)
 
     /// Add the URL mappings for the actions.
     static func urlMappings(routes: URLMappingsBuilder) {
@@ -121,6 +123,8 @@ extension DocumentRef: QueryParametersCodable {
     }
 }
 ```
+
+Note that the `QueryParameters` give you convenient access to the query parameters directly.
 
 This will allow the `DocumentRef` to be used to create links and to parse them to create an instance of `DocumentRef` to pass to the `Action` (that is the part that the `RoutesFeature` of Flint does for you).
 
