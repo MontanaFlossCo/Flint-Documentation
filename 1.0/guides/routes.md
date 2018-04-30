@@ -110,7 +110,7 @@ class SimplePresentationRouter: PresentationRouter {
 }
 ```
 
-Now the app will respond to and be able to generate URLs referring to those actions, including arguments. So for example the [Flint Demo](https://github.com/MontanaFlossCo/FlintDemo-iOS) app has this code and could respond to `flint-demo://open?name=hello.md` as well as `https://demo-app.flint.tools/open?name=hello.md`. Pretty neat, isn’t it?
+Now the app will respond to and be able to generate URLs referring to those actions, including arguments. So for example the [Flint Demo](https://github.com/MontanaFlossCo/FlintDemo-iOS) app has this code and could respond to `flint-demo://open?name=hello.md` as well as `https://demo-app.flint.tools/open?name=hello.md`.
 
 ## Creating the Input for your Action from the URLs
 
@@ -118,9 +118,9 @@ In order to respond to URLs and perform the Action defined by your routes, Flint
 
 Flint provides three protocols to support this:
 
-* `QueryParametersDecodable`
-* `QueryParametersEncodable`
-* `QueryParametersCodable` (combines both of the above)
+* [`QueryParametersDecodable`](https://github.com/MontanaFlossCo/Flint/blob/master/FlintCore/Routes/QueryParametersCodable.swift)
+* [`QueryParametersEncodable`](https://github.com/MontanaFlossCo/Flint/blob/master/FlintCore/Routes/QueryParametersCodable.swift)
+* [`QueryParametersCodable`](https://github.com/MontanaFlossCo/Flint/blob/master/FlintCore/Routes/QueryParametersCodable.swift) (combines both of the above)
  
 You need to make your action's `InputType` conform to one or two of these protocols as appropriate for your needs. If you never create URL links in your app but only have to handle them, you can conform to just `QueryParametersDecodable`. If you need to create links you can conform to `QueryParametersDecodable` or `QueryParametersCodable`. 
 
@@ -217,6 +217,21 @@ Associated domains on the other hand require entitlements. You must go to the "C
 **💡 TIP**: Do your users a favour while you are here — if you have website logins that the users require in the native app, add `webcredentials:` associations at the same time as this!
 
 For more details see [Supporting Universal Links](https://developer.apple.com/library/content/documentation/General/Conceptual/AppSearch/UniversalLinks.html#//apple_ref/doc/uid/TP40016308-CH12-SW1) on the Apple documentation site.
+
+## Creating links to your Actions
+
+Sometimes you want to create a URL that will invoke your app and perform an action, or generate the equivalent Universal Link so that you can share content with other users from the app.
+
+To do this you use the [`LinkCreator`](https://github.com/MontanaFlossCo/Flint/blob/master/FlintCore/Routes/LinkCreator.swift) protocol. An object that implements this is provided in `Flint.linkCreator` if you called `Flint.quickSetup` at startup. `Flint.quickSetup` chooses the first custom URL scheme and the first associated domain as the scopes to use when creating links. You can create your own `LinkCreator` instances using other schemes and domains if you require it.
+
+The `LinkCreator` creates `app` or `universal` links like so:
+
+```swift
+let appUrl = Flint.linkCreator.appLink(to: MyFeature.someAction, with: someInput)
+let webUrl = Flint.linkCreator.universalLink(to: MyFeature.someAction, with: someInput)
+```
+
+**💡 TIP**: You can use links for other things like Home Screen Quick Actions. Anywhere you might need to open your app in a specific state, creating links is a great solution. This what the [Activities](activities.md) feature takes advantage of.
 
 ## Next
 
