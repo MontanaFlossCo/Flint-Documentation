@@ -10,15 +10,16 @@ If you don't know what Feature Driven Development can give you, please [read thi
 
 * [Getting Started](guides/getting_started.md)
 * [Features and Actions](guides/features_and_actions.md)
-* [Timeline](guides/timeline.md)
-* [Focus](guides/focus.md)
+* [Conditional Features](guides/conditional_features.md)
+* [Routes](guides/routes.md)
 * [Activities](guides/activites.md)
 * [Analytics](guides/analytics.md)
-* [Routes](guides/routes.md)
 * [Flint UI](guides/flint_ui.md)
 * [Action Stacks](guides/actions_stacks.md)
+* [Timeline](guides/timeline.md)
+* [Focus](guides/focus.md)
 * [Unit Testing](guides/testing.md)
 
 ## Reference
 
-Coming soon
+Jazzy docs coming soon!
