@@ -112,9 +112,39 @@ The permission you pass in is any value from the [`SystemPermission`]() enum. Th
 
 All the other permissions including those such as HealthKit, Bluetooth etc. are coming soon!
 	
-Using this permission mechanism means Flint can hide all the details of verifying the different permissions as well as how you request authorisation. You just don't need to worry about any of that any more, as all you do is check if a feature is available to use by calling `MyFeature.isAvailable` or most often `MyFeature.request()` to try to perform an action.
+Using this permission mechanism means Flint can hide all the details of verifying the different permissions as well as how you request authorisation. You just don't need to worry about any of that any more, as all you do is check if a feature is available to use by calling `MyFeature.isAvailable` or most often `MyFeature.request()` to try to perform an action. We'll see how we do that shortly, and after that we'll see how to handle the case where there are missing permission.
 
-Let's see how we do that next.
+## Defining platform restrictions
+
+The DSL provides convenient ways to specify per-platform minimum version requirements.
+
+Using the `.iOS`, `.watchOS`, `.tvOS`, `macOS` properties on the builder you can set a minimum version required for this feature to be available, . You can alternatively set it to `.any`, or `.unsupported` if you want to prevent a feature on a certain platform where it doesn't make sense but your common code still needs to reference it. The default for all platforms is `.any`.
+
+There is also support for limiting support to a single platform by assigning a value to `.iOSOnly`, `.watchOSOnly`, `.macOSOnly` or `.tvOSOnly`. Assigning a version to any of these will set all the other platforms to `.unsupported` automatically.
+
+Note that you can set version constraints as either as an `Int` like "11", a `String` like `10.13.4`:
+
+```swift
+public class ExampleFeature: ConditionalFeature {
+    public static func constraints(requirements: FeatureConstraintsBuilder) {
+    	requirements.iOS = 9
+    	requirements.macOS = "10.12.1"
+    	requirements.tvOS = .any
+    	requirements.watchOS = .unsupported
+    }
+
+    ...
+}
+
+public class ExampleiOSOnlyFeature: ConditionalFeature {
+    public static func constraints(requirements: FeatureConstraintsBuilder) {
+    	// Availble on any iOS version, and nothing else
+    	requirements.iOSOnly = .any
+    }
+
+    ...
+}
+```
 
 ## Performing actions of a conditional feature
 
@@ -128,7 +158,7 @@ if let request = DeepLinkingFeature.performIncomingURL.request() {
     // your UI probably should not allow people to invoke actions from
     // features that are not enabled. An exception is the case of permissions and purchases
     // where you want to let the user choose the action but then show them UI explaining
-    // what they have to do to be able to use it.
+    // what they have to do to be able to use it.Ì
     log.error("Attempt to use feature that is not enabled")
 }
 ```
@@ -167,38 +197,6 @@ func selectPhoto() {
             }
         }
     }
-}
-```
-
-## Defining platform restrictions
-
-The DSL provides convenient ways to specify per-platform minimum version requirements.
-
-Using the `.iOS`, `.watchOS`, `.tvOS`, `macOS` properties on the builder you can set a minimum version required for this feature to be available, . You can alternatively set it to `.any`, or `.unsupported` if you want to prevent a feature on a certain platform where it doesn't make sense but your common code still needs to reference it. The default for all platforms is `.any`.
-
-There is also support for limiting support to a single platform by assigning a value to `.iOSOnly`, `.watchOSOnly`, `.macOSOnly` or `.tvOSOnly`. Assigning a version to any of these will set all the other platforms to `.unsupported` automatically.
-
-Note that you can set version constraints as either as an `Int` like "11", a `String` like `10.13.4`:
-
-```swift
-public class ExampleFeature: ConditionalFeature {
-    public static func constraints(requirements: FeatureConstraintsBuilder) {
-    	requirements.iOS = 9
-    	requirements.macOS = "10.12.1"
-    	requirements.tvOS = .any
-    	requirements.watchOS = .unsupported
-    }
-
-    ...
-}
-
-public class ExampleiOSOnlyFeature: ConditionalFeature {
-    public static func constraints(requirements: FeatureConstraintsBuilder) {
-    	// Availble on any iOS version, and nothing else
-    	requirements.iOSOnly = .any
-    }
-
-    ...
 }
 ```
 
