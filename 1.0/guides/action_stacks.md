@@ -1,5 +1,7 @@
 # Action Stacks
 
+[Back to the Documentation index](../index.md)
+
 While actions are being performed, Flint can maintain a list of “stacks” that track the history of user actions on a per-feature basis.
 
 These stacks are scoped per Action Session and Feature, and support nested stacks. Each time the user performs an Action from a Feature that is not currently active in the current set of Action Stacks, a new stack will be created for that Session and Feature.
