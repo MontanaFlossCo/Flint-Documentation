@@ -80,9 +80,13 @@ Now when run, any document that is opened will automatically be registered for s
 
 ## Troubleshooting and testing
 
-Docs coming soon
+More docs coming soon
 
 * Activities that also register the item for Spotlight search *must* have a title. Flint will alert you to this if you forget.
 * If Handoff or other activity doesn't happen - what to check
 
+## Next
 
+* Add [Analytics](analytics.md) tracking
+* Use the [Timeline](timeline.md) to see what is going on in your app when things go wrong
+* Start using [Focus](focus.md) to pare down your logging
