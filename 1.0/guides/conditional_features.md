@@ -1,25 +1,33 @@
 # Features and Actions
 
-Flint supports conditional features that can may not always be available to users. We use constraints on features to limit when they are available. There are numerous constraints you can apply, but they include platform versions, system permissions like Location or Camera access, and build-specific or user-toggled feature "flagging" (turning features on or off explicitly).
+Flint supports conditional features that may not always be available to users. Your app almost always includes features that are not enabled by default, or those that can even be manually disabled by the user. In-app purchases and feature-flagging are a classic case of conditional features, where the user first has to pay or meet some other criteria to see or use the feature.
 
-When using them in code, what makes conditional features special is that your code cannot perform actions of conditional features directly. You must first check if the feature is available. If the feature is not available you should take appropriate action — perhaps prompting the user for any required permissions. Flint helps with that part too.
+We use the concept of *constraints* on features to limit when features are available. There are many constraints you can apply, including platform versions, system permissions like Location or Camera access, purchases, and build-specific or user-toggled feature "flagging" (turning features on or off explicitly).
 
-Using Flint to handle conditional features for you makes it much easier to write cross-platform code as you do not have to handle the case where the feature's definition is not even compiled in to the binary for a platform. These types are extremely lightweight so there is no need to exclude them from platform targets that don't actually need to support them. Code paths that might involve a couple of features, one of which is not available on all platforms, become easy to deal with.
+When using them in code, what makes conditional features special is that your cannot perform actions of conditional features directly. You must first check if the feature is available. If the feature is not available you should take appropriate action — perhaps prompting the user for any required permissions. Flint helps with that part too.
 
-## Defining a ConditionalFeature with constraints
+Using Flint to handle conditional features for you makes it much easier to write cross-platform code as you do not have to handle the case where the feature's definition is not even compiled in to the binary for a platform. Code paths that might involve a couple of features, one of which is not available on all platforms, are no longer a problem.
 
-As the developer you set the constraints on the feature, some of which are evaluated once at startup – such as the minimum operating system version — and others which are evaluated at runtime when required, and these can change their value at runtime. For example if a user makes an in-app purchase, once it is verified the features reliant on that purchase will now be available.
+## Defining a conditional feature with constraints
 
-You start by declaring the feature as conforming to the protocol `ConditionalFeature`:
+You start by declaring the feature as conforming to the protocol `ConditionalFeature`. 
+
+You declare the constraints on the feature, some of which are evaluated once at startup – such as the minimum operating system version — and others which are evaluated at runtime when required, as these can change their value at runtime. For example if a user makes an in-app purchase, once it is verified the features reliant on that purchase will now be available.
+
+Here's an example from Flint's own condition feature for deep linking support"
 
 ```swift
-/// Flint's own deep linking feature for URL Routes is conditional so that you can disable it if you don't want it.
+/// Flint's deep linking feature for URL Routes is conditional so that you can disable
+/// it if you don't want it.
 public class DeepLinkingFeature: ConditionalFeature {
     public static var description: String = "Deep Linking and app-URL handling"
 
     public static func constraints(requirements: FeatureConstraintsBuilder) {
     	requirements.precondition(.runtimeEnabled)
     }
+
+    // It's on by default. 
+    public static var isEnabled: Bool? = true
 
     /// The action to use to perform the URL
     public static let performIncomingURL = action(PerformIncomingURLAction.self)
@@ -30,11 +38,11 @@ public class DeepLinkingFeature: ConditionalFeature {
 }
 ```
 
-The `constraints(requirements:)` function definition uses a Domain-Specific Language (DSL) provided by the "builder" passed to the function. This DSL lets you define different kinds of constraints in convenient ways. The above constraint `.runtimeEnabled` means that the `isEnabled` property of the feature must return `true`. The default implementation of this provided by Flint returns `true`. You can override it to turn this feature off, or make it call into other code to find out if it should be enabled.
+The `constraints(requirements:)` function definition uses a Domain-Specific Language (DSL) provided by the "builder" passed to the function. This DSL lets you define the constraints in a convenient way. The above constraint `.runtimeEnabled` means that the `isEnabled` property of the feature must return `true`. The default implementation of this provided by Flint returns `true`. You can override it to turn this feature off, or make it call into other code to find out if it should be enabled.
 
 Here are the kinds of constraints the DSL currently supports:
 
-* **Preconditions**: This includes user toggling, purchases and runtime enabling.
+* **Preconditions**: This includes user feature toggling, purchases and runtime enabling.
 * **System Permissions**: The permissions your app needs for the feature to work, such as Photos, Contacts or Location access
 * **Platform restrictions**: You can set the minimum required version for each platform operating system, or indicate "any" or "unsupported". 
 
@@ -42,18 +50,20 @@ Flint allows you to combine all of these as appropriate to declare a simple set 
 
 ## Defining preconditions
 
-You declare a precondition requirement by calling the builder function `precondition` with a value of the [`FeaturePrecondition`]() enum type.
+You declare a precondition constraint by calling the builder function `precondition` with a value of the [`FeaturePrecondition`]() enum type.
 
-At the time of writing there are three supported preconditions:
+At the time of writing there are three kinds of precondition supported:
 
 * `.purchase(requirement: PurchaseRequirement)` — The feature requires one or more purchases before it is available.
-* `.runtimeEnabled` — Whenever a request is made to use the feature, the value if `YourFeature.isEanbled` will be checked.
+* `.runtimeEnabled` — Whenever a request is made to use the feature, the value of `YourFeature.isEanbled` will be checked.
 * `.userToggled(defaultValue: Bool)` — The Feature will check for the user's current settings to see if this feature is enabled.
 
 So if we wanted to have an obscure feature condition that required a purchase but also had to be enabled by the user, say some a "level builder" mode in a game, and the user could only access the level builder they paid for once they had completed "training", you would set it up like this:
 
 ```swift
-let premiumSubscription = Product(name: "💎 Premium Subscription", description: "Unlock the level builder", productID: "SUB0001")
+let premiumSubscription = Product(name: "💎 Premium Subscription",
+								  description: "Unlock the level builder",
+								  productID: "SUB0001")
 
 public class LevelBuilderFeature: ConditionalFeature {
     public static var description: String = "Premium Level Builder"
@@ -70,21 +80,23 @@ public class LevelBuilderFeature: ConditionalFeature {
 }
 ```
 
-Note that there are both `precondition()` and plural `preconditions()` variadic forms of this function. You can call these functions as many times as makes sense for your requirements, but currently `.purchase` is the only type that can exist with multiple parameters.
+Note that there are both `precondition()` and plural `preconditions(...)` variadic forms of this function. You can call these functions as many times as makes sense for your requirements, but currently `.purchase` is the only type that can exist with multiple parameters.
 
-For purchase preconditions, purchase requirements (see [`PurchaseRequirement`]()) allow you to define rules based on multiple products, so that requirements can be fulfilled by many different purchases, or require specific combinations. 
+For purchase preconditions, purchase requirements (see [`PurchaseRequirement`]()) allow you to define rules based on one or more products, so that requirements can be fulfilled by many different purchases, or require specific combinations. 
 
 The user toggling will read and write the value from the user's defaults, and if there is no current value will use the default value provided.
 
-The `.runtimeEnabled` test will always check the static `isEnabled` property on the feature to verify it is `true`. You can use this for any kind of app-supplied runtime determination of the feature availability. You can also declare it as a writable property and just assign it `true`/`false` in the source file to flag internal features that are perhaps not yet ready to ship.
+The `.runtimeEnabled` test will always check the static `isEnabled` property on the feature to verify it is `true`. You can use this for any kind of app-supplied runtime determination of the feature availability. You can also declare it as a writable property and just assign it `true`/`false` in the source file or at runtime to flag internal features that are perhaps not yet ready to ship.
 
 Only if all the preconditions are `true` will the Feature be available — and only if all the other constraints are also met.
 
 ## Defining required permissions
 
-Permissions are particularly difficult to deal with in apps. You shouldn't spam users at startup with authorisation requests for every permission your app might ever need, and you need to encourage them to approve permission alerts by creating a smooth experience that explains why they need to approve it. You also need to gracefully handle the case where they don't approve the permission and tell them how to enable it in the Settings app if they later need to use the feature. 
+Permissions are particularly difficult to deal with in apps. You shouldn't spam users at startup with authorisation requests for every permission your app might ever need, and you need to encourage them to approve permission alerts by creating a smooth experience that explains why they need to approve it.
 
-Once you add multiple permissions into the mix, and only some features required different combinations of those features things get complicated quickly. Using conditional features with permission constraints solves this problem in a way that makes it easy for you to provide the best experience for the user.
+You also need to gracefully handle the case where they don't approve the permission and tell them how to enable it in the Settings app if they later need to use the feature. 
+
+Once you add multiple permissions into the mix, and some features requires different combinations of those permissions things get complicated quickly. Using conditional features with permission constraints solves this problem in a way that makes it easy for you to provide the best experience for the user. It also makes it very easy to see what your app's permissions behaviours should be for testing and QA of the various features.
 
 By specifying the permissions each feature requires and not the superset of all the permissions your app requires, Flint can check these permissions only at the time the user tries to use the feature. The user is not bothered by permission alerts until they need them, and then only the ones they need right then.
 
@@ -110,19 +122,21 @@ The permission you pass in is any value from the [`SystemPermission`]() enum. Th
 * **.camera** — Camera access
 * **.location(usage:)** — Location access
 
-All the other permissions including those such as HealthKit, Bluetooth etc. are coming soon!
+All the other permissions including those such as HealthKit, Bluetooth etc. are coming to Flint soon.
 	
-Using this permission mechanism means Flint can hide all the details of verifying the different permissions as well as how you request authorisation. You just don't need to worry about any of that any more, as all you do is check if a feature is available to use by calling `MyFeature.isAvailable` or most often `MyFeature.request()` to try to perform an action. We'll see how we do that shortly, and after that we'll see how to handle the case where there are missing permission.
+Using this permission mechanism means Flint can hide all the details of verifying the different permissions as well as how you request authorisation. You just don't need to worry about any of that any more, as all you do is check if a feature is available to use by calling `MyFeature.isAvailable` or most often `MyFeature.request()` to try to perform an action.
+
+We'll see how we do that shortly, and after that we'll see how to handle the case where there are missing permission.
 
 ## Defining platform restrictions
 
-The DSL provides convenient ways to specify per-platform minimum version requirements.
+The constraints DSL also provides convenient ways to specify per-platform minimum version requirements.
 
-Using the `.iOS`, `.watchOS`, `.tvOS`, `macOS` properties on the builder you can set a minimum version required for this feature to be available, . You can alternatively set it to `.any`, or `.unsupported` if you want to prevent a feature on a certain platform where it doesn't make sense but your common code still needs to reference it. The default for all platforms is `.any`.
+Using the `.iOS`, `.watchOS`, `.tvOS`, `macOS` properties on the builder you can set a minimum version required for this feature to be available, . You can alternatively set it to `.any`, or `.unsupported` if you want to prevent a feature on a certain platform where it doesn't make sense. The default for all platforms is `.any`.
 
-There is also support for limiting support to a single platform by assigning a value to `.iOSOnly`, `.watchOSOnly`, `.macOSOnly` or `.tvOSOnly`. Assigning a version to any of these will set all the other platforms to `.unsupported` automatically.
+There is also support for limiting a feature to a single platform by assigning a value to `.iOSOnly`, `.watchOSOnly`, `.macOSOnly` or `.tvOSOnly`. Assigning a version to any of these will set all the other platforms to `.unsupported` automatically.
 
-Note that you can set version constraints as either as an `Int` like "11", a `String` like `10.13.4`:
+Note that you can set version constraints either as an `Int` like "11", or a `String` like `10.13.4`:
 
 ```swift
 public class ExampleFeature: ConditionalFeature {
@@ -148,7 +162,7 @@ public class ExampleiOSOnlyFeature: ConditionalFeature {
 
 ## Performing actions of a conditional feature
 
-To perform an action of a conditional feature you must first test if the feature is available. Flint uses’s Swift’s type system to enforce this: there is no way to `perform` an action of a conditional feature without first checking availability. You must obtain a `ConditionalActionRequest` by calling `request`:
+To perform an action of a conditional feature you must first test if the feature is available. Flint uses’s Swift’s type system to enforce this: there is no way to `perform` an action of a conditional feature without first checking availability. You must obtain a `ConditionalActionRequest` by calling `request`, and if you get one you can then call `perform` on that:
 
 ```swift
 if let request = DeepLinkingFeature.performIncomingURL.request() {
@@ -163,13 +177,13 @@ if let request = DeepLinkingFeature.performIncomingURL.request() {
 }
 ```
 
-This type safety deliberately makes it painful to ignore the situations where a feature may not be available, and prevents confusing an always-available feature with one that isn’t. Your code that performs actions of conditional features always needs to be prepared to do something reasonable in case the feature is not available.
+This type safety deliberately makes it painful to ignore the situations where a feature may not be available, and prevents confusing an always-available feature with one that isn’t. Your code that performs actions of conditional features always needs to be prepared to do something reasonable in case the feature is not available. This is a lot better than requiring simple boolean feature checks through your code, where these are easily missed, leading to undefined behaviours where some interactions not gated on the feature flag by accident. 
 
-The previous code samples only declare the actions and allow you to perform them. Even at this level of simplicity, if an `ActionDispatchObserver` is registered, it will be able to do something whenever these actions are performed – such as emitting an analytics tracking event for each action. Flint provides such an observer called `AnalyticsReporting` which you can use to route analytics to whatever backend you use.
+This is a **fundamental tenet of Flint**, that all your feature-related code should be triggered by action invocations, and the action invocations are protected by type safety so you cannot make these kinds of mistakes.
 
 ## Handling system permissions that require authorization
 
-Improvements to this coming very soon. Currently, you can do something like this:
+**Note** we will be simplifying this process very soon! For now, you can do something like this:
 
 ```swift
 func selectPhoto() {
@@ -199,6 +213,8 @@ func selectPhoto() {
     }
 }
 ```
+
+This simple example uses alerts to tell the user what is wrong with the permission, and will authorise only the first unfulfilled permission. In a real app you would handle this with non-modal UI.
 
 ## Next steps
 

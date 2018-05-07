@@ -171,6 +171,8 @@ bgProcessionSession.perform(MachineLearningFeature.processImages, using: nil, wi
 
 ```
 
+All of the previous code samples just declare actions and allow you to perform them. However, all action dispatch goes through Flint's `ActionDispatcher` which is observable. This means that even at this level of simplicity, if an `ActionDispatchObserver` is registered, it will be able to do something whenever these actions are performed – such as emitting an analytics tracking event for each action. Flint provides such an observer called `AnalyticsReporting` which you can use to route analytics to whatever backend you use.
+
 ## Next steps
 
 * Using [Conditional Features](conditional_features.md)
