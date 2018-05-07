@@ -1,5 +1,7 @@
 # Routes
 
+[Back to the Documentation index](../index.md)
+
 Most apps need to handle some URLs, whether for e-mail sign-in confirmations, deep linking or custom workflow URL schemes. 
 
 Flint’s Routes feature makes it easy to implement these. You have only three steps to carry out in code. What this will do is take a URL like:

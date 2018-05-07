@@ -1,5 +1,7 @@
 # Activities
 
+[Back to the Documentation index](../index.md)
+
 Apple platforms use `NSUserActivity` for a variety of purposes to tell the operating system about something the user is doing. It is used across the platforms to make the user experience more efficient. This includes support for Handoff, Siri Suggestions (AKA Siri Proactive), Spotlight Search, deep linking and even ClassKit for education apps.
 
 Flint’s Activities feature can automatically register `NSUserActivity` for you when users perform actions in your app. You can determine which actions qualify for this (“Save” is not something that makes sense for a Handoff action), and control the attributes passed to the operating system.
