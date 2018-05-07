@@ -1,4 +1,4 @@
-# Features and Actions
+# Conditional Features
 
 Flint supports conditional features that may not always be available to users. Your app almost always includes features that are not enabled by default, or those that can even be manually disabled by the user. On top of this, in-app purchases and feature-flagging are a classic case of conditional features, where the user first has to pay or meet some other criteria to see or use the feature.
 
@@ -62,7 +62,7 @@ Flint allows you to combine all of these as appropriate to declare a simple set 
 
 ## Defining preconditions
 
-You declare a precondition constraint by calling the builder function `precondition` with a value of the [`FeaturePrecondition`]() enum type.
+You declare a precondition constraint by calling the builder function `precondition` with a value of the [`FeaturePrecondition`](https://github.com/MontanaFlossCo/Flint/blob/master/FlintCore/Constraints/FeaturePrecondition.swift) enum type.
 
 At the time of writing there are three kinds of precondition supported:
 
@@ -94,7 +94,7 @@ public class LevelBuilderFeature: ConditionalFeature {
 
 Note that there are both `precondition()` and the plural `preconditions(...)` forms of this function. You can call these functions as many times as makes sense for your requirements, but currently `.purchase` is the only type that can be declared more than once, with different parameters.
 
-For purchase preconditions, purchase requirements (see [`PurchaseRequirement`]()) allow you to define rules based on one or more products, so that requirements can be fulfilled by several different purchases (say "Premium subscription" or "Generous supporter"), or require specific combinations. 
+For purchase preconditions, purchase requirements (see [`PurchaseRequirement`](https://github.com/MontanaFlossCo/Flint/blob/master/FlintCore/Purchases/PurchaseRequirement.swift)) allow you to define rules based on one or more products, so that requirements can be fulfilled by several different purchases (say "Premium subscription" or "Generous supporter"), or require specific combinations. 
 
 The user toggling precondition will read the value from the user's defaults, and if there is no current value will use the default value provided.
 
@@ -124,7 +124,7 @@ public class SelfieFeature: ConditionalFeature {
 }
 ```
 
-The permissions you pass in are any values from the [`SystemPermission`]() enum. The kinds of permissions currently supported are:
+The permissions you pass in are any values from the [`SystemPermission`](https://github.com/MontanaFlossCo/Flint/blob/master/FlintCore/Constraints/Permissions/SystemPermission.swift) enum. The kinds of permissions currently supported are:
 
 * **.photos** — Photos access
 * **.camera** — Camera access
