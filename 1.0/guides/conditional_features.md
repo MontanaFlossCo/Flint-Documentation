@@ -1,5 +1,7 @@
 # Conditional Features
 
+[Back to the Documentation index](../index.md)
+
 Flint supports conditional features that may not always be available to users. Your app almost always includes features that are not enabled by default, or those that can even be manually disabled by the user. On top of this, in-app purchases and feature-flagging are a classic case of conditional features, where the user first has to pay or meet some other criteria to see or use the feature.
 
 Imagine a podcast player app with a feature hierarchy like this:
