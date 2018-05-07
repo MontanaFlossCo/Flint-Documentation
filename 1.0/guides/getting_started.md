@@ -1,5 +1,7 @@
 ## Getting started
 
+[Back to the Documentation index](../index.md)
+
 To use Flint in your own project, use [Carthage](https://github.com/Carthage/Carthage) to add the dependency to your `Cartfile`:
 
 ```
