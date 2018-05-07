@@ -15,7 +15,7 @@ If you don't know what Feature Driven Development can give you, please [read thi
 * [Activities](guides/activites.md)
 * [Analytics](guides/analytics.md)
 * [Flint UI](guides/flint_ui.md)
-* [Action Stacks](guides/actions_stacks.md)
+* [Action Stacks](guides/action_stacks.md)
 * [Timeline](guides/timeline.md)
 * [Focus](guides/focus.md)
 * [Unit Testing](guides/testing.md)
