@@ -106,9 +106,9 @@ Only if all the preconditions are `true` and all the other constraints are also 
 
 ## Defining required permissions
 
-Permissions are particularly fiddly to deal with in apps. You shouldn't spam users at startup with authorisation requests for every permission your app might ever need, and you need to encourage them to approve permission alerts by creating a smooth experience that explains why they need to approve it.
+Permissions can be fiddly to deal with in apps. Your goal is to get people to authorise permissions so that they can use what you've implemented, but to improve the probability of this happening you have to explain what is happening and why. You shouldn't spam users at startup with authorisation requests for every permission your app might ever need. 
 
-You also need to gracefully handle the case where they don't approve the permission and tell them how to enable it in the Settings app if they later need to use the feature. 
+Associating permissions with the features that require them instantly solves the "don't spam the user with requests" part. If you only prompt for permissions when the feature is used, and only the permissions that feature needs, they already have some idea of what might be required, e.g. a mapping feature requires location access. They are primed to allow the permissions.
 
 To declare a permission constraint, you use the `permission()` or `permissions(...)` functions:
 
@@ -133,12 +133,10 @@ The permissions you pass in are any values from the [`SystemPermission`](https:/
 * **.location(usage:)** — Location access
 
 All the other permissions including those such as HealthKit, Bluetooth etc. are coming soon.
-	
-Once you add multiple permissions into the mix, and some features require different combinations of those permissions things get complicated quickly. Using conditional features with permission constraints solves this problem in a way that makes it easy for you to provide the best experience for the user. It also makes it very clear what your app's permissions behaviours should be for testing and QA of the various features in all permutations with and without the permissions granted.
 
-By specifying the permissions that each feature requires and not the superset of all the permissions your app requires, Flint can check these permissions for you at the time the user tries to use the feature. The user is not bothered by permission alerts until they need them, and then only the ones they need right then.
+Once you add multiple permissions into the mix, and some features require different combinations of those permissions things get complicated quickly. Using conditional features with permission constraints solves this problem in a way that makes it easy for you to provide the best experience for the user, using Flint's tools for requesting the permissions. It also makes it very clear what your app's permission behaviours should be for testing and QA of the various features in all permutations with and without the permissions granted.
 
-Permissions support enables Flint to hide all the details of verifying the different permissions as well as how you request authorisation. You just don't need to worry about any of that any more, as all you do is check if a feature is available to use by calling `MyFeature.isAvailable` or more often — use `MyFeature.request()` to try to perform an action.
+Permissions support enables Flint to hide all the details of verifying the different permissions as well as how you request authorisation. 
 
 We'll see how to do that shortly, and after that we'll see how to handle the case where there are missing permissions.
 
@@ -176,7 +174,9 @@ public class ExampleiOSOnlyFeature: ConditionalFeature {
 
 ## Performing actions of a conditional feature
 
-To perform an action of a conditional feature you must first test if the feature is available. Flint uses Swift’s type system to enforce this: there is no way to `perform` an action of a conditional feature without first checking availability. You must obtain a `ConditionalActionRequest` by calling `request()`, and if you get a result back you can then call `perform` on that:
+To perform an action of a conditional feature you must be sure the feature is available. Flint uses Swift’s type system to enforce this: there is no way to `perform` an action of a conditional feature without first checking availability, unlike non-conditional features where you just call `perform`.
+
+Instead you must first obtain a `ConditionalActionRequest` by calling `request()` on the action binding, and if you get a result back you can then call `perform` on that:
 
 ```swift
 if let request = DeepLinkingFeature.performIncomingURL.request() {
@@ -193,47 +193,128 @@ if let request = DeepLinkingFeature.performIncomingURL.request() {
 
 This type safety deliberately makes it painful to ignore the situations where a feature may not be available, and prevents confusing an always-available feature with one that isn’t. Your code that performs actions of conditional features always needs to be prepared to do something reasonable in case the feature is not available.
 
-This is a lot better than requiring simple boolean feature checks through your code, where these are easily missed, leading to undefined behaviours where some interactions not gated on the feature flag by accident. 
+This is a far better than testing boolean feature flags through your code, where these can be easily missed, leading to undefined behaviours where some interactions are not gated on the feature flag by accident.
 
 This is a **fundamental tenet of Flint**, that all your feature-related code should be triggered by action invocations, and the action invocations are protected by type safety so you cannot make these kinds of mistakes.
 
-## Handling system permissions that require authorization
+## What to do when your conditional feature indicates that it is not available
 
 If you do not get a `request` instance back when you want to perform an action of a conditional feature, you need to check if this was because there are missing permissions.
 
-We will be simplifying this process very soon, but for now, you can do something like this:
+There are many reasons why a feature may not be available, and Flint provides the information you need to deal with this. Some of the conditions you can help the user deal with — permissions and purchases for example — whereas others are programmer error such as a feature being disabled programmatically but the UI elements not being hidden or disabled.
+
+One of the most common challenges is prompting the user to authorise permissions that are required. The various APIs of iOS, tvOS and watchOS that require permissions have subtle differences in their authorisation requirements, but Flint wraps all these up into a common interface. It also provides a controller and coordinator mechanism so that you don't have to do anything about authorisation except provide any onboarding UI that you want to include to help the user understand what is happening.
+
+### Prompting for required permissions
+
+When the feature `request()` call comes back with a nil, if it requires system permissions you'll need to see if there are any permissions that the user has not yet been asked to authorise. You do this using the `permissions.notDetermined` property on your feature type. Then you can use Flint's controller mechanism to request all the required authorisations.
+
+```swift
+if PhotoAttachmentsFeature.permissions.notDetermined.count > 0 {
+    permissionController = PhotoAttachmentsFeature.permissionAuthorisationController(using: self)
+    permissionController?.begin(retryHandler: retryHandler)
+    return
+}
+```
+
+This fragment does exactly this – it asks whether there are any permissions that the feature requires that have the `.notDetermined` status. If the count is non-zero, it calls Flint's `permissionAuthorisationController(using:)` function to get a controller instance that you can use to request all the authorisations, one by one. This controller takes a single optional argument of type `PermissionAuthorisationCoordinator`, which you can use to affect the authorisation process.
+
+You can also pass `nil` for the coordinator and the user will see the system permission requests one by one without any hints about what is happening. That's fine during development but we don't recommend you do this in real apps. Use the coordinator to add some onboarding cards along the lines of:
+
+> "Hey, we're going to need permission to access the camera because, well, you're going to be taking a photo!"
+
+You would probably include buttons for "OK", "Ask me later" and "Cancel" so they can get out of the flow.
+
+The coordinator receives callbacks at every stage in the cycle of authorisations and can do the following:
+
+* Show UI at the start and end of the entire batch of required authorisations, including information about all the permissions required so you can adapt your content to this.
+* Show some UI before and after the controller shows the system permission alert, so that the alert is not shown until the user has seen your UI and indicated they are ready to proceed.
+* Set the order in which permissions will be requested — perhaps your onboarding wants to get the most important permissions requested first to avoid "prompt fatigue", or at least you want the ordering to be deterministic for automated testing.
+* Skip authorising a specific permission - e.g. if your onboarding UI has an "Ask me later" button you can instruct the controller to skip a single permission.
+* Cancel all the authorisations.
+
+These are all very important for avoiding problems where users, through fatigue or confusion, deny one or more of the permissions when the system alert is displayed.
+Remember that once permissions are denied you cannot prompt for them again in-app and at best you are forced to show UI that tells the user to open the "Settings" app and find the switch to enable the permissions for your app. In many cases if you end up in that situation you have "lost" the user. Flint also helps deal with these situations.
+
+### Dealing with the wider range of permission and purchases issues
+
+Whether your features require permissions and/or in-app purchases, things get more complication than you may at first think.
+
+In terms of permissions, there are several authorisation statuses that do not grant access (only `.authorized` does).
+
+The status `.denied` indicates that the user was previously asked for permission but denied it, and the app cannot recover from this or request permission again. So you need to show UI when you find some required permissions are denied, to tell them to go to the Settings app to enable them. Flint provides access to the denied permissions that your feature requires in the `permissions.denied` property on the feature.
+
+Another status that requires special handling is `.restricted`. This indicates that for some reason the permission is simply not available and cannot be granted. Usually this means there are parental restrictions or a custom mobile device management profile installed that has denied access to the requested resource. For example some corporate managed devices may not permit camera or location access. You can't do anything about this, and often nor can the user, but you need to show UI to explain to them why they can't use the feature that requires the permission. Flint also provides access to the restricted permissions that your feature requires in the `permissions.restricted` property on the feature.
+
+With in-app purchases, you can easily ask Flint whether there are purchases required to unlock the feature, using the `purchases.requiredToUnlock` property on the feature:
+
+```swift
+if feature.purchases.requiredToUnlock.count > 0 {
+	// Show your in-app store onboarding UI
+}
+```
+
+This is straightforward enough. When combined with the possibility of missing permissions, care should be taken to handle the possible remedies in a sensible way.
+
+One example is that the user may not have granted camera access, but may also not have purchased the in-app purchase required for the feature. In this case, you don't want to prompt for permission unless they have actually purchased the feature.
+
+What's more, if any of the permissions required are returning "restricted" you should not let them purchase the feature.
+
+Regardless, you should only ask for one thing at a time and avoid confusing the user. Here's an example of how you might approach this:
 
 ```swift
 func selectPhoto() {
     if let request = PhotoAttachmentsFeature.request(PhotoAttachmentsFeature.showPhotoSelection) {
         request.perform(using: self)
     } else {
-        // Check if it failed because of permissions
-        let constraints = Flint.constraintsEvaluator.evaluate(for: PhotoAttachmentsFeature.self)
-        if constraints.unsatisfied.permissions.count > 0 {
-            
-        	// For simplicity we'll just ask for the first one
-            let permission = constraints.unsatisfied.permissions.first!
-            let status = Flint.permissionChecker.status(of: permission)
+        handleUnsatisfiedConstraints(for: PhotoAttachmentsFeature.self, retry: { [weak self] in self?.selectPhoto() })
+    }
+}
 
-            if status == .denied {
-                let alertController = UIAlertController(title: "Permission required!", message: "You need to grant Photos access. Please go to Settings, Flint Demo and enable photos access.", preferredStyle: .alert)
-                alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-                present(alertController, animated: true)
-            } else if status == .restricted {
-                let alertController = UIAlertController(title: "Access is restricted!", message: "You need Photos access but this is restricted on your device.", preferredStyle: .alert)
-                alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-                present(alertController, animated: true)
-            } else if status == .notDetermined {
-            	// Ask Flint to request permission
-                Flint.permissionChecker.requestAuthorization(for: permission)
-            }
-        }
+func handleUnsatisfiedConstraints<T>(for feature: T.Type, retry retryHandler: (() -> Void)?) where T: ConditionalFeature {
+    // Check for required permissions that are restricted on this device through parental controls or a profile.
+    // We must ask for these first in case the user purchases a feature they cannot use
+    if feature.permissions.restricted.count > 0 {
+        let permissions = feature.permissions.restricted.map({ String(describing: $0) }).joined(separator: ", ")
+        let alertController = UIAlertController(title: "Permissiones are restricted!",
+                                                message: "\(feature.name) requires permissions that are restricted on your device: \(permissions)",
+                                                preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        present(alertController, animated: true)
+        return
+    }
+    
+    // Check for required purchases next, only if there are no permissions that are restricted
+    if feature.purchases.requiredToUnlock.count > 0 {
+        let alertController = UIAlertController(title: "Purchase required!",
+                                                message: "Sorry but \(feature.name) is a premium feature. Please make a purchase to unlock this feature.",
+                                                preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        present(alertController, animated: true)
+        return
+    }
+
+    // Check for required permissions that are already denied
+    if feature.permissions.denied.count > 0 {
+        let permissions = feature.permissions.denied.map({ String(describing: $0) }).joined(separator: ", ")
+        let alertController = UIAlertController(title: "Permissiones are denied!",
+                                                message: "\(feature.name) requires permissions that you have denied. Please go to Settings to enable them: \(permissions)",
+                                                preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        present(alertController, animated: true)
+        return
+    }
+
+    // Start the flow of requesting authorisation for any permissions not determined
+    if feature.permissions.notDetermined.count > 0 {
+        permissionController = feature.permissionAuthorisationController(using: self)
+        permissionController?.begin(retryHandler: retryHandler)
+        return
     }
 }
 ```
 
-This simple example uses alerts to tell the user what is wrong with the permission, and will authorise only the first unfulfilled permission. In a real app you would handle this with non-modal UI, and you would show some instructive UI before requesting authorization to increase the chance of the user granting it.
+This simple example uses alerts to tell the user what is wrong with the permissions. In a real app you would usually handle this with non-modal UI provided by the coordinator passed to `feature.permissionAuthorisationController`.
 
 ## Next steps
 
@@ -242,3 +323,4 @@ This simple example uses alerts to tell the user what is wrong with the permissi
 * Add [Analytics](analytics.md) tracking
 * Use the [Timeline](timeline.md) to see what is going on in your app when things go wrong
 * Start using [Focus](focus.md) to pare down your logging
+ 
