@@ -12,5 +12,6 @@ Flint supports pluggable analytics tracking so that when the user performs actio
 
 ## Next steps
 
+* Add [Flint UI debug tools](flint_ui.md)
 * Use the [Timeline](timeline.md) to see what is going on in your app when things go wrong
 * Start using [Focus](focus.md) to pare down your logging
