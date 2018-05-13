@@ -88,7 +88,7 @@ public class LevelBuilderFeature: ConditionalFeature {
     public static func constraints(requirements: FeatureConstraintsBuilder) {
     	requirements.preconditions(.userToggled(defaultValue: true),
     	                           .runtimeEnabled,
-                                 .purchase(PurchaseRequirement(premiumSubscription)))
+                                   .purchase(PurchaseRequirement(premiumSubscription)))
     }
 
     static var isEnabled: Bool? = MyPlayerProgressTracker.shared.tutorialCompleted
@@ -121,8 +121,8 @@ public class SelfieFeature: ConditionalFeature {
 
     public static func constraints(requirements: FeatureConstraintsBuilder) {
     	requirements.permissions(.camera,
-                               .photos,
-                               .location(usage: .whenInUse))
+                                .photos,
+                                .location(usage: .whenInUse))
     }
 
     ...
@@ -270,7 +270,7 @@ Beyond permissions, with in-app purchases you can easily ask Flint whether there
 
 ```swif
 if feature.purchases.requiredToUnlock.count > 0 {
-	// Show your in-app store onboarding UI
+    // Show your in-app store onboarding UI
 }
 ```
 
