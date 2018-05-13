@@ -1,6 +1,6 @@
-# Features and Actions
-
 [Back to the Documentation index](../index.md)
+
+# Features and Actions
 
 The definition of your app’s Features and the Actions that they provide is the fundamental starting point of Flint’s implementation of [Feature Driven Development](https://www.montanafloss.co/blog/feature-driven-development).
 
