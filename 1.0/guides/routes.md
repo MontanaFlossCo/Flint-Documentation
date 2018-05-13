@@ -1,6 +1,6 @@
-# Routes
-
 [Back to the Documentation index](../index.md)
+
+# Routes
 
 Most apps need to handle some URLs, whether for e-mail sign-in confirmations, deep linking or custom workflow URL schemes. 
 
