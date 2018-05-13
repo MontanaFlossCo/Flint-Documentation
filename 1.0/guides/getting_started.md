@@ -14,4 +14,6 @@ Then run `carthage bootstrap`. For faster builds you can limit to one platform a
 carthage bootstrap --platform iOS --cache-builds
 ```
 
-Next, you need to [bootstrap Flint in your code and create some features](features_and_actions.md).
+## Next
+
+You need to [bootstrap Flint in your code and create some features](features_and_actions.md).
