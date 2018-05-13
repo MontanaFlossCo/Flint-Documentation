@@ -1,6 +1,6 @@
-# Analytics
-
 [Back to the Documentation index](../index.md)
+
+# Analytics
 
 Flint supports pluggable analytics tracking so that when the user performs actions they are automatically sent to your chosen analytics service.
 
