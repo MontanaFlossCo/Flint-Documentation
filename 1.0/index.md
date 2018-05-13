@@ -12,7 +12,7 @@ If you don't know what Feature Driven Development can give you, please [read thi
 * [Features and Actions](guides/features_and_actions.md)
 * [Conditional Features](guides/conditional_features.md)
 * [Routes](guides/routes.md)
-* [Activities](guides/activites.md)
+* [Activities](guides/activities.md)
 * [Analytics](guides/analytics.md)
 * [Flint UI](guides/flint_ui.md)
 * [Action Stacks](guides/action_stacks.md)
