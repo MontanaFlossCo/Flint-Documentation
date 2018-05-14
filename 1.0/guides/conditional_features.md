@@ -25,7 +25,7 @@ This conditional feature approach makes it much easier to write cross-platform c
 
 ## Defining a conditional feature with constraints
 
-The first step is to define your feature as conforming to the protocol `ConditionalFeature` instead of `Feature`. You then declare the constraints on the feature by implementing the `constraints` function, which will tell Flint when this feature can be available at runtime. This function is called only once at startup, in order to define the constraints themselves which are evaluated every time you need to use the feature.
+The first step is to define your feature as conforming to the protocol [`ConditionalFeature`](https://github.com/MontanaFlossCo/Flint/blob/master/FlintCore/Conditional%20Features/ConditionalFeature.swift) instead of `Feature`. You then declare the constraints on the feature by implementing the `constraints` function, which will tell Flint when this feature can be available at runtime. This function is called only once at startup, in order to define the constraints themselves which are evaluated every time you need to use the feature.
 
 Here's an example from Flint's own conditional feature for deep linking support:
 
@@ -55,7 +55,7 @@ public class DeepLinkingFeature: ConditionalFeature {
 
 The `constraints(requirements:)` function definition uses a Domain-Specific Language (DSL) provided by the "builder" passed to the function. The above constraint `.runtimeEnabled` means that the `isEnabled` property of the feature must return `true` for the feature to be available.. The default implementation of this provided by Flint always returns `true`. You can override the property in your own features to allow assignments to it at compile or runtime, or make it call into other code to find out if it should be enabled.
 
-Some constraints are evaluated once at startup — such as the minimum operating system version — while others are evaluated at runtime when required, as their state can change while the app is running. For example if a user makes an in-app purchase, once it has been verified that the purchase is valid, the features reliant on that purchase will now be available.
+Some constraints do not change their value over time — such as the minimum operating system version — while others are evaluated at runtime when required, as their state can change while the app is running. For example if a user makes an in-app purchase, once it has been verified that the purchase is valid, the features reliant on that purchase will now be available.
 
 Here are the kinds of constraints the DSL currently supports:
 
