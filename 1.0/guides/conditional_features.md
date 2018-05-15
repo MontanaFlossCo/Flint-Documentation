@@ -67,10 +67,10 @@ Flint allows you to combine all of these as appropriate to declare a simple set 
 
 ## Defining preconditions
 
-At the time of writing there are three kinds of precondition supported:
+At the time of writing there are three kinds of precondition function supported:
 
 * `purchase(requirement: PurchaseRequirement)` — The feature requires one or more purchases before it is available.
-* `runtimeEnabled` — Whenever a request is made to use the feature, the value of `YourFeature.isEanbled` will be checked.
+* `runtimeEnabled()` — Whenever a request is made to use the feature, the value of `YourFeature.isEanbled` will be checked.
 * `userToggled(defaultValue: Bool)` — The Feature will check the user's current settings to see if this feature is enabled.
 
 So if we wanted to have a somewhat contrived conditional feature that required a purchase but also had to be enabled by the user, say a level editor mode in a game, and the user could only access the level editor they paid for once they had completed in-game "training", you would set it up like this:
