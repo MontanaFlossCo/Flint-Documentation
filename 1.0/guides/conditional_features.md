@@ -38,7 +38,7 @@ public class DeepLinkingFeature: ConditionalFeature {
     // Declare the constraints that must be met for
     // the feature to be available
     public static func constraints(requirements: FeatureConstraintsBuilder) {
-    	requirements.precondition(.runtimeEnabled)
+    	requirements.runtimeEnabled()
     }
 
     // It's on by default. 
@@ -67,13 +67,11 @@ Flint allows you to combine all of these as appropriate to declare a simple set 
 
 ## Defining preconditions
 
-A precondition constraints is declared by calling the builder function `precondition` with a value of the [`FeaturePrecondition`](https://github.com/MontanaFlossCo/Flint/blob/master/FlintCore/Constraints/FeaturePrecondition.swift) enum type.
-
 At the time of writing there are three kinds of precondition supported:
 
-* `.purchase(requirement: PurchaseRequirement)` — The feature requires one or more purchases before it is available.
-* `.runtimeEnabled` — Whenever a request is made to use the feature, the value of `YourFeature.isEanbled` will be checked.
-* `.userToggled(defaultValue: Bool)` — The Feature will check the user's current settings to see if this feature is enabled.
+* `purchase(requirement: PurchaseRequirement)` — The feature requires one or more purchases before it is available.
+* `runtimeEnabled` — Whenever a request is made to use the feature, the value of `YourFeature.isEanbled` will be checked.
+* `userToggled(defaultValue: Bool)` — The Feature will check the user's current settings to see if this feature is enabled.
 
 So if we wanted to have a somewhat contrived conditional feature that required a purchase but also had to be enabled by the user, say a level editor mode in a game, and the user could only access the level editor they paid for once they had completed in-game "training", you would set it up like this:
 
@@ -86,9 +84,9 @@ public class LevelBuilderFeature: ConditionalFeature {
     public static var description: String = "Premium Level Builder"
 
     public static func constraints(requirements: FeatureConstraintsBuilder) {
-    	requirements.preconditions(.userToggled(defaultValue: true),
-    	                           .runtimeEnabled,
-                                   .purchase(PurchaseRequirement(premiumSubscription)))
+    	requirements.userToggled(defaultValue: true)
+    	requirements.runtimeEnabled()
+        requirements.purchase(PurchaseRequirement(premiumSubscription))
     }
 
     static var isEnabled: Bool? = MyPlayerProgressTracker.shared.tutorialCompleted
@@ -97,7 +95,7 @@ public class LevelBuilderFeature: ConditionalFeature {
 }
 ```
 
-Note that there are both `precondition()` and the plural `preconditions(...)` forms of this function. You can call these functions as many times as makes sense for your requirements, but currently `.purchase` is the only type that can be declared more than once, with different parameters.
+Note that there are both `purchase()` and the plural `purchases(...)` forms of the function for declaring purchase requirements. You can call these functions as many times as makes sense for your requirements, but `.purchase` is the only precondition that can have multiple declarations with different parameters.
 
 For purchase preconditions, purchase requirements (see [`PurchaseRequirement`](https://github.com/MontanaFlossCo/Flint/blob/master/FlintCore/Purchases/PurchaseRequirement.swift)) allow you to define rules based on one or more products, so that requirements can be fulfilled by several different purchases (say "Premium subscription" or "Generous supporter"), or require specific combinations. 
 
