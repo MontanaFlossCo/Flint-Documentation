@@ -1,6 +1,7 @@
-[Back to the Documentation index](../index.md)
-
-# Analytics
+---
+title: Analytics
+tags: guide
+---
 
 Flint supports pluggable analytics tracking so that when the user performs actions they are automatically sent to your chosen analytics service.
 
@@ -12,6 +13,6 @@ Flint supports pluggable analytics tracking so that when the user performs actio
 
 ## Next steps
 
-* Add [Flint UI debug tools](flint_ui.md)
-* Use the [Timeline](timeline.md) to see what is going on in your app when things go wrong
-* Start using [Focus](focus.md) to pare down your logging
+* Add [Flint UI debug tools](flint_ui)
+* Use the [Timeline](timeline) to see what is going on in your app when things go wrong
+* Start using [Focus](focus) to pare down your logging

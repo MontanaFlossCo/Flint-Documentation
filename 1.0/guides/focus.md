@@ -1,6 +1,7 @@
-# Focus
-
-[Back to the Documentation index](../index.md)
+---
+title: Focus
+tags: guide
+---
 
 The Focus feature of Flint allows you to debug more effectively by stripping away all the noise from your logs and the [Timeline](guides/timeline.md).
 

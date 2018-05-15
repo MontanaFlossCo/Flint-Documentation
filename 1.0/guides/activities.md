@@ -1,6 +1,7 @@
-[Back to the Documentation index](../index.md)
-
-# Activities
+---
+title: Activities
+tags: guide
+---
 
 Apple platforms use `NSUserActivity` for a variety of purposes to tell the operating system about something the user is doing. It is used across the platforms to make the user experience more efficient. This includes support for Handoff, Siri Suggestions (AKA Siri Proactive), Spotlight Search, deep linking and even ClassKit for education apps.
 
@@ -87,6 +88,6 @@ More docs coming soon
 
 ## Next
 
-* Add [Analytics](analytics.md) tracking
-* Use the [Timeline](timeline.md) to see what is going on in your app when things go wrong
-* Start using [Focus](focus.md) to pare down your logging
+* Add [Analytics](analytics) tracking
+* Use the [Timeline](timeline) to see what is going on in your app when things go wrong
+* Start using [Focus](focus) to pare down your logging
