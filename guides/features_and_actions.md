@@ -1,5 +1,6 @@
 ---
-title: Features and Actions
+title: Creating your Features and Actions
+subtitle: Learn how to define your app's functionality in terms of features and how to perform the actions.
 tags: guide featured
 ---
 

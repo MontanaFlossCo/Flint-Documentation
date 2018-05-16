@@ -1,5 +1,5 @@
 ---
-title: Flint UI
+title: Using the FlintUI framework for debugging
 tags: guide
 ---
 

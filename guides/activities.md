@@ -1,5 +1,6 @@
 ---
-title: Activities
+title: Using Activities for Handoff and NSUserActivity support
+subtitle: Use Flint's automatic Activities feature to publish the current user activity and continue these activities later
 tags: guide
 ---
 

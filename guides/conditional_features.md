@@ -1,5 +1,6 @@
 ---
-title: Conditional Features
+title: Using Conditional Features
+subtitle: Make your features available only if permissions, purchases and other requirements are met
 tags: guide featured
 ---
 

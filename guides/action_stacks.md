@@ -1,5 +1,5 @@
 ---
-title: Action Stacks
+title: Debugging with Action Stacks
 tags: guide
 ---
 

@@ -1,5 +1,6 @@
 ---
 title: Getting Started
+subtitle: Learn how to integrate Flint into your project
 tags: guide
 ---
 

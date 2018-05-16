@@ -1,5 +1,6 @@
 ---
-title: Routes
+title: Handle incoming URLs using Routes
+subtitle: Learn to use Flint's powerful routes to direct incoming URLs to your actions with minimal code
 tags: guide featured
 ---
 

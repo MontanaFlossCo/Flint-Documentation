@@ -1,5 +1,5 @@
 ---
-title: Contextual Logging
+title: Accelerate debugging with Contextual Logging
 tags: guide
 ---
 

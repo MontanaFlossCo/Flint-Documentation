@@ -1,5 +1,6 @@
 ---
-title: Analytics
+title: Adding Analytics to your actions
+subtitle: Use Flints automatic analytics to record when actions are performed using your preferred analytics back end
 tags: guide
 ---
 
