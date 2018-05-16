@@ -1,6 +1,6 @@
 ---
 title: Conditional Features
-tags: guide
+tags: guide featured
 ---
 
 Flint allows you to define features that may not always be available to users. Apps usually include some features that are not enabled by default, as well as those that be manually enabled by the user. On top of this, system permission authorisations, in-app purchases and feature-flagging are classic cases of conditional features, where the user first has to pay or meet some other criteria to see or use the feature. 

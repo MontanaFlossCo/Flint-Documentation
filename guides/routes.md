@@ -1,6 +1,6 @@
 ---
 title: Routes
-tags: guide
+tags: guide featured
 ---
 
 Most apps need to handle some URLs, whether for e-mail sign-in confirmations, deep linking or custom workflow URL schemes. 
