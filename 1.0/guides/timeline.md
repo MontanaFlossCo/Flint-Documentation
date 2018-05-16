@@ -27,4 +27,4 @@ TBD
 
 ## Next steps
 
-* Start using [Focus](focus.md) to pare down your logging
+* Start using [Focus](focus) to pare down your logging

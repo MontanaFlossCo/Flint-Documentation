@@ -1,6 +1,7 @@
-[Back to the Documentation index](../index.md)
-
-# Features and Actions
+---
+title: Features and Actions
+tags: guide
+---
 
 The definition of your app’s Features and the Actions that they provide is the fundamental starting point of Flint’s implementation of [Feature Driven Development](https://www.montanafloss.co/blog/feature-driven-development).
 
@@ -177,9 +178,9 @@ All of the previous code samples just declare actions and allow you to perform t
 
 ## Next steps
 
-* Using [Conditional Features](conditional_features.md)
-* Add [Routes](routes.md) to Actions
-* Add [Activities](activities.md) support to some Actions
-* Add [Analytics](analytics.md) tracking
-* Use the [Timeline](timeline.md) to see what is going on in your app when things go wrong
-* Start using [Focus](focus.md) to pare down your logging
+* Using [Conditional Features](conditional_features)
+* Add [Routes](routes) to Actions
+* Add [Activities](activities) support to some Actions
+* Add [Analytics](analytics) tracking
+* Use the [Timeline](timeline) to see what is going on in your app when things go wrong
+* Start using [Focus](focus) to pare down your logging

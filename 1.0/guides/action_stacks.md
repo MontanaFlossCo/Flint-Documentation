@@ -1,6 +1,7 @@
-# Action Stacks
-
-[Back to the Documentation index](../index.md)
+---
+title: Action Stacks
+tags: guide
+---
 
 While actions are being performed, Flint can maintain a list of “stacks” that track the history of user actions on a per-feature basis.
 

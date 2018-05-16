@@ -1,10 +1,11 @@
-[Back to the Documentation index](../index.md)
-
-## Getting started
+---
+title: Getting Started
+tags: guide
+---
 
 In order to use Flint you need to build the framework and add it and its dependency to your project.
 
-### Building Flint
+## Building Flint
 
 The easiest way to use Flint in your own project is via [Carthage](https://github.com/Carthage/Carthage). You add the dependency to your `Cartfile` like this:
 
@@ -20,7 +21,7 @@ Then run `carthage bootstrap` to build it for all platforms. For faster builds y
 carthage bootstrap --platform iOS --cache-builds
 ```
 
-### Adding the frameworks to your project
+## Adding the frameworks to your project
 
 Once you have built the frameworks, you'll need to add them to your project.
 
@@ -36,4 +37,4 @@ We have a community Slack you can join to get help and discuss ideas. Join at [f
 
 ## Next
 
-You need to [bootstrap Flint in your code and create some features](features_and_actions.md).
+You need to [bootstrap Flint in your code and create some features](features_and_actions).

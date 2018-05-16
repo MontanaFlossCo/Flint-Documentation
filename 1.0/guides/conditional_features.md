@@ -1,6 +1,7 @@
-[Back to the Documentation index](../index.md)
-
-# Conditional Features
+---
+title: Conditional Features
+tags: guide
+---
 
 Flint allows you to define features that may not always be available to users. Apps usually include some features that are not enabled by default, as well as those that be manually enabled by the user. On top of this, system permission authorisations, in-app purchases and feature-flagging are classic cases of conditional features, where the user first has to pay or meet some other criteria to see or use the feature. 
 
@@ -324,9 +325,9 @@ This example calls functions you supply to tell the user what is wrong with the 
 
 ## Next steps
 
-* Add [Routes](routes.md) to Actions
-* Add [Activities](activities.md) support to some Actions
-* Add [Analytics](analytics.md) tracking
-* Use the [Timeline](timeline.md) to see what is going on in your app when things go wrong
-* Start using [Focus](focus.md) to pare down your logging
+* Add [Routes](routes) to Actions
+* Add [Activities](activities) support to some Actions
+* Add [Analytics](analytics) tracking
+* Use the [Timeline](timeline) to see what is going on in your app when things go wrong
+* Start using [Focus](focus) to pare down your logging
  
