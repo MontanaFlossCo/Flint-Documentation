@@ -121,8 +121,8 @@ public class SelfieFeature: ConditionalFeature {
 
     public static func constraints(requirements: FeatureConstraintsBuilder) {
     	requirements.permissions(.camera,
-                                .photos,
-                                .location(usage: .whenInUse))
+                                 .photos,
+                                 .location(usage: .whenInUse))
     }
 
     ...
@@ -133,7 +133,10 @@ The permissions you pass to this function are any values from the [`SystemPermis
 
 * **.photos** — Photos access
 * **.camera** — Camera access
-* **.location(usage:)** — Location access
+* **.location(usage:)** — Location tracking
+* **.contacts(entity:)** — Access to Contacts 
+* **.calendarEvents** — EventKit access to calendar events
+* **.remindaers** — EventKit access to reminders
 
 All the other permissions including those such as HealthKit, Bluetooth etc. are [coming soon](https://github.com/MontanaFlossCo/Flint/issues/65).
 
