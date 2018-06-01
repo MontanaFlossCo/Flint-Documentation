@@ -136,7 +136,8 @@ The permissions you pass to this function are any values from the [`SystemPermis
 * **.location(usage:)** — Location tracking
 * **.contacts(entity:)** — Access to Contacts 
 * **.calendarEvents** — EventKit access to calendar events
-* **.remindaers** — EventKit access to reminders
+* **.reminders** — EventKit access to reminders
+* **.motion** — Access to CoreMotion motion and fitness data
 
 All the other permissions including those such as HealthKit, Bluetooth etc. are [coming soon](https://github.com/MontanaFlossCo/Flint/issues/65).
 
