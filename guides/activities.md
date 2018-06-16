@@ -132,7 +132,7 @@ Note that Flint will deliberately crash at startup with a helpful message if it 
 
 There are two options for customising the attribute values passed to the system when activities are published, and you can even mix the two.
 
-The first is to implement `prepareActivity(_ activity: ActivityBuilder<InputType>)` on your Action type. This is called when the activity is being created, and passed a builder that can safely create the activity based on the defaults Flint has already established for you. The build has a reference to the `input` to the action for which an activity is being created, which you can use when customising the activity.
+The first is to implement `prepareActivity(_ activity: ActivityBuilder<InputType>)` on your Action type. This is called when the activity is being created, and passed a builder that can safely create the activity based on the defaults Flint has already established for you. The builder has a reference to the `input` of the action for which an activity is being created, which you can use when customising the activity.
 
 Note that the builder has already taken into account if your Action input type conforms to `ActivityCodable` and carries over the appropriate `userInfo` settings, and if not will attempt to use URL mapping to invoke your action. It will warn you if neither of these is possible, to prevent obscure bugs where you expose activities that cannot be invoked later.
 
@@ -146,7 +146,7 @@ final class DocumentOpenAction: Action {
     static var activityTypes: Set<ActivityEligibility> = [.handoff, .search]
 
     static func perform(with context: ActionContext<DocumentRef>, using presenter: DocumentPresenter, completion: @escaping ((ActionPerformOutcome) -> ())) {
-			// …
+        // …
     }
     
     static func prepareActivity(_ activity: ActivityBuilder<InputType>) {
@@ -169,7 +169,7 @@ final class DocumentOpenAction: Action {
 
 The builder is passed the appropriate input to your Action, having reconstructed it from a URL or `userInfo`, and you can access this within `prepareActivity` to set the activity properties.
 
-Properties you can access here include:
+Properties you can access on the builder include:
 
 * `title`
 * `subtitle` — sets `contentDescription` on the search attributes
@@ -177,11 +177,7 @@ Properties you can access here include:
 * `thumbnail`, `thumbnailURL` and `thumbnailData` — three options for specifying a thumbnail for search results and Siri suggestions
 * `searchAttributes` — direct access to the full `CSSearchableItemAttributeSet` properties for advanced usage
 
-When you have completed this kind of customisation, you will get Siri results that look something like this:
-
-![](images/activities_search_result.png)
-
-However we can go one better. Often the input type itself will be able to provide the metadata required for the activity attributes, and this will lead to more code reuse. You can make an Action's input type conform to `ActivityMetadataRepresentable`, and Flint will detect this and automatically populate the activity properties from these values.
+However we can go one better. Often the input type itself will be able to provide the metadata required for the activity attributes, and this will lead to more code reuse. You can make an Action's input type conform to [`ActivityMetadataRepresentable`](https://github.com/MontanaFlossCo/Flint/blob/e4896c4dc43a6df52ddb893051a6e177f5fe7e97/FlintCore/Activities/ActivityMetadataRepresentable.swift), and Flint will detect this and automatically populate the activity properties from these values.
 
 You can then mix these two approaches so that `prepareActivity` has a short, clean implementation specific to the Action, and the input-based metadata population is done automatically and reusable across actions.
 
@@ -204,11 +200,11 @@ extension DocumentRef: ActivityMetadataRepresentable {
 }
 ```
 
-The metadata is created using a builder provided on the `ActivityMetadata` type. Custom search attributes can also be configured as shown. This then simplifies the `prepareActivity` implementation.
+The metadata is created using a builder provided on the [`ActivityMetadata`](https://github.com/MontanaFlossCo/Flint/blob/e4896c4dc43a6df52ddb893051a6e177f5fe7e97/FlintCore/Activities/ActivityMetadata.swift) type. Custom search attributes can also be configured as shown. This then simplifies the `prepareActivity` implementation.
 
 Any `metadata` extracted from the input is available in an optional `metadata` property of the activity builder. The values from the metadata are used to populate the activity, and then your function can further customise it with the builder.
 
-Note that some properties are not always correct to pass straight through to the activity. In particular, the `title` of a document returned as `metadata` needs to have a verb appended to it in the title of the activity.
+Note that some properties are not always appropriate to pass straight through to the activity. In particular, the `title` of a document returned as `metadata` needs to have a verb appended to it in the title of the activity, so that the result is a clear call to action.
 
 In this example we'll fix the `title` of the activity to include the verb `Open`, and not just the default `title` from the metadata, and all the rest — search attributes, keywords, thumbnail and so on are automatically populated from the input's metadata:
 
