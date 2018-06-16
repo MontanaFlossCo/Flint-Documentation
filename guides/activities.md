@@ -126,7 +126,7 @@ However, Flint also helps with this. First, it generates automatic activity type
 * A `BeepAction` of feature `SoundsFeature` in an app with bundle id "co.montanafloss.test" would have ID `co.montanafloss.test.sounds.beep`
 * A `SaveDocumentAction` of feature `DocumentManagementFeature` in an app with bundle id "co.montanafloss.test" would have ID `co.montanafloss.test.document-management.save-document`
 
-Note that Flint will deliberately crash at startup with a helpful message if it finds the activity ID for an automatic activity is not in the `Info.plist`, so you don't forget to do update it.
+Note that Flint will deliberately crash at startup with a helpful message if it finds the activity ID for an automatic activity is not in the `Info.plist`, so you don't forget to keep this updated.
 
 ## Customising the attributes on an Activity
 
