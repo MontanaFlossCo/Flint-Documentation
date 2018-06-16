@@ -22,7 +22,7 @@ With Activities you can:
 
 It is important to understand that you determine which actions are published as activities. For example “Save” is not something that makes sense for a Handoff action, but opening a document you use frequently is. Flint will not automatically start publishing all your actions as activities.
 
-The way Flint deals with this incoming activities is quite simple: you just need to provide a way to describe how to invoke your action from the `NSUserActivity` at later a time. This means Flint needs to know:
+The way Flint deals with incoming activities is quite simple: you just need to provide a way to describe how to invoke your action from the `NSUserActivity` at later a time. This means Flint needs to know:
 
 1. Which `Action` to invoke
 2. How to reconstruct an instance of the `InputType` for your action
