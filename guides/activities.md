@@ -107,7 +107,7 @@ Note that Flint applies sanity checks to make sure you specify values for every 
 
 When the operating system asks your app to continue an activity from Handoff, Siri suggestions, Deep Linking or similar, it will call into your application delegate and pass in the activity to `application(:continue:restorationHandler:)`.
 
-All that you need to add is a [call to a single function on the Flint type](https://github.com/MontanaFlossCo/Flint/blob/master/FlintCore/Core/Flint.swift) to `application(:continue:restorationHandler:)` to pass the incoming activity to Flint.
+All that you need to add is a [call to a single function on the Flint type](https://github.com/MontanaFlossCo/Flint/blob/master/FlintCore/Core/Flint.swift#L283) to `application(:continue:restorationHandler:)` to pass the incoming activity to Flint.
 
 Here's how you do this in your app delegate:
 
