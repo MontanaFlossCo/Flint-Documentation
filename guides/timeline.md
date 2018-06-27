@@ -1,5 +1,5 @@
 ---
-title: Troubleshooting peoblems with the Timeline
+title: Troubleshooting problems with the Timeline
 tags: guide
 ---
 

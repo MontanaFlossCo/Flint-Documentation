@@ -11,8 +11,8 @@ Once again FlintUI uses Flint itself to expose its features. Dogfooding through 
 
 This feature allows you to drill down into the hierarchy of all Feature(s) declared in your app and into their Action declarations. This is useful for debugging and verifying your code has set everything up correctly. You can also see which features are currently enabled in a given build and user profile.
 
-<img src="images/features_screenshot.png" alt="Timeline Browser screenshot" width=375/>
-<img src="images/features_screenshot_2.png" alt="Timeline Browser screenshot showing action details" width=375 style/>
+![Timeline Browser screenshot](images/features_screenshot.png)
+![Timeline Browser screenshot showing action details](images/features_screenshot_2.png)
 
 To use the feature browser, just perform the show action from a `UIViewController`:
 
