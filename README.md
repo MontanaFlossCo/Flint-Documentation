@@ -1,4 +1,6 @@
-# 💥 Flint Documentation
+<img src="http://grand-badger.cloudvent.net/assets/img/logo-dark-on-white.svg" width="230" alt="Flint framework logo">
+
+# Documentation
 
 This is the documentation repository for Flint, to keep reference and guide documentation out of the [main code repository](https://github.com/MontanaFlossCo/Flint).
 
