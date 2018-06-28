@@ -4,8 +4,6 @@
 
 This is the documentation repository for Flint, to keep reference and guide documentation out of the [main code repository](https://github.com/MontanaFlossCo/Flint).
 
-To view the documentation [start here](index.md).
-
 ## Guides
 
 * [Getting Started](guides/getting_started.md)
