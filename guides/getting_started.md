@@ -1,7 +1,7 @@
 ---
 title: Getting Started
 subtitle: Learn how to integrate Flint into your project
-tags: guide
+tags: guide featured
 ---
 
 In order to use Flint you need to build the framework and add it and its dependency to your project.
@@ -32,10 +32,6 @@ Once you have built the frameworks, you'll need to add them to your project.
 4. Verify on your Build Phases tab that those frameworks are listed in the "Link Binary With Libraries" section
 5. Ensure that your project is set up properly for Carthage's `copy-frameworks` build phase. See the [Carthage Quick Setup](https://github.com/Carthage/Carthage#quick-start)
 
-## Need Help?
-
-We have a community Slack you can join to get help and discuss ideas. Join at [flintcore.slack.com](https://join.slack.com/t/flintcore/shared_invite/enQtMzUwOTU4NTU0OTYwLWMxYTNiOTNjNmVkOTM3ZDgwNzZiNzJiNmE2NWUyMzUzMjg3ZTg4YjNmMjdhYmZkYTlmYmI2ZDQ5NjU0ZmQ3ZjU).
-
-## Next
+## Next steps
 
 You need to [bootstrap Flint in your code and create some features](features_and_actions).

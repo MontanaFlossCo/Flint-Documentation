@@ -6,7 +6,11 @@ This is the latest documentation for the Flint framework for Apple platforms.
 
 ## Example projects
 
-You can find a sample application built with Flint in the [FlintDemo-iOS repository](https://github.com/MontanaFlossCo/FlintDemo-iOS). This project is a simple note-taking app with support for photo attachments, showing some patterns for using Flint in apps that use storyboards and some service components such as a data store. It includes a "Debug" button that will show you the various FlintUI debug tools.
+You can find a sample application built with Flint in the [FlintDemo-iOS repository](https://github.com/MontanaFlossCo/FlintDemo-iOS).
+
+This project is a simple note-taking app with support for photo attachments, showing some patterns for using Flint in apps that use storyboards and service components such as a data store. It has rudimentary Handoff support, Spotlight search, Siri Suggestions and permissions checking provided by Flint.
+
+It includes a "Debug" button that will show you the various FlintUI debug tools.
 
 ## Community and Contributing
 

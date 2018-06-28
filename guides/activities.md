@@ -1,7 +1,7 @@
 ---
 title: Using Activities for Handoff and NSUserActivity support
 subtitle: Flint's automatic Activities feature will publish the actions as the current user activity and continue these activities later, dispatching your actions for you
-tags: guide
+tags: guide featured
 ---
 
 Apple platforms use `NSUserActivity` to tell the operating system about something the user is doing in your app. This information is used across the platforms to improve the user experience. This includes support for Handoff, Siri Suggestions (AKA Siri Pro-active), Spotlight Search, Siri Intents, deep linking and even ClassKit for education apps.
@@ -222,7 +222,7 @@ In this example we'll fix the `title` of the activity to include the verb `Open`
 
 This then shows a Siri result with the title "Open MyProject" instead of just "MyProject".
 
-## Next
+## Next steps
 
 * Add [Analytics](analytics) tracking
 * Use the [Timeline](timeline) to see what is going on in your app when things go wrong

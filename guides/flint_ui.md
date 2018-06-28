@@ -1,6 +1,6 @@
 ---
 title: Using the FlintUI framework for debugging
-tags: guide
+tags: guide featured
 ---
 
 We provide a set of powerful tools for looking inside your Flint-based app on iOS to verify that your Features and Actions are set up correctly, to browse Timeline and Focus logs for problems, generate debug reports and so on.
@@ -12,7 +12,9 @@ Once again FlintUI uses Flint itself to expose its features. Dogfooding through 
 This feature allows you to drill down into the hierarchy of all Feature(s) declared in your app and into their Action declarations. This is useful for debugging and verifying your code has set everything up correctly. You can also see which features are currently enabled in a given build and user profile.
 
 ![Timeline Browser screenshot](images/features_screenshot.png)
+{: max-width=300px }
 ![Timeline Browser screenshot showing action details](images/features_screenshot_2.png)
+{: max-width=300px }
 
 To use the feature browser, just perform the show action from a `UIViewController`:
 
