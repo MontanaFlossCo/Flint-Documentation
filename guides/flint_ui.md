@@ -34,7 +34,7 @@ To use the feature browser, just perform the show action from a `UIViewControlle
 import UIKit
 import FlintUI
 ...
-FeatureBrowserFeature.show.perform(using: self, with: .none)
+FeatureBrowserFeature.show.perform(using: self)
 ```
 
 ## The Timeline Browser
@@ -49,7 +49,7 @@ To use it, just perform the show action from a `UIViewController`:
 
 ```swift
 if let request = TimelineBrowserFeature.show.request() {    
-   request.perform(with: self, using: .none)
+   request.perform(with: self)
 }
 ```
 
@@ -65,7 +65,7 @@ To use it, just perform the show action from a `UIViewController`:
 
 ```swift
 if let request = LogBrowserFeature.show.request() {    
-    request.perform(using: self, with: .none)
+    request.perform(using: self)
 }
 ```
 
@@ -82,7 +82,7 @@ You can drill down into the stacks to see what actions have occurred so far on t
 To use it, just perform the show action from a `UIViewController`:
 
 ```swift
-ActionStacksBrowserFeature.show.perform(using: self, with: .none)
+ActionStacksBrowserFeature.show.perform(using: self)
 ```
 
 

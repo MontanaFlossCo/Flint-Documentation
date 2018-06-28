@@ -1,5 +1,6 @@
 ---
-title: Unit Testing your Flint Apps
+title: Testing
+subtitle: Unit testing your Flint Apps and Flint itself
 tags: guide
 ---
 

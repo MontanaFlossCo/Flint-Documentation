@@ -1,6 +1,6 @@
 ---
-title: Accelerate debugging with Contextual Logging
-subtitle: Contextual logging is a Flint's way of giving you more information about what log entries related to.
+title: Contextual Logging
+subtitle: Get more information about what log entries related to, and use smart filtering
 tags: guide
 ---
 

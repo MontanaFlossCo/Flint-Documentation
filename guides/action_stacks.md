@@ -1,5 +1,6 @@
 ---
-title: Debugging with Action Stacks
+title: Action Stacks
+subtitle: See what the user is doing right now
 tags: guide
 ---
 

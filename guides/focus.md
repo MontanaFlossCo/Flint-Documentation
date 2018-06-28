@@ -1,5 +1,6 @@
 ---
-title: Debug specific features with Focus
+title: Focus
+subtitle: Debug specific features with Focus
 tags: guide
 ---
 

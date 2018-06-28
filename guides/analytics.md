@@ -1,6 +1,6 @@
 ---
-title: Track Analytics automatically
-subtitle: Generate events when actions are performed using your preferred analytics back end
+title: Analytics
+subtitle: Track events when actions are performed using your preferred analytics back end
 tags: guide featured
 ---
 

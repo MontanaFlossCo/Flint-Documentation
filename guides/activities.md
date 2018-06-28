@@ -1,5 +1,5 @@
 ---
-title: Using Activities for Handoff and NSUserActivity support
+title: Activities
 subtitle: Flint's automatic Activities feature will publish the actions as the current user activity and continue these activities later, dispatching your actions for you
 tags: guide featured
 ---
