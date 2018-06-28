@@ -34,4 +34,4 @@ Once you have built the frameworks, you'll need to add them to your project.
 
 ## Next steps
 
-You need to [bootstrap Flint in your code and create some features](features_and_actions).
+* You need to [bootstrap Flint in your code and create some features](features_and_actions).

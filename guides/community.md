@@ -16,7 +16,7 @@ You can find a sample application built with Flint in the [FlintDemo-iOS reposit
 
 ## Issue tracking
 
-We use [Github issues](https://github.co/MontanaFlossCo/Flint/issues) to track bugs and feature requests. 
+We use [Github issues](https://github.co/MontanaFlossCo/Flint/issues) to track bugs and feature requests.
 
 ## Contributing
 
