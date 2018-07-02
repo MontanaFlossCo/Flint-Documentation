@@ -1,4 +1,4 @@
-<img src="http://grand-badger.cloudvent.net/assets/img/logo-dark-on-white.svg" width="230" alt="Flint framework logo">
+<img src="https://flint.tools/assets/img/logo-dark-on-white.svg" width="230" alt="Flint framework logo">
 
 # Documentation
 
