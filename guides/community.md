@@ -20,4 +20,11 @@ We use [Github issues](https://github.co/MontanaFlossCo/Flint/issues) to track b
 
 ## Contributing
 
-We welcome and encourage contributions. Please join the Slack and raise issues on Github to discuss your ideas and get assistance!
+We welcome and encourage contributions!
+
+Please join the Slack and raise issues on Github to discuss your ideas and get assistance.
+
+Current contributors' Twitter accounts:
+
+* Marc Palmer [@marcpalmerdev](https://twitter.com/marcpalmerdev)
+
