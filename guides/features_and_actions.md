@@ -1,7 +1,7 @@
 ---
 title: Creating your Features and Actions
 subtitle: Learn how to define your app's functionality in terms of features and how to perform the actions.
-tags: guide featured
+tags: novice guide featured
 ---
 
 The definition of your app’s Features and the Actions that they provide is the fundamental starting point of Flint’s implementation of [Feature Driven Development](https://www.montanafloss.co/blog/feature-driven-development).

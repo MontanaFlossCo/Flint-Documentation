@@ -1,7 +1,7 @@
 ---
 title: Action Stacks
 subtitle: See what the user is doing right now
-tags: guide
+tags: guide debug
 ---
 
 The Action dispatch mechanism of Flint maintains a "stack" of actions performed within a given feature. 

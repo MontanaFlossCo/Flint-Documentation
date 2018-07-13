@@ -1,7 +1,7 @@
 ---
 title: Contextual Logging
 subtitle: Get more information about what log entries related to, and use smart filtering
-tags: guide
+tags: guide debug
 ---
 
 Since the framework is aware of the actions the user is performing, and to which features those belong, it is able to provide a powerful logging concept we call "contextual logging".

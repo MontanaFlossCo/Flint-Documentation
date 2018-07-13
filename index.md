@@ -1,5 +1,6 @@
 ---
 title: Flint Documentation
+tags: help novice
 ---
 
 This is the latest documentation for the Flint framework for Apple platforms.

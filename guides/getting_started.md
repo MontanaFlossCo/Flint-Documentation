@@ -1,7 +1,7 @@
 ---
 title: Getting Started
 subtitle: Learn how to integrate Flint into your project
-tags: guide featured
+tags: novice guide featured
 ---
 
 In order to use Flint you need to build the framework and add it and its dependency to your project.

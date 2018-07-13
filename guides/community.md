@@ -1,7 +1,7 @@
 ---
 title: Community Resources
 subtitle: How to get help using Flint
-tags: guide featured
+tags: novice guide help
 ---
 
 ## Slack
