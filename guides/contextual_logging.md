@@ -3,7 +3,7 @@ title: Contextual Logging
 subtitle: Get more information about what log entries related to, and use smart filtering
 tags:
     - coreconcepts
-	- logging
+    - logging
     - debug
     - featured
 ---
