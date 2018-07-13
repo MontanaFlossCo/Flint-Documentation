@@ -3,6 +3,7 @@ title: Timeline
 subtitle: Find out what your user was doing in the run up to a problem
 tags:
     - coreconcepts
+	- logging
     - debug
     - featured
 ---

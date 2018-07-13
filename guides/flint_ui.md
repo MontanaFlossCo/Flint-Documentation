@@ -2,6 +2,7 @@
 title: Using the FlintUI framework for debugging
 tags:
     - debug
+	- logging
     - featured
 ---
 

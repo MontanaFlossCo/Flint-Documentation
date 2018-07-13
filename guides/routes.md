@@ -3,6 +3,8 @@ title: URL Routes
 subtitle: Learn to use Flint's powerful routes to direct incoming URLs to your actions with minimal code
 tags:
     - coreconcepts
+    - actions
+    - activities
     - integration
     - featured
 ---

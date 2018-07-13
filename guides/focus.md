@@ -3,6 +3,7 @@ title: Focus
 subtitle: Debug specific features with Focus
 tags:
     - debug
+	- logging
     - featured
 ---
 
