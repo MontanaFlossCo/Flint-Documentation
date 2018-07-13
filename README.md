@@ -4,23 +4,7 @@
 
 This is the documentation repository for Flint, to keep reference and guide documentation out of the [main code repository](https://github.com/MontanaFlossCo/Flint).
 
-## Guides
-
-* [Getting Started](guides/getting_started.md)
-* [Features and Actions](guides/features_and_actions.md)
-* [Conditional Features](guides/conditional_features.md)
-* [Routes](guides/routes.md)
-* [Activities](guides/activities.md)
-* [Analytics](guides/analytics.md)
-* [Flint UI](guides/flint_ui.md)
-* [Action Stacks](guides/action_stacks.md)
-* [Timeline](guides/timeline.md)
-* [Focus](guides/focus.md)
-* [Unit Testing](guides/testing.md)
-
-## Other resources
-
-Sample application built with Flint: [FlintDemo-iOS][]
+**NOTE:** This documentation is checked out to build the official [flint.tools](https://flint.tools) site. You should [view documentation there](https://flint.tools/manual). This repo is just used for version control, pull requests and contributions.
 
 ## Community and Contributing
 
@@ -29,5 +13,3 @@ We have a community Slack you can join to get help and discuss ideas. Join at [f
 We would love your contributions. Please raise Issues here in Github and discuss your problems and suggestions. We look forward to your ideas and pull requests.
 
 Flint is copyright [Montana Floss Co. Ltd.](http://montanafloss.co) 2018 with an [MIT open source licence](LICENSE).
-
-[FlintDemo-iOS]: https://github.com/MontanaFlossCo/FlintDemo-iOS
