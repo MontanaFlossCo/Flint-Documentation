@@ -1,7 +1,10 @@
 ---
 title: Contextual Logging
 subtitle: Get more information about what log entries related to, and use smart filtering
-tags: guide debug
+tags:
+    - coreconcepts
+    - debug
+    - featured
 ---
 
 Since the framework is aware of the actions the user is performing, and to which features those belong, it is able to provide a powerful logging concept we call "contextual logging".
@@ -34,6 +37,6 @@ For now, please see how the [default logging is configured here](https://github.
 
 ## Next steps
 
-* See the [Focus](focus) feature of Flint to screen out everything from logs except the stuff that matters to you
+* See the [Focus](focus.md) feature of Flint to screen out everything from logs except the stuff that matters to you
 
 

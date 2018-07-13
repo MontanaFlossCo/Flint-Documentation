@@ -1,7 +1,10 @@
 ---
 title: URL Routes
 subtitle: Learn to use Flint's powerful routes to direct incoming URLs to your actions with minimal code
-tags: guide featured
+tags:
+    - coreconcepts
+    - integration
+    - featured
 ---
 
 Most apps need to handle some URLs, whether for e-mail sign-in confirmations, deep linking or custom workflow URL schemes. 
@@ -239,7 +242,7 @@ let webUrl = Flint.linkCreator.universalLink(to: MyFeature.someAction, with: som
 
 ## Next
 
-* Set up [Activities](activities) handling for Handoff, deep linking and more
-* Add [Analytics](analytics) tracking
-* Use the [Timeline](timeline) to see what is going on in your app when things go wrong
-* Start using [Focus](focus) to pare down your logging
+* Set up [Activities](activities.md) handling for Handoff, deep linking and more
+* Add [Analytics](analytics.md) tracking
+* Use the [Timeline](timeline.md) to see what is going on in your app when things go wrong
+* Start using [Focus](focus.md) to pare down your logging

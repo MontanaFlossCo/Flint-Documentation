@@ -1,7 +1,8 @@
 ---
 title: Testing
 subtitle: Unit testing your Flint Apps and Flint itself
-tags: guide debug
+tags:
+    - debug
 ---
 
 Flint has been designed to make your code more testable, and to be well tested itself.

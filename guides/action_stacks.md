@@ -1,7 +1,8 @@
 ---
 title: Action Stacks
 subtitle: See what the user is doing right now
-tags: guide debug
+tags:
+	- debug
 ---
 
 The Action dispatch mechanism of Flint maintains a "stack" of actions performed within a given feature. 
@@ -22,7 +23,7 @@ A critical part of this mechanism is that your actions *must always* call the `c
 
 ## What does closing an action stack mean?
 
-The idea around an action stack is that it encapsulates a set of interactions the user has with a single feature. Some features do not have a "start" or an "end", but most typically do. We need to know when a feature is "no longer in use" to track what users are currently doing vs. tracking everything they have done over a time period (this is something else, the [Timeline](timeline)). 
+The idea around an action stack is that it encapsulates a set of interactions the user has with a single feature. Some features do not have a "start" or an "end", but most typically do. We need to know when a feature is "no longer in use" to track what users are currently doing vs. tracking everything they have done over a time period (this is something else, the [Timeline](timeline.md)). 
 
 The user will usually perform one or more actions of a feature, and some of these actions are a natural "end" to the use of that feature. For example a document editing feature may have many actions including "insert photo", and this latter action would not close the action stack as the user has not finished editing.
 

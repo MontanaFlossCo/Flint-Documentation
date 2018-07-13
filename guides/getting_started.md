@@ -1,7 +1,10 @@
 ---
 title: Getting Started
 subtitle: Learn how to integrate Flint into your project
-tags: novice guide featured
+tags:
+    - coreconcepts
+    - help
+    - featured
 ---
 
 In order to use Flint you need to build the framework and add it and its dependency to your project.
@@ -34,4 +37,4 @@ Once you have built the frameworks, you'll need to add them to your project.
 
 ## Next steps
 
-* You need to [bootstrap Flint in your code and create some features](features_and_actions).
+* You need to [bootstrap Flint in your code and create some features](features_and_actions.md).

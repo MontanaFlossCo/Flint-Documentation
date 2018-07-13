@@ -1,7 +1,9 @@
 ---
 title: Analytics
 subtitle: Track events when actions are performed using your preferred analytics back end
-tags: guide featured
+tags:
+    - integration
+    - featured
 ---
 
 Flint supports pluggable analytics tracking so that when the user performs actions they are automatically sent to your chosen analytics service.
@@ -73,6 +75,6 @@ See the source of [`AnalyticsProvider`](https://github.com/MontanaFlossCo/Flint/
 
 ## Next steps
 
-* Try the [Flint UI debug tools](flint_ui)
-* Use the [Timeline](timeline) to see what is going on in your app when things go wrong
-* Start using [Focus](focus) to pare down your logging
+* Try the [Flint UI debug tools](flint_ui.md)
+* Use the [Timeline](timeline.md) to see what is going on in your app when things go wrong
+* Start using [Focus](focus.md) to pare down your logging

@@ -1,7 +1,9 @@
 ---
 title: Activities
 subtitle: Flint's automatic Activities feature will publish the actions as the current user activity and continue these activities later, dispatching your actions for you
-tags: guide featured 
+tags:
+    - integration
+    - featured
 ---
 
 Apple platforms use `NSUserActivity` to tell the operating system about something the user is doing in your app. This information is used across the platforms to improve the user experience. This includes support for Handoff, Siri Suggestions (AKA Siri Pro-active), Spotlight Search, Siri Intents, deep linking and even ClassKit for education apps.
@@ -224,6 +226,6 @@ This then shows a Siri result with the title "Open MyProject" instead of just "M
 
 ## Next steps
 
-* Add [Analytics](analytics) tracking
-* Use the [Timeline](timeline) to see what is going on in your app when things go wrong
-* Start using [Focus](focus) to pare down your logging
+* Add [Analytics](analytics.md) tracking
+* Use the [Timeline](timeline.md) to see what is going on in your app when things go wrong
+* Start using [Focus](focus.md) to pare down your logging
