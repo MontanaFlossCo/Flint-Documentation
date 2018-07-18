@@ -24,11 +24,13 @@ Flint's Routes support:
 * Multiple custom app URL schemes
 * Multiple associated domains
 * Multiple URL paths to the same action
-* Multiple schemes and associated domains for the same URL path
-* Custom marshalling of URL arguments
+* URL wildcards
+* Custom marshalling of URL arguments from query parameters
+* Named parameters extracted from the URL path itself
+* Named routes to allow your input type to alter decoding behaviour based on the triggering URL
 * Reuse of existing app Actions — URLs are just another way to perform them
 
-Routes can also work automatically behind the scenes with the [Activities](activities.md) feature so that you get `NSUserActivity` support for free.
+Routes can also work automatically behind the scenes with the [Activities](activities.md) feature so that you get `NSUserActivity` support for free for URL mapped actions.
 
 ## Declaring the URL routes for your Feature’s actions
 
@@ -48,14 +50,41 @@ class DocumentManagementFeature: Feature, URLMapped {
     static func urlMappings(routes: URLMappingsBuilder) {
         routes.send("create", to: createNew)
         routes.send("open", to: openDocument)
+        routes.send("open-document", to: openDocument, in: [.universalAny], name: "from-web")
     }
 }
 ```
 
-That's all — you have now defined some URLs that will invoke actions. If your app has configured a custom URL scheme `x-your-app` and an associated domain `your-app-domain.com`, your URLs might look like this:
+That's all — you have now defined some URLs that will invoke actions for all custom URL schemes and associates domains. If your app has configured a custom URL scheme `x-your-app` and an associated domain `your-app-domain.com`, your URLs might look like this:
 
 * `x-your-app://create?name=MyFile1`
 * `https://your-app-domain.com/open?docRef=456643564563634643643`
+
+## Creating advanced URL patterns using wildcards and named parameters
+
+The route's URL matching pattern supports multiple path components and basic wildcards. Generally, patterns can contain any number of path components separated by `/`. The path component itself can be:
+
+* A string literal such as `account` 
+* A single-component wildcard `*`
+* A "rest of path" wildcard `**`
+* A named parameter `$(id)`, with optional prefix and suffixes e.g. `product-$(post-id)-view` that are matched but not extracted
+
+Any combination of these is supported, with the exception of `**` which must be the last component.
+
+Examples:
+
+* `account/profile/view`
+* `account/*/view` — match anything at the 2nd path component
+* `account/**` — match everything after `account/`
+* `account/$(id)` — extract the second path component as "id" for parameters, matching only two-component urls
+* `account/$(id)/view` — extract the second path component as "id" for parameters, matching only three-component urls
+* `account/junk$(id)here/view` — extract the second path component part between "junk" and "here" as "id" for parameters, matching only three-component urls
+* `account/junk$(id)here/*/view` — combining some of the above
+* `*/$(id)` — any two-component path, with the second part used as "id" parameter
+* `*/$(id)/view` — any three-component path, with the second part used as "id" parameter, only matching when followed by "/view"
+
+Any trailing query parameters on the URL following the optional `?` in the URL will be extracted first as route parameters.
+Any named path parameters in the route pattern will supercede these. You can have as many named parameters as you require, and they are passed to your `RouteParametersDecodable` conforming input type on your action.
 
 ## Adding the code your app needs to handle URLs and present the UI
 
@@ -127,41 +156,43 @@ In order to respond to URLs and perform the Action defined by your routes, Flint
 
 Flint provides three protocols to support this:
 
-* [`QueryParametersDecodable`](https://github.com/MontanaFlossCo/Flint/blob/master/FlintCore/Routes/QueryParametersCodable.swift)
-* [`QueryParametersEncodable`](https://github.com/MontanaFlossCo/Flint/blob/master/FlintCore/Routes/QueryParametersCodable.swift)
-* [`QueryParametersCodable`](https://github.com/MontanaFlossCo/Flint/blob/master/FlintCore/Routes/QueryParametersCodable.swift) (combines both of the above)
+* [`RouteParametersDecodable`](https://github.com/MontanaFlossCo/Flint/blob/master/FlintCore/Routes/RouteParametersCodable.swift)
+* [`RouteParametersEncodable`](https://github.com/MontanaFlossCo/Flint/blob/master/FlintCore/Routes/RouteParametersCodable.swift)
+* [`RouteParametersCodable`](https://github.com/MontanaFlossCo/Flint/blob/master/FlintCore/Routes/RouteParametersCodable.swift) (combines both of the above)
  
-You need to make your action's `InputType` conform to one or two of these protocols as appropriate for your needs. If you never create URL links in your app but only have to handle them, you can conform to just `QueryParametersDecodable`. If you need to create links you can conform to `QueryParametersDecodable` or `QueryParametersCodable`. 
+You need to make your action's `InputType` conform to one or both of these protocols as appropriate for your needs. If you never create URL links in your app but only have to handle them, you can conform to just `RouteParametersDecodable`. If you need to create links you can conform to `RouteParametersDecodable` or `RouteParametersCodable`. 
 
 It is nice to do this in an extension separate from your `InputType` definition. So for an `InputType` of `DocumentRef` we might have something like this:
 
 ```swift
-extension DocumentRef: QueryParametersCodable {
-    init?(from queryParameters: QueryParameters?) {
-        guard let name = queryParameters?["name"] else {
+extension DocumentRef: RouteParametersCodable {
+    init?(from routeParameters: RouteParameters?, mapping: URLMapping) {
+        guard let name = routeParameters?["name"] else {
             return nil
         }
         self.name = name
     }
     
-    func encodeAsQueryParameters() -> QueryParameters? {
+    func encodeAsRouteParameters(for mapping: URLMapping) -> RouteParameters?
         return ["name": name]
     }
 }
 ```
 
-Note that the `QueryParameters` give you convenient access to the query parameters directly.
+Note that the `RouteParameters` give you convenient access to the query parameters as strings directly, and include the results of any named parameters parsed out of the incoming URL. The supplied mapping allows your code to alter behaviour based on
+which mapping triggered the creation of the link or the parsing of the URL. 
 
-This will allow the `DocumentRef` to be used to create links and to parse them to create an instance of `DocumentRef` to pass to the `Action` (that is the part that the `RoutesFeature` of Flint does for you).
+This example will allow the `DocumentRef` to be used to create links and to parse them to create an instance of `DocumentRef` to pass to the `Action` (that is the part that the `RoutesFeature` of Flint does for you).
 
 ## Customising the URL schemes and Associated Domains per-Action
 
 The `urlMappings(routes:)` function is passed a builder that you use to set up the routes. The build supports a single `send` function that takes a URL path and a `to:` argument of the action binding to use. It has an optional `in:` argument for the scopes:
 
 ```swift
-routes.send(_ path: String,
-            to actionBinding: …binding type… ,
-            in scopes: Set<RouteScope> = [.appAny, .universalAny])
+func send(_ path: String,
+          to actionBinding: …binding type… ,
+          in scopes: Set<RouteScope> = [.appAny, .universalAny],
+          name: String? = nil)
 ```
 
 There is full support for mapping to specific app URL schemes and specific universal link domains using the `scopes`. By default it maps to the all app schemes and associated domains handled by your app. To route differently, say to some legacy URLs you would write something like this:
