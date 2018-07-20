@@ -8,6 +8,8 @@ tags:
     - featured
 ---
 
+## Overview
+
 Apple platforms use `NSUserActivity` to tell the operating system about something the user is doing in your app. This information is used across the platforms to improve the user experience. This includes support for Handoff, Siri Suggestions (AKA Siri Pro-active), Spotlight Search, Siri Intents, deep linking and even ClassKit for education apps.
 
 From iOS 12 onward it also includes feeds into Siri Shortcuts, which will use machine learning to suggest appropriate activities you have performed in the past based on your location, time of day and other data.

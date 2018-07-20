@@ -7,9 +7,9 @@ tags:
     - featured
 ---
 
-In order to use Flint you need to build the framework and add it and its dependency to your project.
+## Overview
 
-## Building Flint
+In order to use Flint you need to build the framework and add it and its dependency to your project.
 
 The easiest way to use Flint in your own project is via [Carthage](https://github.com/Carthage/Carthage). You add the dependency to your `Cartfile` like this:
 

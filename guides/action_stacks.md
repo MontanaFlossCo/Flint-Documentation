@@ -6,6 +6,8 @@ tags:
     - logging
 ---
 
+## Overview
+
 The Action dispatch mechanism of Flint maintains a "stack" of actions performed within a given feature. 
 
 Each time the user performs an Action from a Feature that is not currently active in the current set of Action Stacks, a new stack will be created for that Session and Feature. These stacks are scoped per Action Session and Feature.
