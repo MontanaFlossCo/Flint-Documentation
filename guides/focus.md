@@ -7,6 +7,8 @@ tags:
     - featured
 ---
 
+## Overview
+
 The Focus feature of Flint allows you to debug more effectively by stripping away all the noise from your logs and the [Timeline](guides/timeline.md).
 
 When you tell Flint to focus on one or more specific features, all timeline and logging output will be dynamically filtered to include only entries derived from actions performed on those features. It's like drinking from a bottle instead of a firehose.

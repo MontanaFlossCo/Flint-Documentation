@@ -7,6 +7,8 @@ tags:
     - featured
 ---
 
+## Overview
+
 Flint supports pluggable analytics tracking so that when the user performs actions they are automatically sent to your chosen analytics service.
 
 All that you need to do to support this is provide an ID for the actions that should generate events, and optionally provide a way to encode the action's `input` in a way that makes sense for your analytics service.

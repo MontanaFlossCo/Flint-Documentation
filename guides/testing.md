@@ -5,6 +5,8 @@ tags:
     - debug
 ---
 
+## Overview
+
 Flint has been designed to make your code more testable, and to be well tested itself.
 
 We will have lots of unit tests on Flint itself, but not just yet as we don't want to waste time when the API may still fluctuate significantly in the run up to 1.0 final release. Once there has been time for people to try out and comment on the APIs, things will settle down and the tests will be put together before the 1.0 final.
