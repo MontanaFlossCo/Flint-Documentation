@@ -39,11 +39,9 @@ When actions are performed, the `perform` function receives a `context` paramete
 ```swift
 final class CancelPhotoSelectionAction: Action {
     typealias InputType = NoInput
-    
     typealias PresenterType = PhotoSelectionPresenter
     
     public static func perform(context: ActionContext<NoInput>, presenter: PresenterType, completion: @escaping (ActionPerformOutcome) -> Void) {
-
         // Trying to track down a problem in development?
         logs.development?.debug("The presenter we have is actually a \(String(reflecting: presenter))")
 				
