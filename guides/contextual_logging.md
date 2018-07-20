@@ -44,11 +44,11 @@ final class CancelPhotoSelectionAction: Action {
     
     public static func perform(context: ActionContext<NoInput>, presenter: PresenterType, completion: @escaping (ActionPerformOutcome) -> Void) {
 
-	// Trying to track down a problem in development?
-	logs.development?.debug("The presenter we have is actually a \(String(reflecting: presenter))")
+        // Trying to track down a problem in development?
+        logs.development?.debug("The presenter we have is actually a \(String(reflecting: presenter))")
 				
-	// Trying to track down a problem in production?
-	logs.production?.debug("CANCELLED!")
+        // Trying to track down a problem in production?
+        logs.production?.debug("CANCELLED!")
 				
         presenter.dismissPhotoSelection()
         completion(.success(closeActionStack: true))
