@@ -10,7 +10,7 @@ tags:
 
 ## What is meant by Contextual Logging?
 
-Using Flint means that your app is aware of the actions the user is performing, and to which features those belong. We make use of this information to make logging much more useful, by including the information about the feature and action that culminated in each log entry. Your log strings typically don't need to give as much content about what is happening because this is implied.
+Using Flint means that your app is aware of the actions the user is performing, and to which features those belong. We make use of this information to make logging much more useful, by including the information about the feature and action that culminated in each log entry. Your log strings typically don't need to include as much context about what is happening because this is implied.
 
 Every action that is performed is passed its own contextual logger interface, which encapsulates information about the context of the action. This includes the *feature to which it belongs*, as well as the *input* passed to the action. There's also information about the original "user activity" that ultimately resulted in the log entry, essentially providing a form of conversational threading to logging. For example if you get an error in the log about sharing a document, it can show you that the original start of this user activity was them importing a document in a format from another app.
 
@@ -56,7 +56,7 @@ final class CancelPhotoSelectionAction: Action {
 }
 ```
 
-You can take these loggers are pass them into subsystems your actions call into, to gain contextual logging deeper in your code.
+You can take these loggers and pass them into subsystems your actions call into, to gain contextual logging deeper in your code.
 
 ## Using logging in subsystems where you don't have an Action
 
@@ -76,7 +76,7 @@ Because the logging subsystem is decoupled from the rest of Flint, there is a co
 
 Essentially it is an array of strings representing a hierarchical path, which can later be used to filter log entries to only certain portions of this hierarchy. e.g. logging to a topic path `["Networking", "Feeds", "Parsing"]` would mean you could set the log level for `["Networking"]` to `none` but set the parsing logging at path `["Networking", "Feeds", "Parsing"]` to `debug` level.
 
-Flint maps a feature's `identifier` type `FeaturePath` to `TopicPath` under the hood, which is how we get log filtering by feature without the logging subsystem having a dependency on features. In future perhaps we'll spin it of into its own framework.
+Flint maps a feature's `identifier` type `FeaturePath` to `TopicPath` under the hood, which is how we get log filtering by feature without the logging subsystem having a dependency on features. In future perhaps we'll spin it off into its own framework.
 
 ## Changing log levels at runtime
 
