@@ -14,10 +14,10 @@ In order to use Flint you need to build the framework and add it and its depende
 The easiest way to use Flint in your own project is via [Carthage](https://github.com/Carthage/Carthage). You add the dependency to your `Cartfile` like this:
 
 ```
-github "MontanaFlossCo/Flint" "master"
+github "MontanaFlossCo/Flint" "{{site.flint.release_tag}}"
 ```
 
-**Note**: We are specifying "master" as the version to use for now, as currently there are no tagged releases on Flint at the moment. Tags are coming soon.
+**Note**: We are specifying tags rather than semantic versions to use for now, as currently we are not at the point where we can guarantee no API breakage between these early access 1.0.x releases. Once we hit the final 1.0 API we'll be semver friendly!
 
 Then run `carthage bootstrap` to build it for all platforms. For faster builds you can limit to one platform and use caching to avoid rebuilding if there are no changes to the version you already have, e.g.:
 
