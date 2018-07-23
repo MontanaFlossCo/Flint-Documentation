@@ -12,6 +12,8 @@ tags:
 
 The definition of your app’s Features and the Actions that they provide is the fundamental starting point of Flint’s implementation of [Feature Driven Development](https://www.montanafloss.co/blog/feature-driven-development).
 
+When you define these artefacts in your code, Flint can eliminate lots of boilerplate and bugs around feature-flagging, system permission checking, in-app purchases, debugging and more.
+
 When starting out, if you are on iOS it can be very useful to use the `FlintUI` framework to add a debug [Feature Browser](flint_ui.md) so you can visualise what your app’s Feature graph looks like.
 
 ## Defining your first Feature Group
