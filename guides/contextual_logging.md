@@ -58,7 +58,32 @@ You can take these loggers and pass them into subsystems your actions call into,
 
 ## Using logging in subsystems where you don't have an Action
 
-New stuff coming! TBD
+Often you need to perform logging from code that is not called as a result of an action, or where it is too cumbersome to
+pass the logs from an `Action` all the way down the call stack. In this situation you can still log contextually relative to a feature.
+
+Each feature type conforming to `Feature` or `ConditionalFeature` in your application provides a static function called `log(for:)` that you can use to get a reference to contextual loggers:
+
+```swift
+import FlintCore
+
+class NetworkClientService {
+    let logs: ContextualLoggers    
+
+    init() {
+        logs = DataFeedFeature.logs(for: "Network")
+    }    
+
+    func fetchNewData() {
+        logs.development?.info("Fetching new data from host \(host)")
+
+        logs.production?.info("Fetch started")
+
+        ...
+    }
+}
+```
+
+The same mechanisms apply as when you use the loggers from an Action's context — if a logger is not configured for the current build it will be nil and everything will be a no-op. Of course the loggers will have the context of the feature, and the activity string `"Network"` will be used as the current activity in the log entry.
 
 ## What is an "activity" in logging?
 
