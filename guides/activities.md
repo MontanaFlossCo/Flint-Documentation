@@ -1,6 +1,6 @@
 ---
 title: Activities
-subtitle: Flint's automatic Activities feature will publish the actions as the current user activity and continue these activities later, dispatching your actions for you
+subtitle: Flint's automatic Activities feature will publish actions as the current NSUserActivity and will continue these activities later, dispatching your actions for you
 tags:
     - integration
     - useractivity
