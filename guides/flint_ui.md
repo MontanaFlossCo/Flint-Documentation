@@ -10,13 +10,18 @@ tags:
 
 We provide a set of powerful tools for looking inside your Flint-based app on iOS to verify that your Features and Actions are set up correctly, to browse Timeline and Focus logs for problems, generate debug reports and so on.
 
-Once again FlintUI uses Flint itself to expose its features. Dogfooding through and through.
+Once again FlintUI uses Flint itself to expose its features. Dogfooding through and through!
 
 ## Registering the FlintUI features
 
-The FlintUI framework supplies its debug UI capabilities as Flint features, so you need to register these with Flint when you are setting up Flint itself in your application delegate or other entry point.
+The FlintUI framework supplies its debug UI capabilities as Flint features, so you need to register these with Flint when you are setting up Flint itself in your application delegate or other entry point. You'll need to import FlintUI too:
 
 ```swift
+import FlintCore
+import FlintUI
+
+...
+
 func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
     Flint.quickSetup(FakeFeatures.self, domains: [], initialDebugLogLevel: .debug, initialProductionLogLevel: .info)
 
@@ -38,8 +43,12 @@ To use the feature browser, just perform the show action from a `UIViewControlle
 ```swift
 import UIKit
 import FlintUI
+
 ...
-FeatureBrowserFeature.show.perform(using: self)
+
+@IBAction func userTappedYourDebugButton(_ sender: Any) {
+	FeatureBrowserFeature.show.perform(using: self)
+}
 ```
 
 ## The Timeline Browser

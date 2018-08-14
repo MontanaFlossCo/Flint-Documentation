@@ -20,9 +20,11 @@ When starting out, if you are on iOS it can be very useful to use the `FlintUI` 
 
 Your application normally has a primary feature group that has all the root-level features your app supports. You pass this to Flint when you set it up during application startup.
 
-It is a class that you can give any name, but typically you would use something like `AppFeatures`. It just needs to conform to `FeatureGroup` and define a list of subfeatures. We'll start with that list empty:
+It is a class that you can give any name, but typically you would use something like `AppFeatures`. It just needs to conform to `FeatureGroup` and define a list of subfeatures. We'll start with that list empty, and of course we need to import `FlintCore` to access the Flint types:
 
 ```swift
+import FlintCore
+
 final class AppFeatures: FeatureGroup {
     static var description = "My main app features"
     
