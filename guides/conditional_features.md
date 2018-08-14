@@ -232,14 +232,18 @@ When the feature `request()` call comes back with a nil, you'll need to see if t
 ```swift
 if PhotoAttachmentsFeature.permissions.notDetermined.count > 0 {
     permissionController = PhotoAttachmentsFeature.permissionAuthorisationController(using: self)
-    permissionController?.begin(retryHandler: retryHandler)
+    permissionController?.begin(retryHandler: { self.doAttachPhoto() })
     return
 }
 ```
 
-This fragment does exactly this. It asks whether there are any permissions that the feature requires that have the `.notDetermined` status. This status indicates that the system has not yet prompted the user for a given permission. If the number of permissions in this set is non-zero, it calls Flint's `permissionAuthorisationController(using:)` function to get a controller instance that you can use to request all the outstanding authorisations, one by one.
+This example does the following:
 
-This controller takes a single optional argument of type [`PermissionAuthorisationCoordinator`](https://github.com/MontanaFlossCo/Flint/blob/0e3405863120ccdf1239c1ec155edc793bc50599/FlintCore/Constraints/Permissions/PermissionAuthorisationCoordinator.swift), which you can use to affect the authorisation process. You can pass `nil` for the coordinator and the user will immediately see the system permission requests one by one without any hints about what is happening, other than the usage description you provide in your `Info.plist`.
+1. Checks whether there are any permissions that the feature requires that have the `.notDetermined` status. This status indicates that the system has not yet prompted the user for a given permission
+2. If the number of permissions not determined is non-zero, it calls Flint's `permissionAuthorisationController(using:)` function to get a controller instance that you can use to request all the outstanding authorisations, one by one
+3. It starts the controller and passes a `retryHandler` that will get called at the end of the authorisation flow if the user approves all the required permissions, so that the user does not have to select the UI option again and your app can automatically resume what the user wanted to do originally
+
+The permission controller takes a single optional argument of type [`PermissionAuthorisationCoordinator`](https://github.com/MontanaFlossCo/Flint/blob/0e3405863120ccdf1239c1ec155edc793bc50599/FlintCore/Constraints/Permissions/PermissionAuthorisationCoordinator.swift), which you can use to affect the authorisation process. You can pass `nil` for the coordinator and the user will immediately see the system permission requests one by one without any hints about what is happening, other than the usage description you provide in your `Info.plist`.
 
 That's fine during development but we don't recommend you do this in real apps. Use the coordinator to add some onboarding cards along the lines of:
 
