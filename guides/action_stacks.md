@@ -6,6 +6,11 @@ tags:
     - logging
 ---
 
+#### In this article
+{:.no_toc}
+* TOC
+{:toc}
+
 ## Overview
 
 The Action dispatch mechanism of Flint maintains a "stack" of actions performed within a given feature. 

@@ -7,6 +7,11 @@ tags:
     - featured
 ---
 
+#### In this article
+{:.no_toc}
+* TOC
+{:toc}
+
 ## Overview
 
 In order to use Flint you need to build the framework and add it and its dependency to your project.

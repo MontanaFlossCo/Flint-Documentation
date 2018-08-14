@@ -6,6 +6,11 @@ tags:
     - featured
 ---
 
+#### In this article
+{:.no_toc}
+* TOC
+{:toc}
+
 ## Slack
 
 We have a community Slack you can join to get help and discuss ideas around using Flint.

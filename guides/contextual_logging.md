@@ -8,6 +8,11 @@ tags:
     - featured
 ---
 
+#### In this article
+{:.no_toc}
+* TOC
+{:toc}
+
 ## Overview
 
 Using Flint means that your app is aware of the actions the user is performing, and to which features those belong. We make use of this information to make logging much more useful, by including the information about the feature and action that culminated in each log entry. Your log strings typically don't need to include as much context about what is happening because this is implied.

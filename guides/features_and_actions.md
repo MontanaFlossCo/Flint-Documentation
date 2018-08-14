@@ -8,6 +8,11 @@ tags:
     - featured
 ---
 
+#### In this article
+{:.no_toc}
+* TOC
+{:toc}
+
 ## Overview
 
 The definition of your app’s Features and the Actions that they provide is the fundamental starting point of Flint’s implementation of [Feature Driven Development](https://www.montanafloss.co/blog/feature-driven-development).

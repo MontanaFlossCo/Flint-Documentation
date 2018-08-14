@@ -9,6 +9,11 @@ tags:
     - featured
 ---
 
+#### In this article
+{:.no_toc}
+* TOC
+{:toc}
+
 ## Overview
 
 Most apps need to handle some URLs, whether for e-mail sign-in confirmations, deep linking or custom workflow URL schemes. 

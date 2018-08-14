@@ -8,6 +8,11 @@ tags:
     - featured
 ---
 
+#### In this article
+{:.no_toc}
+* TOC
+{:toc}
+
 ## Overview
 
 Apple platforms use `NSUserActivity` to tell the operating system about something the user is doing in your app. This information is used across the platforms to improve the user experience. This includes support for Handoff, Siri Suggestions (AKA Siri Pro-active), Spotlight Search, Siri Intents, deep linking and even ClassKit for education apps.

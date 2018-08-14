@@ -5,6 +5,11 @@ tags:
     - debug
 ---
 
+#### In this article
+{:.no_toc}
+* TOC
+{:toc}
+
 ## Overview
 
 Flint has been designed to make your code more testable, and to be well tested itself.
