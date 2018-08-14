@@ -60,7 +60,7 @@ To do this, you need to import the framework and use the supplied feature to dis
 import UIKit
 import FlintUI
 
-... in some action or gesture handler of a UIViewController ...
+// ... in some action or gesture handler of a UIViewController ...
 
 ActionStackBrowserFeature.show.perform(using: self)
 ```
