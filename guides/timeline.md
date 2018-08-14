@@ -25,7 +25,7 @@ It is incredibly valuable if captured and included in logs or support requests.
 import UIKit
 import FlintUI
 
-... in some action or gesture handler of a UIViewController ...
+// ... in some action or gesture handler of a UIViewController ...
 
 guard let request = TimelineBrowserFeature.request(TimelineBrowserFeature.show) else {
     preconditionFailure("Timeline is not enabled")
