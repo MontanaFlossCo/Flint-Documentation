@@ -43,9 +43,9 @@ final class CancelPhotoSelectionAction: Action {
     
     typealias PresenterType = PhotoSelectionPresenter
     
-    public static func perform(with context: ActionContext<NoInput>, using presenter: PresenterType, completion: @escaping (ActionPerformOutcome) -> Void) {
+    public static func perform(with context: ActionContext<NoInput>, using presenter: PresenterType, completion: Completion) -> Completion.Status {
         presenter.dismissPhotoSelection()
-        completion(.success(closeActionStack: true))
+        return completion.completedSync(.success(closeActionStack: true))
     }
 }
 ```

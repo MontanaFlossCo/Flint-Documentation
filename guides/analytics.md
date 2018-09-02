@@ -32,9 +32,9 @@ final class DocumentCreateAction: Action {
     /// Set this to your desired analytics event ID for this action
     static var analyticsID: String? = "document-create"
 
-    static func perform(with context: ActionContext<NoInput>, using presenter: DocumentCreatePresenter, completion: @escaping ((ActionPerformOutcome) -> ())) {
+    static func perform(with context: ActionContext<NoInput>, using presenter: DocumentCreatePresenter, completion: Completion) -> Completion.Status {
         presenter.showCreate(suggestedTitle: "Untitled")
-        completion(.success(closeActionStack: false))
+        return completion.completedSync(.success(closeActionStack: false))
     }
 }
 ```
@@ -59,9 +59,9 @@ final class DocumentOpenAction: Action {
 		]
 	}
 
-    static func perform(with context: ActionContext<DocumentRef>, using presenter: DocumentCreatePresenter, completion: @escaping ((ActionPerformOutcome) -> ())) {
+    static func perform(with context: ActionContext<DocumentRef>, using presenter: DocumentCreatePresenter, completion: Completion) -> Completion.Status {
         presenter.openDocument(context.input)
-        completion(.success(closeActionStack: false))
+        return completion.completedSync(.success(closeActionStack: false))
     }
 }
 ```

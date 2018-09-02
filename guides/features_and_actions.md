@@ -108,9 +108,9 @@ final class DocumentOpenAction: Action {
 
     static var description = "Open a document"
     
-    static func perform(with context: ActionContext<DocumentRef>, using presenter: DocumentPresenter, completion: @escaping ((ActionPerformOutcome) -> ())) {
+    static func perform(with context: ActionContext<DocumentRef>, using presenter: DocumentPresenter, completion: Completion) -> Completion.Status {
         presenter.openDocument(documentRef)
-        completion(.success(closeActionStack: false))
+        return completion.completedSync(.success(closeActionStack: false))
     }
 }
 ```
@@ -124,9 +124,9 @@ final class BeepAction: Action {
     typealias InputType = NoInput
     typealias PresenterType = NoPresenter
 
-    static func perform(with context: ActionContext<InputType>, using presenter: PresenterType, completion: @escaping ((ActionPerformOutcome) -> ())) {
+    static func perform(with context: ActionContext<InputType>, using presenter: PresenterType, completion: Completion) -> Completion.Status {
         print("Beep!")
-        completion(.success(closeActionStack: false))
+        return completion.completedSync(.success(closeActionStack: false))
     }
 }
 ```

@@ -60,7 +60,7 @@ final class DocumentOpenAction: Action {
     /// This is the bare minimum we need to add.
     static var activityTypes: Set<ActivityEligibility> = [.handoff]
     
-    static func perform(with context: ActionContext<InputType>, using presenter: PresenterType, completion: ((ActionPerformOutcome) -> ())) {
+    static func perform(with context: ActionContext<InputType>, using presenter: PresenterType, Completion) -> Completion.Status {
         // … here we would open the document as normal
     }
 }
@@ -156,7 +156,7 @@ final class DocumentOpenAction: Action {
     
     static var activityTypes: Set<ActivityEligibility> = [.handoff, .search]
 
-    static func perform(with context: ActionContext<DocumentRef>, using presenter: DocumentPresenter, completion: @escaping ((ActionPerformOutcome) -> ())) {
+    static func perform(with context: ActionContext<DocumentRef>, using presenter: DocumentPresenter, completion: Completion) -> Completion.Status {
         // …
     }
     
