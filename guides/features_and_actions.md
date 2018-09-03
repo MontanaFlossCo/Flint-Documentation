@@ -110,7 +110,7 @@ final class DocumentOpenAction: Action {
     
     static func perform(with context: ActionContext<DocumentRef>, using presenter: DocumentPresenter, completion: Completion) -> Completion.Status {
         presenter.openDocument(documentRef)
-        return completion.completedSync(.success(closeActionStack: false))
+        return completion.completedSync(.success)
     }
 }
 ```
@@ -126,7 +126,7 @@ final class BeepAction: Action {
 
     static func perform(with context: ActionContext<InputType>, using presenter: PresenterType, completion: Completion) -> Completion.Status {
         print("Beep!")
-        return completion.completedSync(.success(closeActionStack: false))
+        return completion.completedSync(.success)
     }
 }
 ```

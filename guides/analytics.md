@@ -34,7 +34,7 @@ final class DocumentCreateAction: Action {
 
     static func perform(with context: ActionContext<NoInput>, using presenter: DocumentCreatePresenter, completion: Completion) -> Completion.Status {
         presenter.showCreate(suggestedTitle: "Untitled")
-        return completion.completedSync(.success(closeActionStack: false))
+        return completion.completedSync(.success)
     }
 }
 ```
@@ -61,7 +61,7 @@ final class DocumentOpenAction: Action {
 
     static func perform(with context: ActionContext<DocumentRef>, using presenter: DocumentCreatePresenter, completion: Completion) -> Completion.Status {
         presenter.openDocument(context.input)
-        return completion.completedSync(.success(closeActionStack: false))
+        return completion.completedSync(.success)
     }
 }
 ```

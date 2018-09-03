@@ -54,7 +54,7 @@ final class CancelPhotoSelectionAction: Action {
         logs.production?.debug("CANCELLED!")
 				
         presenter.dismissPhotoSelection()
-        return completion.completedSync(.success(closeActionStack: true))
+        return completion.completedSync(.successWithFeatureTermination)
     }
 }
 ```
