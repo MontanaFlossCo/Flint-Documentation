@@ -25,7 +25,7 @@ When starting out, if you are on iOS it can be very useful to use the `FlintUI` 
 
 Your application normally has a primary feature group that has all the root-level features your app supports. You pass this to Flint when you set it up during application startup.
 
-It is a class that you can give any name, but typically you would use something like `AppFeatures`. It just needs to conform to `FeatureGroup` and define a list of subfeatures. We'll start with that list empty, and of course we need to import `FlintCore` to access the Flint types:
+It is a class that you can give any name, but typically you would use something like `AppFeatures`. It just needs to conform to `FeatureGroup` and define a list of sub-features. We'll start with that list empty, and of course we need to import `FlintCore` to access the Flint types:
 
 ```swift
 import FlintCore
@@ -52,7 +52,7 @@ You can register more than one root-level feature group, for example if you have
 
 ## Defining your first Feature
 
-Now you can define a real feature and add it to the root feature's subfeatures.
+Now you can define a real feature and add it to the root feature's sub-features.
 
 A single `Feature` in Flint lets you describe some functionality that your app offers, the actions that can be performed on that feature, and other conventions that alter app behaviour. Information about this feature is output in logs and you can use [Focus](focus.md) to limit all logging to only a subset of features.
 
@@ -68,13 +68,13 @@ class DocumentManagementFeature: Feature {
  }
 ```
 
-Note that there are more things required by the `Feature` protocol, but the class will receive default inmplementations of most requirements for the `Feature` and `FeatureDefinition` protocols by the magic of Swift protocol extensions.
+Note that there are more things required by the `Feature` protocol, but the class will receive default implementations of most requirements for the `Feature` and `FeatureDefinition` protocols by the magic of Swift protocol extensions.
 
 Once you have this in place you can define an action and hook it up to the Feature using an action binding.
 
 Note that it seems to work out nicely if you have an Xcode project Group for each Feature, with the Feature's `.swift` file in there, along side other types needed for the feature, such as the `Action`(s) and `Presenter`(s).
 
-Now we have to go back and edit the feature group to include this subfeature:
+Now we have to go back and edit the feature group to include this sub-feature:
 
 ```swift
 final class AppFeatures: FeatureGroup {
@@ -102,24 +102,30 @@ Let's implement it.
 
 ```swift
 final class DocumentOpenAction: UIAction {
-	// Define the type of input this action expects
+    // Define the type of input this action expects
     typealias InputType = DocumentRef
 
-	// Define the type of presenter this action expects
+    // Define the type of presenter this action expects
     typealias PresenterType = DocumentPresenter
 
     static var description = "Open a document"
     
-    static func perform(with context: ActionContext<DocumentRef>, using presenter: DocumentPresenter, completion: Completion) -> Completion.Status {
+    static func perform(with context: ActionContext<DocumentRef>,
+            using presenter: DocumentPresenter,
+            completion: Completion) -> Completion.Status {
         presenter.openDocument(documentRef)
         return completion.completedSync(.success)
     }
 }
 ```
 
-The action's `perform` function receives a `context`, which includes the input and access to [context specific loggers](contextual_logging.md), a presenter and a completion callback. Note that your `perform` function must use your `InputType` and `PresenterType`. So the `context` argument must be an `ActionContext<...>` with the ellipsis replaced with your specific input type *or* you can go with the `InputType` alias if you so prefer. The same applies to the `presenter` argument. You will get confusing Swift compiler errors if these types do not match up, so always check that, or always explicitly use `InputType` and `PresenterType` if you want to be safe, if a little less clear.
+The action's `perform` function receives a `context`, which includes the input and access to [context specific loggers](contextual_logging.md), a presenter and a completion callback. Note that your `perform` function is generic and must use your `InputType` and `PresenterType`. So the `context` argument must be an `ActionContext<...>` with the ellipsis replaced with your specific input type *or* you can go with the `InputType` alias if you so prefer. The same applies to the `presenter` argument. 
 
-Actions that do not require an input must use `NoInput` as their `InputType`. If no presenter is required they must use `NoPresenter` as the `PresenterType`. These are special Flint types that let you indicate that you don't need either the input or presenter. Here's an example of an action with neither an input nor a presenter:
+**Tip:** You will get confusing Swift compiler errors if these argument types do not match with your typealiases, so always check that if there is a problem. You can explicitly use `InputType` and `PresenterType` if you want to be safe, if a little less clear — but be aware that Xcode’s fix-it for protocol conformance uses the full types so if you change the type aliases later you will get these errors.
+
+The above action implementation is of course trivial. It just calls to a presenter which does the work. This is often the case with actions which are just a central place to “hang” information used for logging, URL routes, activities and so on. In many other cases your action will call into service objects that you have to perform business logic and then pass results to the presenter.
+
+Not all Actions require an input. Actions that don’t must use `NoInput` as their `InputType`. If no presenter is required they must use `NoPresenter` as the `PresenterType`. These are special Flint types that let you indicate that you don't need either the input or presenter. Here's an example of an action with neither an input nor a presenter:
 
 ```swift
 final class BeepAction: Action {
@@ -164,14 +170,14 @@ Now comes the really easy part! In your app, you need to perform this action. Ac
 Somewhere in a view controller, you can add:
 
 ```swift
-DocumentManagementFeature.openDocument.perform(using: self, with: document)
+DocumentManagementFeature.openDocument.perform(input: document, presenter: self)
 ```
 
 What we are doing here is calling a convenience function called `perform` on the action binding stored in the static property `openDocument` that we defined on the feature.
 
-The `using` argument is the presenter, so in this case the scope we're in — likely a View Controller — must conform to our own `DocumentPresenter` protocol. The `with` argument is the input, which must be a `DocumentRef` we have in scope.
+The `presenter` argument is the object that will be told what to do after the action is performed, so in this case the scope we're in — likely a View Controller — must conform to our own `DocumentPresenter` protocol specified in the action’s typealias. The `input` argument is the input to the action, which in this case must be a `DocumentRef`.
 
-This is where the magic of Swift really helps us. Those strongly typed arguments mean we can't pass the wrong thing to the action and get weird errors. It also means Xcode can autocomplete the arguments for us using only compatible types.
+This is where the magic of Swift really helps us. Those strongly typed arguments mean we can't pass the wrong thing to the action and get weird errors. It also means Xcode can autocomplete the arguments for us using only compatible types, and that action implementations are clean and straightforward.
 
 Furthermore, if the `Action` uses `NoInput` or `NoPresenter` or both, you can omit those arguments when performing the action:
 
@@ -188,7 +194,7 @@ let bgProcessingSession = ActionSession(name: "bg",
                                       	callerQueue: myBackgroundQueue)
 
 // Later on your background queue"
-bgProcessionSession.perform(MachineLearningFeature.processImages, using: nil, with: imageStore)
+bgProcessionSession.perform(MachineLearningFeature.processImages, input: imageStore, presenter: nil)
 
 ```
 

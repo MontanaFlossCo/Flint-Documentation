@@ -62,7 +62,7 @@ import FlintUI
 
 // ... in some action or gesture handler of a UIViewController ...
 
-ActionStackBrowserFeature.show.perform(using: self)
+ActionStackBrowserFeature.show.perform(presenter: self)
 ```
 
 ## Generating a debug report containing the stacks

@@ -200,7 +200,7 @@ Instead you must first obtain a `ConditionalActionRequest` by calling `request()
 
 ```swift
 if let request = DeepLinkingFeature.performIncomingURL.request() {
-    request.perform(using: presenter, with: url)
+    request.perform(input: url, presenter: presenter)
 } else {
     // This often means there was a programmer error - 
     // your UI probably should not allow people to invoke actions from
@@ -304,7 +304,7 @@ Whatever the situation, you should usually only ask for one thing at a time to a
 ```swift
 func selectPhoto() {
     if let request = PhotoAttachmentsFeature.request(PhotoAttachmentsFeature.showPhotoSelection) {
-        request.perform(using: self)
+        request.perform(presenter: self)
     } else {
         handleUnsatisfiedConstraints(for: PhotoAttachmentsFeature.self, retry: { [weak self] in self?.selectPhoto() })
     }
