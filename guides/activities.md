@@ -18,11 +18,11 @@ tags:
 
 Apple platforms use `NSUserActivity` to tell the operating system about something the user is doing in your app. This information is used across the platforms to improve the user experience. This includes support for Handoff, Siri Suggestions (AKA Siri Pro-active), Spotlight Search, Siri Intents, deep linking and even ClassKit for education apps.
 
-From iOS 12 onward it also includes feeds into Siri Shortcuts, which will use machine learning to suggest appropriate activities you have performed in the past based on your location, time of day and other data.
+From iOS 12 onward it also feeds this information into Siri Shortcuts, which will use machine learning to suggest appropriate activities you have performed in the past based on your location, time of day and other data.
 
-When you have Action(s) defined using Flint, you get support for all of these with few if any code changes.
+When you have actions defined using Flint, you get support for all of these with very little extra code required.
 
-The powerful Activities feature will automatically register an `NSUserActivity` for you when users perform an action in your app. Flint observes the execution of actions and does the right thing for you so you no longer have to think about this at the call site where actions are performed. What's more it leverages your existing Action(s) and input types, with type safety when performing incoming activities and increased decoupling of your code.
+The Activities feature of Flint will automatically register an `NSUserActivity` for you when users perform a qualifying action in your app. Flint observes the execution of actions and does the right thing for you so you no longer have to think about this at the call site where actions are performed. What's more it leverages your existing Action(s) and input types, with type safety when performing incoming activities and increased decoupling of your code.
 
 With Activities you can:
 
@@ -33,19 +33,21 @@ With Activities you can:
 * Define activity attributes specific to the value of the `InputType` to your Actions, so input types can be reused across actions that publish activities in different ways
 * Easily set custom Spotlight search attributes
 
-You determine which actions are published as activities. As an example, “Save” is not something that makes sense for a Handoff action, but opening a document you use is.
+You determine which actions are published as activities. As an example, “Save” is not something that makes sense for a Handoff action, but opening a document is.
 
 Flint will not automatically start publishing all your actions as activities. To enable this behaviour you need to declare one or more `activityTypes` on an action and it will have an `NSUserActivity` published. Your action’s `InputType` if there is one also needs to conform to `ActivityCodable`.
 
-The way Flint deals with activities that the system passes back into your app is quite simple. You just need to provide a way to describe how to invoke your action from the `NSUserActivity` at later a time. This means Flint needs to know:
+The other side of activities is receiving them in your app and performing the appropriate action. You need to provide a way to describe how to invoke your action from the `NSUserActivity` at a later a time. This means Flint needs to know:
 
 1. Which `Action` to invoke
 2. How to reconstruct an instance of the `InputType` for your action from the `NSUserActivity`'s `userInfo`
 3. How to obtain an instance of the `PresenterType` for the action to use, so the UI can be put into the correct state for your action
 
-Note that the `Activities` feature of Flint is on by default but can be disabled if you do not want it, or you need to debug scenarios where `NSUserActivity` is getting in the way somehow — just set `ActivitiesFeature.isEnabled = false`.
+In fact you only need to do parts (1) and (3) if your action is already mapped to a URL using [URL Routes](routes.md) because in that case Flint already knows how to represent your action’s input as a URL, and can embed the URL in the activity.
 
 To start using Activities in the most basic way, all you need to do is update actions to indicate what kind of activity they should expose.
+
+Note that the `Activities` feature of Flint is on by default but can be disabled if you do not want it, or you need to debug scenarios where `NSUserActivity` is getting in the way somehow — just set `ActivitiesFeature.isEnabled = false`.
 
 ## Enabling Activities on an Action
 
