@@ -6,7 +6,7 @@ tags:
     - featured
 ---
 
-#### In this article
+#### In this article:
 {:.no_toc}
 * TOC
 {:toc}

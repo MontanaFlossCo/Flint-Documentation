@@ -8,7 +8,7 @@ tags:
     - featured
 ---
 
-#### In this article
+#### In this article:
 {:.no_toc}
 * TOC
 {:toc}
@@ -90,7 +90,9 @@ That's it for the feature part.
 
 ## Defining your first Action
 
-We've now got a feature so let's add an `Action`. An `Action` in Flint is a small piece of logic that represents something the application can do – usually in response to some user-driven event or external stimulus (such as a push notification or location change). Sometimes you will need actions that are not directly invoked by the user, but are required because you need to track when something happens in the app, or you need to respond to a URL.
+We've now got a feature so let's add an `Action`. An `Action` in Flint is a small piece of logic that represents something the application can do — usually in response to some user-driven event or external stimulus (such as a push notification or location change). Sometimes you will need actions that are not directly invoked by the user, but are required because you need to track when something happens in the app, or you need to respond to a URL.
+
+Flint’s `Action` type is a protocol to which your action types must conform. Usually your actions will actually conform to `UIAction` which is a protocol that extends `Action` and makes sure your actions are performed in the main `ActionSession` and always dispatched on the main queue.
 
 An Action receives a single input and a presenter, which it will use to perform its work and then update the presentation. The input is any type you specify when defining the action, as is the presenter. Using the power of Swift associated types, we will then restrict the inputs and presenters passed to the action to only those types.
 
@@ -99,7 +101,7 @@ What we need to do here is receive a reference to a document as input, and then 
 Let's implement it.
 
 ```swift
-final class DocumentOpenAction: Action {
+final class DocumentOpenAction: UIAction {
 	// Define the type of input this action expects
     typealias InputType = DocumentRef
 

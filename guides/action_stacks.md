@@ -6,7 +6,7 @@ tags:
     - logging
 ---
 
-#### In this article
+#### In this article:
 {:.no_toc}
 * TOC
 {:toc}
@@ -38,7 +38,7 @@ The user will usually perform one or more actions of a feature, and some of thes
 However a "close document" action on that feature would naturally delineate use of the feature, and that is where your action should pass `true` for `closeActionStack`:
 
 ```swift
-final class CancelPhotoSelectionAction: Action {
+final class CancelPhotoSelectionAction: UIAction {
     typealias InputType = NoInput
     
     typealias PresenterType = PhotoSelectionPresenter

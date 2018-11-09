@@ -6,9 +6,10 @@ tags:
     - useractivity
     - actions
     - featured
+    - siri
 ---
 
-#### In this article
+#### In this article:
 {:.no_toc}
 * TOC
 {:toc}
@@ -26,31 +27,41 @@ The powerful Activities feature will automatically register an `NSUserActivity` 
 With Activities you can:
 
 * Automatically publish `NSUserActivity`
-* Set eligibility - including `handoff`, `search` and `prediction` (iOS 12 only!)
-* Define activity attributes per InputType to your Actions, so input types can be reused across actions that publish activities
-* Override activity attributes per Action
-* Set custom Spotlight search attributes
+* Set the `NSUSerActivity` eligibility including options for  `handoff`, `search` and `prediction` (iOS 12 only)
+* Define a suggested invocation phrase for activities that you would like to expose as Siri Shortcuts (iOS 12 only)
+* Override activity attributes per Action and input the action receives
+* Define activity attributes specific to the value of the `InputType` to your Actions, so input types can be reused across actions that publish activities in different ways
+* Easily set custom Spotlight search attributes
 
-It is important to understand that you determine which actions are published as activities. For example “Save” is not something that makes sense for a Handoff action, but opening a document you use frequently is. Flint will not automatically start publishing all your actions as activities.
+You determine which actions are published as activities. As an example, “Save” is not something that makes sense for a Handoff action, but opening a document you use is.
 
-The way Flint deals with incoming activities is quite simple: you just need to provide a way to describe how to invoke your action from the `NSUserActivity` at later a time. This means Flint needs to know:
+Flint will not automatically start publishing all your actions as activities. To enable this behaviour you need to declare one or more `activityTypes` on an action and it will have an `NSUserActivity` published. Your action’s `InputType` if there is one also needs to conform to `ActivityCodable`.
+
+The way Flint deals with activities that the system passes back into your app is quite simple. You just need to provide a way to describe how to invoke your action from the `NSUserActivity` at later a time. This means Flint needs to know:
 
 1. Which `Action` to invoke
-2. How to reconstruct an instance of the `InputType` for your action
-3. How to obtain an instance of the `PresenterType` for the action to use
+2. How to reconstruct an instance of the `InputType` for your action from the `NSUserActivity`'s `userInfo`
+3. How to obtain an instance of the `PresenterType` for the action to use, so the UI can be put into the correct state for your action
 
-The `Activities` feature is on by default but can be disabled if you do not want it, or you need to debug scenarios where `NSUserActivity` is getting in the way somehow — just set `ActivitiesFeature.isEnabled = false`.
+Note that the `Activities` feature of Flint is on by default but can be disabled if you do not want it, or you need to debug scenarios where `NSUserActivity` is getting in the way somehow — just set `ActivitiesFeature.isEnabled = false`.
 
 To start using Activities in the most basic way, all you need to do is update actions to indicate what kind of activity they should expose.
 
 ## Enabling Activities on an Action
 
-Let’s add the declaration for a new “Document Open” action that supports just Handoff and Siri Suggestions/Pro-active. Note that simply registering an activity implies Siri Suggestions support, so it is implied by declaring `handoff`.
+Let’s add the declaration for a new “Document Open” action that supports just Handoff and Siri Prediction. Note that registering an activity implies pre-iOS 12 Siri Suggestions support, so it is implied by declaring `handoff`. Adding `prediction` is a more specific indication to Siri that it should use your activity and userInfo, location and time of day to provide useful recommendations to users.
 
-We simply define a value for the static `activityTypes` property:
+Flint currently supports the following values for activity eligibility, which you can combine as you wish:
+
+* `.perform` - Minimal support, just register the activity. This is implied by all other types so is not required normally.
+* `.handoff` - Handoff support between devices
+* `.search` - Include the activity in Spotlight search indexing
+* `.prediction` - Use the activity for iOS 12 Siri predictions
+
+So we’ll define a value for the static `activityTypes` property:
 
 ```swift
-final class DocumentOpenAction: Action {
+final class DocumentOpenAction: UIAction {
     typealias InputType = DocumentRef
     typealias PresenterType = DocumentPresenter
 
@@ -58,7 +69,7 @@ final class DocumentOpenAction: Action {
     
     /// Declare the types of activity we want published.
     /// This is the bare minimum we need to add.
-    static var activityTypes: Set<ActivityEligibility> = [.handoff]
+    static var activityTypes: Set<ActivityEligibility> = [.handoff, .prediction]
     
     static func perform(with context: ActionContext<InputType>, using presenter: PresenterType, Completion) -> Completion.Status {
         // … here we would open the document as normal
@@ -106,7 +117,7 @@ extension DocumentRef: ActivityCodable {
 }
 ```
 
-This simple mechanism allows Flint to read and write this input type to and from an `NSUserActivity`.
+This simple mechanism allows Flint to read and write this input type to and from an `NSUserActivity`, and you can reuse this input type across multiple action types.
 
 Flint will automatically detect if your action's input type conforms to this protocol and use it to set the `userInfo` on the activity when publishing it, and to create the input from `userInfo` when asked to perform your action when your app receives an `NSUserActivity` for the `activityType` that maps your action.
 
@@ -232,6 +243,47 @@ In this example we'll fix the `title` of the activity to include the verb `Open`
 ```
 
 This then shows a Siri result with the title "Open MyProject" instead of just "MyProject".
+
+## Adding support for Siri Shortcuts
+
+The simplest way to add basic support for iOS 12 Siri Shortcuts is to use activities. All you need to do is supply a suggested invocation phrase. The Action will then become visible to the user in the Siri Shortcuts section of the Settings app. You can also show the “Add Voice Shortcut” UI from your app to let the user create their voice shortcut there and then.
+
+To turn an `Action` that supports activities into an activity that the system can use for Siri prediction and voice shortcuts you need to:
+
+1. Include `.prediction` in your Action’s `activityTypes`
+2. Add a value for `suggestedInvocationPhrase` — or set this property on the activity in your Action’s `prepareActivity()` function
+3. Optional: show the Add Voice Shortcut UI by calling `addVoiceShortcut(for:presenter:)`
+
+Here’s an example:
+
+```swift
+final class DocumentPresentationModeAction: UIAction {
+    typealias InputType = DocumentRef
+    typealias PresenterType = DocumentPresenter
+
+    static var description = "Open a document"
+    
+    /// Include .prediction
+    static var activityTypes: Set<ActivityEligibility> = [.handoff, .prediction]
+    
+    /// Include the explicit String? type here,
+    /// not doing so would use the wrong type.
+    static let suggestedInvocationPhrase: String? = "Presentation time"
+    
+    // … the reset of the Action elided
+}
+```
+
+Once you have done this, you can add code to your application that will let the user add a voice shortcut directly in your app, using the system UI to record their custom phrase:
+
+```swift
+func yourAddToSiriButtonTapped(_ sender: Any) {
+    // Pass self (a UIViewController) as the parent view controller
+    ProFeatures.showInPresentationMode.addVoiceShortcut(for: documentRef, presenter:self)
+}
+```
+
+This will allow the user to create a shortcut to an `NSUserActivity` that will invoke the action with the `documentRef` input supplied.
 
 ## Next steps
 

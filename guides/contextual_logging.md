@@ -8,7 +8,7 @@ tags:
     - featured
 ---
 
-#### In this article
+#### In this article:
 {:.no_toc}
 * TOC
 {:toc}
@@ -42,7 +42,7 @@ Flint addresses this problem by separating the loggers for development and produ
 When actions are performed, the `perform` function receives a `context` parameter. This provides access to the logging via the `logs` property:
 
 ```swift
-final class CancelPhotoSelectionAction: Action {
+final class CancelPhotoSelectionAction: UIAction {
     typealias InputType = NoInput
     typealias PresenterType = PhotoSelectionPresenter
     

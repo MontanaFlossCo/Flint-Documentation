@@ -7,7 +7,7 @@ tags:
     - featured
 ---
 
-#### In this article
+#### In this article:
 {:.no_toc}
 * TOC
 {:toc}
@@ -23,7 +23,7 @@ All that you need to do to support this is provide an ID for the actions that sh
 The `Action` protocol defines a static property `var analyticsID: String?` that you can define to supply the event ID you want. Once you do this, Flint will automatically start generating analytics information for that action and passing it to your analytics provider.
 
 ```swift
-final class DocumentCreateAction: Action {
+final class DocumentCreateAction: UIAction {
     typealias InputType = NoInput
     typealias PresenterType = DocumentCreatePresenter
 
@@ -44,7 +44,7 @@ final class DocumentCreateAction: Action {
 If you need to capture some information about the input passed to the action, you need to do a little more work. On the action you wish capture, implement the `analyticsAttributes` function to encode values into a dictionary that will be passed to the analytics provider:
 
 ```swift
-final class DocumentOpenAction: Action {
+final class DocumentOpenAction: UIAction {
     typealias InputType = DocumentRef
     typealias PresenterType = DocumentEditingPresenter
 
