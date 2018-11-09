@@ -14,7 +14,7 @@ tags:
 
 ## Overview
 
-Flint supports pluggable analytics tracking so that when the user performs actions they are automatically sent to your chosen analytics service.
+Flint supports pluggable analytics tracking so that when the user performs actions, events relating to them are automatically recorded by your chosen analytics service.
 
 All that you need to do to support this is provide an ID for the actions that should generate events, and optionally provide a way to encode the action's `input` in a way that makes sense for your analytics service.
 
@@ -53,13 +53,15 @@ final class DocumentOpenAction: UIAction {
     static var analyticsID: String? = "document-open"
 
     /// Customize the data sent to analytics
-	static func analyticsAttributes<F>(for request: ActionRequest<F, Self>) -> [String:Any?]? where F: FeatureDefinition {
-		return [
-			"doc-type": request.context.input.documentTypeUTI
-		]
-	}
+    static func analyticsAttributes<F>(for request: ActionRequest<F, Self>) -> [String:Any?]? {
+        return [
+            "doc-type": request.context.input.documentTypeUTI
+        ]
+    }
 
-    static func perform(with context: ActionContext<DocumentRef>, using presenter: DocumentCreatePresenter, completion: Completion) -> Completion.Status {
+    static func perform(with context: ActionContext<DocumentRef>,
+            using presenter: DocumentCreatePresenter,
+            completion: Completion) -> Completion.Status {
         presenter.openDocument(context.input)
         return completion.completedSync(.success)
     }
