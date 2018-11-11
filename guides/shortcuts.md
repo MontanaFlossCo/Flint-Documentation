@@ -1,6 +1,6 @@
 ---
 title: Siri Shortcuts
-subtitle: Exposing your Actions as Siri Shortcuts
+subtitle: Learn how to expose your Actions as Siri Shortcuts
 tags:
     - integration
     - useractivity
