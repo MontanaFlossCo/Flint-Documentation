@@ -27,7 +27,7 @@ Your app does not need to support all of these possibilities. As of Flint ea-1.0
 
 ## Adding support for Siri Shortcuts
 
-The simplest way to add basic support for iOS 12 Siri Shortcuts is to use activities. All you need to do is supply a suggested invocation phrase. The Action will then become visible to the user in the Siri Shortcuts section of the Settings app. You can also show the “Add Voice Shortcut” UI from your app to let the user create their voice shortcut there and then.
+The simplest way to add basic support for iOS 12 Siri Shortcuts is to use Flint's [Activities](activities.md) to auto-publish an `NSUserActivity`. All you need to do is supply a suggested invocation phrase. The Action will then become visible to the user in the Siri Shortcuts section of the Settings app. You can also show the “Add Voice Shortcut” UI from your app to let the user create their voice shortcut there and then.
 
 To turn an `Action` that supports activities into an activity that the system can use for Siri prediction and voice shortcuts you need to:
 
