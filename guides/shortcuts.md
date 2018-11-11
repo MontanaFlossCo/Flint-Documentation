@@ -56,12 +56,18 @@ final class DocumentPresentationModeAction: UIAction {
 }
 ```
 
-Once you have done this, you can add code to your application that will let the user add a voice shortcut directly in your app, using the system UI to record their custom phrase:
+## Showing the system UI for adding a voice shortcut
+
+Once you have an action that has a suggested voice phrase, you can add code to your application that will let the user add a voice shortcut directly in your app, using the system UI to record their custom phrase. You call this and pass in a `UIViewController` to present the UI:
 
 ```swift
-func yourAddToSiriButtonTapped(_ sender: Any) {
-    // Pass self (a UIViewController) as the parent view controller
-    ProFeatures.showInPresentationMode.addVoiceShortcut(for: documentRef, presenter:self)
+class YourViewController: UIViewController {
+    var currentDocument: DocumentRef?
+
+    func yourAddToSiriButtonTapped(_ sender: Any) {
+        // Show the Siri UI for adding a voice shortcut for this specific document
+        ProFeatures.showInPresentationMode.addVoiceShortcut(for: currentDocument!, presenter:self)
+    }
 }
 ```
 
