@@ -17,6 +17,10 @@ We have a community Slack you can join to get help and discuss ideas around usin
 
 Join at [flintcore.slack.com](https://join.slack.com/t/flintcore/shared_invite/enQtMzUwOTU4NTU0OTYwLWMxYTNiOTNjNmVkOTM3ZDgwNzZiNzJiNmE2NWUyMzUzMjg3ZTg4YjNmMjdhYmZkYTlmYmI2ZDQ5NjU0ZmQ3ZjU).
 
+## Newsletter
+
+You can [subscribe to the Flint newsletter](http://eepurl.com/dGW5Uj) for occasional updates on Flint's development, how-to articles and videos etc.
+  
 ## Example projects
 
 You can find a sample application built with Flint in the [FlintDemo-iOS repository](https://github.com/MontanaFlossCo/FlintDemo-iOS).
