@@ -1,5 +1,5 @@
 ---
-title: Siri Shortcutts
+title: Siri Shortcuts
 subtitle: Exposing your Actions as Siri Shortcuts
 tags:
     - integration
