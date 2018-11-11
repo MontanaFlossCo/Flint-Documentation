@@ -6,7 +6,6 @@ tags:
     - useractivity
     - actions
     - featured
-    - siri
 ---
 
 #### In this article:
@@ -246,49 +245,9 @@ In this example we'll fix the `title` of the activity to include the verb `Open`
 
 This then shows a Siri result with the title "Open MyProject" instead of just "MyProject".
 
-## Adding support for Siri Shortcuts
-
-The simplest way to add basic support for iOS 12 Siri Shortcuts is to use activities. All you need to do is supply a suggested invocation phrase. The Action will then become visible to the user in the Siri Shortcuts section of the Settings app. You can also show the “Add Voice Shortcut” UI from your app to let the user create their voice shortcut there and then.
-
-To turn an `Action` that supports activities into an activity that the system can use for Siri prediction and voice shortcuts you need to:
-
-1. Include `.prediction` in your Action’s `activityTypes`
-2. Add a value for `suggestedInvocationPhrase` — or set this property on the activity in your Action’s `prepareActivity()` function
-3. Optional: show the Add Voice Shortcut UI by calling `addVoiceShortcut(for:presenter:)`
-
-Here’s an example:
-
-```swift
-final class DocumentPresentationModeAction: UIAction {
-    typealias InputType = DocumentRef
-    typealias PresenterType = DocumentPresenter
-
-    static var description = "Open a document"
-    
-    /// Include .prediction
-    static var activityTypes: Set<ActivityEligibility> = [.handoff, .prediction]
-    
-    /// Include the explicit String? type here,
-    /// not doing so would use the wrong type.
-    static let suggestedInvocationPhrase: String? = "Presentation time"
-    
-    // … the reset of the Action elided
-}
-```
-
-Once you have done this, you can add code to your application that will let the user add a voice shortcut directly in your app, using the system UI to record their custom phrase:
-
-```swift
-func yourAddToSiriButtonTapped(_ sender: Any) {
-    // Pass self (a UIViewController) as the parent view controller
-    ProFeatures.showInPresentationMode.addVoiceShortcut(for: documentRef, presenter:self)
-}
-```
-
-This will allow the user to create a shortcut to an `NSUserActivity` that will invoke the action with the `documentRef` input supplied.
-
 ## Next steps
 
+* Expose actions as [Siri Shortcuts](shortcuts.md)
 * Add [Analytics](analytics.md) tracking
 * Use the [Timeline](timeline.md) to see what is going on in your app when things go wrong
 * Start using [Focus](focus.md) to pare down your logging
