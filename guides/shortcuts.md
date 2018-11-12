@@ -64,7 +64,9 @@ Next, we’ll look at how to show the UI for adding a voice command for this act
 
 Once you have an action with a suggested voice phrase you can add code to your application that will let the user add a voice shortcut directly in your app. Flint will present the system UI to record their custom phrase, using your phrase as inspiration.
 
-You call `addVoiceShortcut` and pass in the input to the action that the shortcut should use (e.g. a specific document) and a `UIViewController` to present the UI:
+You call the Flint-provided `addVoiceShortcut(for:presenter:)` function on your feature's action and pass in the input the action should use with the shortcut and a `UIViewController` to present the UI.
+
+So if your feature is called `ProFeatures` and it has an action bound as `showInPresentationMode` you would show the Add Siri Voice Shortcut UI like this:
 
 ```swift
 class YourViewController: UIViewController {
