@@ -18,17 +18,19 @@ tags:
 
 Siri Shortcuts are introduced in iOS 12, with some support on watchOS 5. The term Shortcuts and the app Shortcuts are heavily overloaded and confusing, so it helps to be clear what is meant and what is possible.
 
-1. Your app can expose Siri Shortcuts which iOS  will use for predictions and allow users to trigger these same actions again at a later point, using either `NSUserActivity` or a custom `INIntent`
+1. Your app can expose Siri Shortcuts which iOS will use for prediction of what might be useful and allow users to trigger these same actions again at a later point, using either `NSUserActivity` or a custom `INIntent`. (This is called “donating” shortcuts)
 2. Your app can offer a "suggested invocation phrase" so that when the user wants to create a new Siri voice-trigger or your action, there is a relevant phrase to prompt the user
-3. Your app can implement a Siri Intents extension that can execute Intent-based shortcuts in the background, without running your app, and either speak or show the results to the user, or direct them to open your app to continue the action somehow
-4. Users can trigger your app's `NSUserActivity` or custom `INIntent`-based shortcut from within a Shortcuts app "shortcut", also known as a workflow, to create their own custom automations
-5. Your app can "donate" specific "relevant shortcuts" that may be shown on the Siri watch face on Apple Watch based on time, location or user activity
+3. Your app can implement a Siri Intents extension that will execute Intent-based shortcuts in the background without running your app, and either speak or show the results to the user, or direct them to open your app to continue the action somehow if there is a reason for this (e.g. high memory requirements)
+4. Users can trigger your app's `NSUserActivity` or custom `INIntent`-based shortcut from within a Shortcuts app "shortcut", also known as a workflow, to create their own custom automations. App shortcuts that are not implemented in an Intent extension will open your app mid-workflow, thus terminating the workflow
+5. Your app can "donate" specific "relevant shortcuts" that may be shown on the Siri watch face on Apple Watch based on time of day, location or user activity such as working out at the gym
 
-Your app does not need to support all of these possibilities. As of Flint ea-1.0.4, you can easily expose `NSUserActivity`-based actions as shortctus. Support for Intent-based shortcuts will come in a future release.
+Your app does not need to support all of these possibilities. As of Flint ea-1.0.4, you can easily expose `NSUserActivity`-based actions as shortcuts therefore allowing scenarios (1), (2) and (4). 
+
+Support for Intent-based shortcuts is currently under development.
 
 ## Adding support for Siri Shortcuts
 
-The simplest way to add basic support for iOS 12 Siri Shortcuts is to use Flint's [Activities](activities.md) to auto-publish an `NSUserActivity`. All you need to do is supply a suggested invocation phrase. The Action will then become visible to the user in the Siri Shortcuts section of the Settings app. You can also show the “Add Voice Shortcut” UI from your app to let the user create their voice shortcut there and then.
+The simplest way to add basic support for iOS 12 Siri Shortcuts is to use Flint's [Activities](activities.md) to auto-publish an `NSUserActivity`. All you need to do is supply a suggested invocation phrase. The Action will then become visible to the user in the Siri Shortcuts section of the Settings app. You can also show the “Add Voice Shortcut” UI from your app to let the user create their voice shortcut without leaving your app.
 
 To turn an `Action` that supports activities into an activity that the system can use for Siri prediction and voice shortcuts you need to:
 
@@ -36,7 +38,7 @@ To turn an `Action` that supports activities into an activity that the system ca
 2. Add a value for `suggestedInvocationPhrase` — or set this property on the activity in your Action’s `prepareActivity()` function
 3. Optional: show the Add Voice Shortcut UI by calling `addVoiceShortcut(for:presenter:)`
 
-Here’s an example:
+Here’s an example of such an action:
 
 ```swift
 final class DocumentPresentationModeAction: UIAction {
@@ -56,9 +58,13 @@ final class DocumentPresentationModeAction: UIAction {
 }
 ```
 
+Next, we’ll look at how to show the UI for adding a voice command for this action.
+
 ## Showing the system UI for adding a voice shortcut
 
-Once you have an action that has a suggested voice phrase, you can add code to your application that will let the user add a voice shortcut directly in your app, using the system UI to record their custom phrase. You call this and pass in a `UIViewController` to present the UI:
+Once you have an action with a suggested voice phrase you can add code to your application that will let the user add a voice shortcut directly in your app. Flint will present the system UI to record their custom phrase, using your phrase as inspiration.
+
+You call `addVoiceShortcut` and pass in the input to the action that the shortcut should use (e.g. a specific document) and a `UIViewController` to present the UI:
 
 ```swift
 class YourViewController: UIViewController {
@@ -71,7 +77,7 @@ class YourViewController: UIViewController {
 }
 ```
 
-This will allow the user to create a shortcut to an `NSUserActivity` that will invoke the action with the `documentRef` input supplied.
+This will allow the user to create a shortcut to an `NSUserActivity` that will invoke the action with the `currentDocument` input supplied.
 
 ## Next steps
 
