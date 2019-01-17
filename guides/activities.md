@@ -1,6 +1,6 @@
 ---
 title: Activities
-subtitle: Flint's automatic Activities feature will publish actions as the current NSUserActivity and will continue these activities later, dispatching your actions for you
+subtitle: Flint's automatic Activities feature will publish actions as the current NSUserActivity and will continue these activities later by calling your associated Action.
 tags:
     - integration
     - useractivity
@@ -19,7 +19,7 @@ Apple platforms use `NSUserActivity` to tell the operating system about somethin
 
 From iOS 12 onward it also feeds this information into Siri Shortcuts, which will use machine learning to suggest appropriate activities you have performed in the past based on your location, time of day and other data.
 
-When you have actions defined using Flint, you get support for all of these with very little extra code required.
+When you have actions defined using Flint, you get support for all of these with very little extra code required. You declaritively define how an activity should be registered for your `Action`.
 
 The Activities feature of Flint will automatically register an `NSUserActivity` for you when users perform a qualifying action in your app. Flint observes the execution of actions and does the right thing for you so you no longer have to think about this at the call site where actions are performed. What's more it leverages your existing Action(s) and input types, with type safety when performing incoming activities and increased decoupling of your code.
 
@@ -28,13 +28,13 @@ With Activities you can:
 * Automatically publish `NSUserActivity`
 * Set the `NSUSerActivity` eligibility including options for  `handoff`, `search` and `prediction` (iOS 12 only)
 * Define a suggested invocation phrase for activities that you would like to expose as Siri Shortcuts (iOS 12 only)
-* Override activity attributes per Action and input the action receives
-* Define activity attributes specific to the value of the `InputType` to your Actions, so input types can be reused across actions that publish activities in different ways
+* Override activity attributes per Action and input the action receives for localised and data-specific properties such as `suggestedOnvocationPhrase`
+* Define activity attributes specific to the value of the `InputType` to your Actions, so input types can be reused across multiple actions 
 * Easily set custom Spotlight search attributes
 
-You determine which actions are published as activities. As an example, “Save” is not something that makes sense for a Handoff action, but opening a document is.
+You determine which `Action`s in your app are published as activities. As an example, “Save” is not something that makes sense for a Handoff action, but opening a document is.
 
-Flint will not automatically start publishing all your actions as activities. To enable this behaviour you need to declare one or more `activityTypes` on an action and it will have an `NSUserActivity` published. Your action’s `InputType` if there is one also needs to conform to `ActivityCodable`.
+Flint will not automatically start publishing all your qualifying actions as activities. To enable activities for an `Action` you need to declare one or more `activityTypes` on the `Action` type and it will then have an `NSUserActivity` published. Your action’s `InputType` if there is one also needs to conform to `ActivityCodable`.
 
 The other side of activities is receiving them in your app and performing the appropriate action. You need to provide a way to describe how to invoke your action from the `NSUserActivity` at a later a time. This means Flint needs to know:
 
@@ -70,6 +70,7 @@ final class DocumentOpenAction: UIAction {
     
     /// Declare the types of activity we want published.
     /// This is the bare minimum we need to add.
+    /// - note: You must specify the set type or Swift will assume it is an array
     static var activityTypes: Set<ActivityEligibility> = [.handoff, .prediction]
     
     static func perform(with context: ActionContext<InputType>, using presenter: PresenterType, Completion) -> Completion.Status {
