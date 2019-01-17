@@ -114,11 +114,15 @@ For steps 1 & 2 please see the [Apple Intents documentation]().
 
 ### Creating an Action to perform the intent
 
+Coming Soon. TL:DR; Make a type that conforms to `IntentAction`, and a custom presenter type.
+
 ### Associating your intent action with Actions in your App
 
 If you want this Intent action to be associated with another `Action` the user can perform in your app, just like [Activities](activities.md) are automatically registered with the system, you need to make your other action implement the `intent(for:)` function to return the appropriately configured `INIntent` instance.
 
 ### Make your Intent Extension use Flint to dispatch the Action
+
+Coming Soon. TL:DR; Make your App Delegate call `Flint.performIntentAction(...)`
 
 ## Automatically donating shortcuts when other `Action`s are performed
 
