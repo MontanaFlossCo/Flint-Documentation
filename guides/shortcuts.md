@@ -185,11 +185,11 @@ final class GetNoteAction: IntentAction {
         return ref
     }
 
-		/// Perform the action and use the Siri Intent presenter
-		/// to indicate the response type.
-		/// Response types are configure in your Intent's definition file in Xcode.
-		/// Note that the action must also return a Flint
-		/// completion status to indicate the success or failure to your Intent extension
+    /// Perform the action and use the Siri Intent presenter
+    /// to indicate the response type.
+    /// Response types are configure in your Intent's definition file in Xcode.
+    /// Note that the action must also return a Flint
+    /// completion status to indicate the success or failure to your Intent extension
     static func perform(context: ActionContext<InputType>, presenter: GetNoteAction.PresenterType, completion: Completion) -> Completion.Status {
         let response: GetNoteIntentResponse
         let outcome: ActionPerformOutcome
