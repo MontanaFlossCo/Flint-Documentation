@@ -22,13 +22,13 @@ Siri Shortcuts are introduced in iOS 12, with some support on watchOS 5. The `Ac
 
 The term Shortcuts and the app Shortcuts are heavily overloaded and confusing, so it helps to be clear what is meant and what is possible.
 
-### Siri Predictions expose common actions through 
+### Siri Predictions expose common actions in Search
 
-When users perform actions in your app, you can expose Siri Shortcuts which iOS will use for predictions and allow users to trigger further actions at a later point, using either `NSUserActivity` in your app or a custom `INIntent` in a separate extension to your app.
+When users perform actions in your app, you can expose Siri Shortcuts that iOS will use for predictions, allowing users to trigger the same actions at a later point, using either `NSUserActivity` to open your app, or a custom `INIntent` in a separate extension to your app.
 
 ### Voice Shortcuts allow users to trigger your actions with a custom phrase
 
-Your app can offer a "suggested invocation phrase" so that when the user wants to create a new Siri voice-trigger or your action there is a relevant phrase to prompt the user. You can show the standard UI to add the shortcut and record their phrase.
+Your app can offer a "suggested invocation phrase" so that if the user wants to create a new Siri voice-trigger for your action there is a relevant phrase to prompt the user. You can show the standard UI to add the shortcut and record their phrase.
 
 ### Intent Extensions perform your actions in the background
 
@@ -58,16 +58,16 @@ The simplest way to add basic support for iOS 12 Siri Shortcuts is to use Flint'
 
 All you need to do is supply a suggested invocation phrase and add `prediction` support if you want that. The Action will then become visible to the user in the Siri Shortcuts section of the Settings app. You can also show the “Add Voice Shortcut” UI from your app to let the user create a voice shortcut there and then.
 
-These shortcuts will **always open your app** and Flint will dispatch them as it does [Activities](activities.md).
+These shortcuts will **always open your app** and Flint will dispatch them as it does [Activities](activities.md) — meaning you must either have a URL mapping for your action or rely on `NSUserActivity.userInfo` data to recreate your input via `ActivityCodable` support on your input type.
 
 To turn an `Action` that supports activities into an activity that the system can use for Siri prediction and voice shortcuts you need to:
 
 1. Include `.prediction` in your Action’s `activityTypes`
 2. Add a value for `suggestedInvocationPhrase` — or set this property on the activity in your Action’s `prepareActivity()` function
-3. Optional: show the Add Voice Shortcut UI by calling `addVoiceShortcut(for:presenter:)` on the action binding
+3. *Optional*: show the Add Voice Shortcut UI by calling `addVoiceShortcut(for:presenter:)` on the action binding
 4. Make sure you have support for Activities in your app delegate; namely your `application(continueActivity:...)` implementation must call `Flint.continueActivity(...)` (see [Activities](activities.md))
 
-(We’ll assume you have the [Activities](activities.md) feature of Flint enabled)
+We’ll also assume you have the [Activities](activities.md) feature of Flint enabled.
 
 Here’s an example of such an action:
 
@@ -127,19 +127,18 @@ If you want a Siri Shortcut to perform your `Action` without opening your app, y
 When the user triggers a custom intent via Siri, Siri Suggestions or the Shortcuts app, your extension will be loaded and the appropriate intent handler for the intent type will be called. This handler can return a textual response to Siri that it can speak or display, use a custom Intents UI extension for display, or your intent handler can indicate that the user needs to continue the action inside your app.
 
 In this latter case, common if permissions or login credentials are missing, Siri will offer to open the app, passing in the Intent information to your app so that your app can then continue the activity directly.
-
-Flint will provides conventions for creating the `INIntent` instance for a given `Action`, and creating the input to the action from a received `INIntent` instance containing parameters.
+ 
+Flint provides conventions for creating the `INIntent` instance for a given `Action` input, and creating the input to the action from a received `INIntent` instance containing parameters. Your action needs to implemnent thes.
 
 You can "donate" intent-based Actions to Siri explicitly with `donateToSiri(for:)` on the action binding, or automatically via the `associatedIntents` function on other `Action`s.
 
 There’s a lot to cover there, so let’s break it down. Creating a custom Intent requires the following steps:
 
-1. Adding a new Intent Extension target to your app
-2. Defining a new `INIntent` type in Xcode, with an Intent Definition that declares the parameters and responses permitted with your intent
+1. Add a new Intent Extension target to your app
+2. Define a new `INIntent` type in Xcode, with an Intent Definition that declares the parameters and responses permitted with your intent
 3. Add FlintCore as a dependency to your Intent Extension, and add any types or frameworks you need from your main application to the target. 
-3. Defining a new `Action` type that will perform the work of the `Intent`, inside the intent extension. This must conform to `IntentAction`, and will receive the intent instance as its output, and an `IntentResultPresenter`
-4. Mapping the intent type to your `Action`
-5. Adding code to the generated `IntentHandler` code to call into Flint to dispatch the intent
+4. Define a new `Action` type that will perform the work of the `Intent`, inside the intent extension. This must conform to `IntentAction`, and will receive the intent instance as its output, and an `IntentResultPresenter`
+5. Add code to the generated `IntentHandler` code to call into Flint to dispatch the intent
 6. If your Intent may request the app to continue the activity, make sure you have `application(continueActivity:)` in your app delegate set to call `Flint.continueActivity(...)`
 
 For steps 1 & 2 please see the [Apple Intents documentation](). 
@@ -148,15 +147,14 @@ For steps 1 & 2 please see the [Apple Intents documentation]().
 
 Actions that can be performed in the background as an Intent need to indicate how they would like the system to present their results. As such you cannot reuse an existing app `Action` for an Intent directly — the presenter type is different to what you would normally use.
 
-These actions are only executed inside an Intent Extension, and 
-
 An intent action type conforms to `IntentAction`, which guarantees the correct presenter type and threading behaviour for intent extensions which are executed on a background thread so they do not block the Siri UI while fetching data for example.
 
-In the following example, the intent Action takes a document reference (ID) as input and specifies the type of Intent it is associated with. This type is used to convert to and from the input type of the action and the parameters of the Intent type.
+In the following example, the intent Action takes a document reference (ID) as input and specifies the type of intent and response it is associated with. This type is used to convert to and from the input type of the action and the parameters of the Intent type.
 
 ```swift
 import FlintCore
 
+/// Implement the GetNoteIntent, taking a document name as input and showing the document contents via Siri
 final class GetNoteAction: IntentAction {
     typealias InputType = DocumentRef
     typealias IntentType = GetNoteIntent
@@ -167,7 +165,7 @@ final class GetNoteAction: IntentAction {
     }
     
     /// Return an intent instance to execute the action with
-    /// the supplied input
+    /// the supplied input. Used when donating intents that invoke this action.
     static func intent(for input: DocumentRef) -> GetNoteIntent? {
         let result = GetNoteIntent()
         result.documentName = input.name
@@ -176,7 +174,8 @@ final class GetNoteAction: IntentAction {
     }
     
     /// Return an input instance to pass to the action with
-    /// when the intent is received.
+    /// when the intent is received. Used when executing the action when the user performs the Intent
+    /// via an Intent extension.
     static func input(for intent: GetNoteIntent) -> DocumentRef? {
         guard let name = intent.documentName else {
             return nil
@@ -185,11 +184,8 @@ final class GetNoteAction: IntentAction {
         return ref
     }
 
-    /// Perform the action and use the Siri Intent presenter
-    /// to indicate the response type.
-    /// Response types are configure in your Intent's definition file in Xcode.
-    /// Note that the action must also return a Flint
-    /// completion status to indicate the success or failure to your Intent extension
+    /// Perform the action and use the Siri Intent presenter to indicate the response type.
+    /// The available responses are configured in your Intent's definition file in Xcode.
     static func perform(context: ActionContext<InputType>, presenter: GetNoteAction.PresenterType, completion: Completion) -> Completion.Status {
         let response: GetNoteIntentResponse
         let outcome: ActionPerformOutcome
@@ -202,14 +198,15 @@ final class GetNoteAction: IntentAction {
             outcome = .failureWithFeatureTermination(error: Failure.documentNotFound)
         }
         
-        presenter.showResult(response: response)
+        // Tell Siri what the response is
+        presenter.showResponse(response)
         
         return completion.completedSync(outcome)
     }
 }
 ```
 
-Note that the `PresenterType` for `IntentAction`-conforming actions is automatically set to a `IntentResponsePresenter<IntentResponseType>`. This means that your action receives a presenter with aa single `showResponse()` function and you pass in one of the `INIntentResponse` instances that are valid for this intent. The types automatically generated by Xcode have convenience functions for each response you define in your Intent definition file.
+Note that the `PresenterType` for `IntentAction`-conforming actions is automatically set to a `IntentResponsePresenter<IntentResponseType>`. This means that your action receives a presenter with a single `showResponse()` function that you call with one of the `INIntentResponse` instances that are valid for this intent. The types automatically generated by Xcode have convenience functions for each response you define in your Intent definition file.
 
 Separate from the Intent response, your action also needs to participate in Flint’s normal completion status handling as shown above, so that the caller can adapt its behaviour.
 
