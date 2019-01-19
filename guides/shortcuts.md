@@ -18,33 +18,56 @@ tags:
 
 ## Overview
 
-Siri Shortcuts are introduced in iOS 12, with some support on watchOS 5. The term Shortcuts and the app Shortcuts are heavily overloaded and confusing, so it helps to be clear what is meant and what is possible.
+Siri Shortcuts are introduced in iOS 12, with some support on watchOS 5. The `Action` pattern used throughout Flint provides all the benefits of contextual logging, analytics, permissions and feature flagging for Shortcuts and Intents.
 
-* When users perform actions in your app, you can expose Siri Shortcuts which iOS will use for predictions and allow users to trigger further actions at a later point, using either `NSUserActivity` in your app or a custom `INIntent` in a separate extension to your app
-* Your app can offer a "suggested invocation phrase" so that when the user wants to create a new Siri voice-trigger or your action there is a relevant phrase to prompt the user
-* Your app can implement a Siri Intents extension that can execute Intent-based shortcuts in the background, without running your app, and either speak or show the results to the user, or direct them to open your app to continue the action somehow if there is a reason for this (e.g. high memory requirements)
-* Users can trigger your app's `NSUserActivity` or custom `INIntent`-based shortcut from within a Shortcuts app "shortcut", also known as a workflow, to create their own custom automations. App shortcuts that are not implemented in an Intent extension will open your app mid-workflow, thus terminating the workflow
-* Your app can "donate" specific shortcuts it thinks the user will find useful
-* Your app can also donate "relevant shortcuts" that may be shown on the Siri watch face on Apple Watch based on time, location or user activity
+The term Shortcuts and the app Shortcuts are heavily overloaded and confusing, so it helps to be clear what is meant and what is possible.
 
-Your app does not need to support all of these possibilities. As of Flint ea-1.0.4, you can easily expose `NSUserActivity`-based actions as shortctus. Release ea-1.0.5 supports both activities as shortcuts and custom `INIntent` extensions.
+### Siri Predictions expose common actions through 
 
-Your app does not need to support all of these possibilities. As of Flint ea-1.0.4, you can easily expose `NSUserActivity`-based actions as shortcuts therefore allowing scenarios (1), (2) and (4). 
+When users perform actions in your app, you can expose Siri Shortcuts which iOS will use for predictions and allow users to trigger further actions at a later point, using either `NSUserActivity` in your app or a custom `INIntent` in a separate extension to your app.
+
+### Voice Shortcuts allow users to trigger your actions with a custom phrase
+
+Your app can offer a "suggested invocation phrase" so that when the user wants to create a new Siri voice-trigger or your action there is a relevant phrase to prompt the user. You can show the standard UI to add the shortcut and record their phrase.
+
+### Intent Extensions perform your actions in the background
+
+Your app can implement a Siri Intents extension that can execute Intent-based shortcuts in the background, without running your app, and either speak or show the results to the user, or direct them to open your app to continue the action somehow if there is a reason for this (e.g. high memory requirements).
+
+### The Shortcuts app can invoke your actions inside workflows
+
+Users can trigger your app's `NSUserActivity` or custom `INIntent`-based shortcut from within a Shortcuts app "shortcut", also known as a workflow, to create their own custom automations. App shortcuts that are not implemented in an Intent extension will open your app mid-workflow, thus terminating the workflow.
+
+### Donating shortcuts to the system
+
+Your app can "donate" specific shortcuts it thinks the user will find useful. This feeds the prediction system and the list of shortcuts available to the user in Shortcuts app and Settings.
+
+### Show relevant shortcuts on Apple Watch
+
+Your app can also donate "relevant shortcuts" that may be shown on the Siri watch face on an Apple Watch based on time, location or user activity.
+
+### You choose what to support
+
+Your app does not need to support all of these possibilities. As of Flint ea-1.0.4, you can easily expose `NSUserActivity`-based actions as shortcuts. Release ea-1.0.5 supports both activities as shortcuts and custom `INIntent` extensions.
 
 For further details on how Shortcuts can be used on iOS, [see Apple's tech note](https://support.apple.com/en-gb/HT209055).
 
 ## Adding basic support for Siri Shortcuts using Activities
 
-The simplest way to add basic support for iOS 12 Siri Shortcuts is to use Flint's [Activities](activities.md) to auto-publish an `NSUserActivity`. All you need to do is supply a suggested invocation phrase. The Action will then become visible to the user in the Siri Shortcuts section of the Settings app. You can also show the “Add Voice Shortcut” UI from your app to let the user create their voice shortcut there and then.
+The simplest way to add basic support for iOS 12 Siri Shortcuts is to use Flint's [Activities](activities.md) to auto-publish an `NSUserActivity`. Once your `Action` is set up for this already, you have minimal work to do for the user to be able to trigger that action from Siri via a voice shortcut, Siri prediction or in the Shortcuts app.
 
-These shortcuts will always open your app and Flint will dispatch them.
+All you need to do is supply a suggested invocation phrase and add `prediction` support if you want that. The Action will then become visible to the user in the Siri Shortcuts section of the Settings app. You can also show the “Add Voice Shortcut” UI from your app to let the user create a voice shortcut there and then.
+
+These shortcuts will **always open your app** and Flint will dispatch them as it does [Activities](activities.md).
 
 To turn an `Action` that supports activities into an activity that the system can use for Siri prediction and voice shortcuts you need to:
 
 1. Include `.prediction` in your Action’s `activityTypes`
 2. Add a value for `suggestedInvocationPhrase` — or set this property on the activity in your Action’s `prepareActivity()` function
-3. Optional: show the Add Voice Shortcut UI by calling `addVoiceShortcut(for:presenter:)`
+3. Optional: show the Add Voice Shortcut UI by calling `addVoiceShortcut(for:presenter:)` on the action binding
 4. Make sure you have support for Activities in your app delegate; namely your `application(continueActivity:...)` implementation must call `Flint.continueActivity(...)` (see [Activities](activities.md))
+
+(We’ll assume you have the [Activities](activities.md) feature of Flint enabled)
 
 Here’s an example of such an action:
 
@@ -60,7 +83,7 @@ final class DocumentPresentationModeAction: UIAction {
     
     /// Include the explicit String? type here,
     /// not doing so would use the wrong type.
-    static let suggestedInvocationPhrase: String? = "Presentation time"
+    static let suggestedInvocationPhrase: String? = "It's show time"
     
     // … the reset of the Action elided
 }
@@ -74,9 +97,11 @@ For testing, you can go to a device's Settings app and in the "Developer" sectio
 
 Once you have an action with a suggested voice phrase you can add code to your application that will let the user add a voice shortcut directly in your app. Flint will present the system UI to record their custom phrase, using your phrase as inspiration.
 
-You call the Flint-provided `addVoiceShortcut(for:presenter:)` function on your feature's action and pass in the input the action should use with the shortcut and a `UIViewController` to present the UI.
+You call the Flint-provided `addVoiceShortcut(for:presenter:)` function on your feature's action binding and pass in the input the action should use with the shortcut and a `UIViewController` to present the UI.
 
-So if your feature is called `ProFeatures` and it has an action bound as `showInPresentationMode` you would show the Add Siri Voice Shortcut UI like this:
+Note that creating a shortcut to an action does so for a specific input to that `Action`. In iOS 12 you cannot create a shortcut that takes a different input each time. You can think of it as a frozen snapshot of an action you performed on a given input, that you can repeat later.
+
+By way of example, if your feature is called `ProFeatures` and it has an action bound as `showInPresentationMode` you would show the Add Siri Voice Shortcut UI like this:
 
 ```swift
 class YourViewController: UIViewController {
@@ -89,23 +114,30 @@ class YourViewController: UIViewController {
 }
 ```
 
-This will allow the user to create a shortcut to an `NSUserActivity` or `INIntent` that will invoke the action with the `documentRef` input supplied. You can call this function at any time to register shortcuts without actually performing the action at that point, for example in a Settings UI for your app that allows users to add shortcuts for common actions listed in your app.
+You can call this function at any time to register shortcuts without actually performing the action at that point, for example in a Settings UI for your app that allows users to add shortcuts for common actions listed in your app.
 
 Once the user has added a shortcut in this way, your app can be invoked by voice with Siri, or inside the Shortcuts app.
+
+Note that this will allow the user to create a shortcut to an Action via `NSUserActivity` or `INIntent` that will invoke the action with the `documentRef` input supplied. For intent-based actions, it will always create a shortcut to the Intent if it can.
 
 ## Implementing a custom Siri Intent extension with Flint
 
 If you want a Siri Shortcut to perform your `Action` without opening your app, you'll need to implement a Siri Intent Extension. It is important to understand the lifecycle of an Intent request, as there are various paths that can be taken.
 
-When the user triggers a custom intent via Siri, Siri Suggestions or the Shortcuts app, your extension will be loaded and the appropriate intent handler for the intent type will be called. This handler can return a response to Siri that it can speak or display, or your intent handler can indicate that the user needs to continue the action inside your app — and Siri will offer to open the app, passing in the Intent information to your app so that your app can then continue the activity directly.
+When the user triggers a custom intent via Siri, Siri Suggestions or the Shortcuts app, your extension will be loaded and the appropriate intent handler for the intent type will be called. This handler can return a textual response to Siri that it can speak or display, use a custom Intents UI extension for display, or your intent handler can indicate that the user needs to continue the action inside your app.
 
-Flint will handle both creating the `INIntent` instance for a given `Action`, in order to "donate" it to Siri explicitly or via `NSUserActivity` if you are using the [Activities](activities.md) feature of Flint
+In this latter case, common if permissions or login credentials are missing, Siri will offer to open the app, passing in the Intent information to your app so that your app can then continue the activity directly.
 
-Creating a custom Intent requires:
+Flint will provides conventions for creating the `INIntent` instance for a given `Action`, and creating the input to the action from a received `INIntent` instance containing parameters.
+
+You can "donate" intent-based Actions to Siri explicitly with `donateToSiri(for:)` on the action binding, or automatically via the `associatedIntents` function on other `Action`s.
+
+There’s a lot to cover there, so let’s break it down. Creating a custom Intent requires the following steps:
 
 1. Adding a new Intent Extension target to your app
 2. Defining a new `INIntent` type in Xcode, with an Intent Definition that declares the parameters and responses permitted with your intent
-3. Defining a new `Action` type that will perform the work of the `Intent`, inside the intent extension. This must conform to `IntentAction`, and will receing the intent instance as its output, and an `IntentResultPresenter`
+3. Add FlintCore as a dependency to your Intent Extension, and add any types or frameworks you need from your main application to the target. 
+3. Defining a new `Action` type that will perform the work of the `Intent`, inside the intent extension. This must conform to `IntentAction`, and will receive the intent instance as its output, and an `IntentResultPresenter`
 4. Mapping the intent type to your `Action`
 5. Adding code to the generated `IntentHandler` code to call into Flint to dispatch the intent
 6. If your Intent may request the app to continue the activity, make sure you have `application(continueActivity:)` in your app delegate set to call `Flint.continueActivity(...)`
@@ -114,21 +146,135 @@ For steps 1 & 2 please see the [Apple Intents documentation]().
 
 ### Creating an Action to perform the intent
 
-Coming Soon. TL:DR; Make a type that conforms to `IntentAction`, and a custom presenter type.
+Actions that can be performed in the background as an Intent need to indicate how they would like the system to present their results. As such you cannot reuse an existing app `Action` for an Intent directly — the presenter type is different to what you would normally use.
 
-### Associating your intent action with Actions in your App
+These actions are only executed inside an Intent Extension, and 
 
-If you want this Intent action to be associated with another `Action` the user can perform in your app, just like [Activities](activities.md) are automatically registered with the system, you need to make your other action implement the `intent(for:)` function to return the appropriately configured `INIntent` instance.
+An intent action type conforms to `IntentAction`, which guarantees the correct presenter type and threading behaviour for intent extensions which are executed on a background thread so they do not block the Siri UI while fetching data for example.
+
+In the following example, the intent Action takes a document reference (ID) as input and specifies the type of Intent it is associated with. This type is used to convert to and from the input type of the action and the parameters of the Intent type.
+
+```swift
+import FlintCore
+
+final class GetNoteAction: IntentAction {
+    typealias InputType = DocumentRef
+    typealias IntentType = GetNoteIntent
+    typealias IntentResponseType = GetNoteIntentResponse
+    
+    enum Failure: Error {
+        case documentNotFound
+    }
+    
+    /// Return an intent instance to execute the action with
+    /// the supplied input
+    static func intent(for input: DocumentRef) -> GetNoteIntent? {
+        let result = GetNoteIntent()
+        result.documentName = input.name
+        result.setImage(INImage(named: "GetNoteIcon"), forParameterNamed: \.documentName)
+        return result
+    }
+    
+    /// Return an input instance to pass to the action with
+    /// when the intent is received.
+    static func input(for intent: GetNoteIntent) -> DocumentRef? {
+        guard let name = intent.documentName else {
+            return nil
+        }
+        let ref = DocumentRef(name: name, summary: nil)
+        return ref
+    }
+
+		/// Perform the action and use the Siri Intent presenter
+		/// to indicate the response type.
+		/// Response types are configure in your Intent's definition file in Xcode.
+		/// Note that the action must also return a Flint
+		/// completion status to indicate the success or failure to your Intent extension
+    static func perform(context: ActionContext<InputType>, presenter: GetNoteAction.PresenterType, completion: Completion) -> Completion.Status {
+        let response: GetNoteIntentResponse
+        let outcome: ActionPerformOutcome
+        if let document = DocumentStore.shared.load(context.input.name) {
+            response = .success(content: document.body)
+            outcome = .successWithFeatureTermination
+        } else {
+            // If they are to continue in-app we can pass an activity that will be used to continue in the app, but here we're treat it as an error.
+            response = GetNoteIntentResponse(code: .failure, userActivity: nil) 
+            outcome = .failureWithFeatureTermination(error: Failure.documentNotFound)
+        }
+        
+        presenter.showResult(response: response)
+        
+        return completion.completedSync(outcome)
+    }
+}
+```
+
+Note that the `PresenterType` for `IntentAction`-conforming actions is automatically set to a `IntentResponsePresenter<IntentResponseType>`. This means that your action receives a presenter with aa single `showResponse()` function and you pass in one of the `INIntentResponse` instances that are valid for this intent. The types automatically generated by Xcode have convenience functions for each response you define in your Intent definition file.
+
+Separate from the Intent response, your action also needs to participate in Flint’s normal completion status handling as shown above, so that the caller can adapt its behaviour.
+
+**It is important to understand** that IntentAction perform calls take place on a non-main queue, and they may complete asynchronously if desired.
 
 ### Make your Intent Extension use Flint to dispatch the Action
 
-Coming Soon. TL:DR; Make your App Delegate call `Flint.performIntentAction(...)`
+Now that you have an `Action` that can perform the work of your intent, you have an Intent Extension target in your project and your Intent definition file all together, all you need to do is make the Intent extension perform the action.
+
+Your Intent Extension has a single entry point, the Intent Handler that extends `INExtension` from the `Intents` framework  on iOS. You need to edit this to set up Flint and return an intent handler instance appropriate for each Intent you support:
+
+```swift
+import Intents
+import FlintCore
+
+var hasRunFlintSetup = false
+
+class IntentHandler: INExtension {
+    override init() {
+        super.init()
+        if !hasRunFlintSetup {
+		        // Pass in the FeatureGroup you want to have
+		        // access to in your extension. This is usually
+		        // a small subset of your Features to minimise 
+		        // dependencies.
+            Flint.quickSetup(IntentFeatures.self)
+            hasRunFlintSetup = true
+        }
+    }
+
+    override func handler(for intent: INIntent) -> Any {
+		    // Return an instance of the handler type Xcode
+		    // generated for your given intent.
+        switch intent {
+            case is GetNoteIntent: return GetNoteIntentHandler()
+            default: fatalError("Unknown intent type: \(intent)")
+        }
+    }
+}
+```
+
+With this code in your extension, all that is left to do is add code to each intent’s handler. For the `GetNoteIntentHandler` in the example above, this would be simply:
+
+```swift
+import Foundation
+import Intents
+import FlintCore
+
+@objc
+class GetNoteIntentHandler: NSObject, GetNoteIntentHandling {
+    @objc(handleGetNote:completion:)
+    func handle(intent: GetNoteIntent, completion: @escaping (GetNoteIntentResponse) -> Void) {
+        let outcome = SiriFeature.getNote.perform(intent: intent, completion: completion)
+        assert(outcome == .success, "Intent failed: \(outcome)")
+    }
+}
+```
+
+Flint’s `perform(intent:completion:)` function exists on all your `IntentAction`-conforming actions’ bindings. It will create an `IntentResultPresenter` that is passed to your action’s `perform(coontext:,presenter:,completion:)` function so that your action can set the appropriate intent response.
 
 ## Automatically donating shortcuts when other `Action`s are performed
 
 Much like the Activities feature of Flint, the Intent support can auto-donate one or more Intent(s) each time an `Action` is performed in your app.
 
-For example a Podcast player app might want to donate both a "Toggle trim silence for Connected podcast" shortcut and a "Toggle fast speed for Connectted podcast" shortcut, when you play one episode of "Connected" podcast. This obviously shouldn't be abused, but can prove very useful as people increasingly use automation with Shortcuts app.
+For example a Podcast player app might want to donate both a "Toggle trim silence for Connected podcast" shortcut and a "Toggle fast speed for Connected podcast" shortcut, when you play one episode of "Connected" podcast. This obviously shouldn't be abused, but can prove very useful as people increasingly use automation with Shortcuts app.
 
 All you need to do to achieve this is to add a function `associatedIntents(for:)` to your `Action` implementation:
 
