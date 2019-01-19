@@ -231,18 +231,18 @@ class IntentHandler: INExtension {
     override init() {
         super.init()
         if !hasRunFlintSetup {
-		        // Pass in the FeatureGroup you want to have
-		        // access to in your extension. This is usually
-		        // a small subset of your Features to minimise 
-		        // dependencies.
+            // Pass in the FeatureGroup you want to have
+            // access to in your extension. This is usually
+            // a small subset of your Features to minimise 
+            // dependencies.
             Flint.quickSetup(IntentFeatures.self)
             hasRunFlintSetup = true
         }
     }
 
     override func handler(for intent: INIntent) -> Any {
-		    // Return an instance of the handler type Xcode
-		    // generated for your given intent.
+        // Return an instance of the handler type Xcode
+        // generated for your given intent.
         switch intent {
             case is GetNoteIntent: return GetNoteIntentHandler()
             default: fatalError("Unknown intent type: \(intent)")
