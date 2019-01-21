@@ -196,7 +196,7 @@ This mechanism makes it easier to have reusable code cross-platform, while not a
 
 To actually perform an action of a conditional feature you must be sure the feature is available. Flint uses Swift’s type system to enforce this: there is no way to `perform` an action of a conditional feature without first checking availability, unlike normal features where you just call `perform`.
 
-Instead you must first obtain a `ConditionalActionRequest` by calling `request()` on the action binding, and if you get a result back you can then call `perform` on that:
+Instead you must first obtain a `VerifiedActionBinding` by calling `request()` on the action binding, and if you get a result back you can then call `perform` on that:
 
 ```swift
 if let request = DeepLinkingFeature.performIncomingURL.request() {
