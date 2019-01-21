@@ -158,7 +158,7 @@ There are two options for customising the attribute values passed to the system 
 
 The first is to implement `prepareActivity(_ activity: ActivityBuilder<InputType>)` on your Action type. This is called when the activity is being created, and passed a builder that can safely create the activity based on the defaults Flint has already established for you. The builder has a reference to the `input` of the action for which an activity is being created, which you can use when customising the activity.
 
-Note that the builder has already taken into account if your Action input type conforms to `ActivityCodable` and carries over the appropriate `userInfo` settings, and if not will attempt to use URL mapping to invoke your action. It will warn you if neither of these is possible, to prevent obscure bugs where you expose activities that cannot be invoked later.
+Note that the builder has already taken into account if your Action input type conforms to `ActivityCodable` and carries over the appropriate `userInfo` settings but if the input does not conform to this protocol it will attempt to use URL mapping to invoke your action. It will warn you if neither of these is possible, to prevent obscure bugs where you expose activities that cannot be invoked later.
 
 ```swift
 final class DocumentOpenAction: Action {
@@ -195,11 +195,13 @@ The builder is passed the appropriate input to your Action, having reconstructed
 
 Properties you can access on the builder include:
 
-* `title`
+* `title` — a title displayed for the activity
 * `subtitle` — sets `contentDescription` on the search attributes
-* `keywords` 
+* `thumbnail` — an image representing the activity or the subject of it 
+* `keywords` — search keywords you wish to include 
 * `thumbnail`, `thumbnailURL` and `thumbnailData` — three options for specifying a thumbnail for search results and Siri suggestions
 * `searchAttributes` — direct access to the full `CSSearchableItemAttributeSet` properties for advanced usage
+* `persistentIdentifier` — on iOS 12 and watchOS 5 or higher, for later removing activities that are no longer valid
 
 However we can go one better. Often the input type itself will be able to provide the metadata required for the activity attributes, and this will lead to more code reuse. You can make an Action's input type conform to [`ActivityMetadataRepresentable`](https://github.com/MontanaFlossCo/Flint/blob/e4896c4dc43a6df52ddb893051a6e177f5fe7e97/FlintCore/Activities/ActivityMetadataRepresentable.swift), and Flint will detect this and automatically populate the activity properties from these values.
 
