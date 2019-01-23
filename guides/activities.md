@@ -34,7 +34,7 @@ With Activities you can:
 
 You determine which `Action`s in your app are published as activities. As an example, “Save” is not something that makes sense for a Handoff action, but opening a document is.
 
-Flint will not automatically start publishing all your qualifying actions as activities. To enable activities for an `Action` you need to declare one or more `activityTypes` on the `Action` type and it will then have an `NSUserActivity` published. Your action’s `InputType` if there is one also needs to conform to `ActivityCodable`.
+Flint will not automatically start publishing all your qualifying actions as activities. To enable activities for an `Action` you need to declare one or more `activityEligibility` on the `Action` type and it will then have an `NSUserActivity` published. Your action’s `InputType` if there is one also needs to conform to `ActivityCodable`.
 
 The other side of activities is receiving them in your app and performing the appropriate action. You need to provide a way to describe how to invoke your action from the `NSUserActivity` at a later a time. This means Flint needs to know:
 
@@ -59,7 +59,7 @@ Flint currently supports the following values for activity eligibility, which yo
 * `.search` - Include the activity in Spotlight search indexing
 * `.prediction` - Use the activity for iOS 12 Siri predictions
 
-So we’ll define a value for the static `activityTypes` property:
+So we’ll define a value for the static `activityEligibility` property:
 
 ```swift
 final class DocumentOpenAction: UIAction {
@@ -71,7 +71,7 @@ final class DocumentOpenAction: UIAction {
     /// Declare the types of activity we want published.
     /// This is the bare minimum we need to add.
     /// - note: You must specify the set type or Swift will assume it is an array
-    static var activityTypes: Set<ActivityEligibility> = [.handoff, .prediction]
+    static var activityEligibility: Set<ActivityEligibility> = [.handoff, .prediction]
     
     static func perform(with context: ActionContext<InputType>, using presenter: PresenterType, Completion) -> Completion.Status {
         // … here we would open the document as normal
@@ -143,7 +143,7 @@ func application(_ application: UIApplication, continue userActivity: NSUserActi
 
 You may be wondering what the `presentationRouter` is in this code. This is a value you provide that conforms to Flint's `PresentationRouter` type. It is responsible for looking at the type of action to invoke and returning the correct type of presenter the action requires. This is how we handle the problem of "my app in currently showing some UI and this action requires a completely different state". See the example in the [Routes guide](https://github.com/MontanaFlossCo/Flint-Documentation/blob/master/guides/routes.md#adding-the-code-your-app-needs-to-handle-urls-and-present-the-ui) which also leverages the same mechanism.
 
-Other than this, you do also need to update your `Info.plist` to update the key `NSUserActivityTypes` to include the identifiers for every activity you support. When you start supporting many kinds of activity because it is now so simple to do so, keeping on top of this can be difficult.
+Other than this, you do also need to update your `Info.plist` to update the key `NSUseractivityEligibility` to include the identifiers for every activity you support. When you start supporting many kinds of activity because it is now so simple to do so, keeping on top of this can be difficult.
 
 However, Flint also helps with this. First, it generates automatic activity type IDs using the app's bundle ID, feature and action name (split from camel case into tokens), all using lowercased "snake case". In future we'll have a helper to output all the IDs for you so you can enter them into `Info.plist` but for now here's some examples of how the IDs map:
 
@@ -167,7 +167,7 @@ final class DocumentOpenAction: Action {
 
     static var description = "Open a document"
     
-    static var activityTypes: Set<ActivityEligibility> = [.handoff, .search]
+    static var activityEligibility: Set<ActivityEligibility> = [.handoff, .search]
 
     static func perform(with context: ActionContext<DocumentRef>, using presenter: DocumentPresenter, completion: Completion) -> Completion.Status {
         // …

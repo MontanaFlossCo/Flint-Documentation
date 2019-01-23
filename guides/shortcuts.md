@@ -62,7 +62,7 @@ These shortcuts will **always open your app** and Flint will dispatch them as it
 
 To turn an `Action` that supports activities into an activity that the system can use for Siri prediction and voice shortcuts you need to:
 
-1. Include `.prediction` in your Action’s `activityTypes`
+1. Include `.prediction` in your Action’s `activityEligibility`
 2. Add a value for `suggestedInvocationPhrase` — or set this property on the activity in your Action’s `prepareActivity()` function
 3. *Optional*: show the Add Voice Shortcut UI by calling `addVoiceShortcut(for:presenter:)` on the action binding
 4. Make sure you have support for Activities in your app delegate; namely your `application(continueActivity:...)` implementation must call `Flint.continueActivity(...)` (see [Activities](activities.md))
@@ -79,7 +79,7 @@ final class DocumentPresentationModeAction: UIAction {
     static var description = "Open a document"
     
     /// Include .prediction so we are listed on Siri search results
-    static var activityTypes: Set<ActivityEligibility> = [.prediction]
+    static var activityEligibility: Set<ActivityEligibility> = [.prediction]
     
     /// Include the explicit String? type here,
     /// not doing so would use the wrong type.
