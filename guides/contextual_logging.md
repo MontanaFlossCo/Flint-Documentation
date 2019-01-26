@@ -205,8 +205,7 @@ When extracted, the Zip can look something like this:
 
 ## Changing log levels at runtime
 
-Documentation TBD. See [`Logging`]
-(https://github.com/MontanaFlossCo/Flint/blob/master/FlintCore/Logging/Logging.swift).
+Documentation TBD. See [`Logging`](https://github.com/MontanaFlossCo/Flint/blob/master/FlintCore/Logging/Logging.swift).
 
 ## Next steps
 
