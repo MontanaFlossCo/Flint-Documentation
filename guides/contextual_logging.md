@@ -116,11 +116,6 @@ Essentially it is an array of strings representing a hierarchical path, which ca
 
 Flint maps a feature's `identifier` type `FeaturePath` to `TopicPath` under the hood, which is how we get log filtering by feature without the logging subsystem having a dependency on features. In future perhaps we'll spin it off into its own framework.
 
-## Changing log levels at runtime
-
-Documentation TBD. See [`Logging`]
-(https://github.com/MontanaFlossCo/Flint/blob/master/FlintCore/Logging/Logging.swift).
-
 ## Using the built in loggers
 
 Flint ships with a simple `print` logger, a file logger, and an `OSLog` logging output implementation that sends entries to `Console.app`. 
@@ -189,14 +184,14 @@ let url = DebugReporting.gatherReportZip(options: [])
 On iOS, to show a share sheet from your UI for this file you can do this:
 
 ```swift
-    @objc public func shareReport() {
-        let url = DebugReporting.gatherReportZip(options: [])
-        let shareViewController = UIActivityViewController(activityItems: [url], applicationActivities: nil)
-        shareViewController.completionWithItemsHandler = { _, _, _, _ in
-            try? FileManager.default.removeItem(at: url)
-        }
-        present(shareViewController, animated: true)
+@objc public func shareReport() {
+    let url = DebugReporting.gatherReportZip(options: [])
+    let shareViewController = UIActivityViewController(activityItems: [url], applicationActivities: nil)
+    shareViewController.completionWithItemsHandler = { _, _, _, _ in
+        try? FileManager.default.removeItem(at: url)
     }
+    present(shareViewController, animated: true)
+}
 ```
 
 When extracted, the Zip can look something like this:
@@ -207,6 +202,11 @@ When extracted, the Zip can look something like this:
 	/flintdemo-dev-2019-01-25.log
 	/timeline.json
 ```
+
+## Changing log levels at runtime
+
+Documentation TBD. See [`Logging`]
+(https://github.com/MontanaFlossCo/Flint/blob/master/FlintCore/Logging/Logging.swift).
 
 ## Next steps
 
