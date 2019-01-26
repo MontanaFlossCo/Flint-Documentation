@@ -15,27 +15,37 @@ tags:
 
 ## Overview
 
-Using Flint means that your app is aware of the actions the user is performing, and to which features those belong. We make use of this information to make logging much more useful, by including the information about the feature and action that culminated in each log entry. Your log strings typically don't need to include as much context about what is happening because this is implied.
+Using Flint means that your app is aware of the actions the user is performing, and to which features those belong. This information makes logging much more useful by including the feature and action that culminated in each log entry. Your log message strings typically don't need to include as much context about what is happening because this context is automatically included.
 
-Every action that is performed is passed its own contextual logger interface, which encapsulates information about the context of the action. This includes the *feature to which it belongs*, as well as the *input* passed to the action. There's also information about the original "user activity" that ultimately resulted in the log entry, essentially providing a form of conversational threading to logging. For example if you get an error in the log about sharing a document, it can show you that the original start of this user activity was them importing a document in a format from another app.
+## How Contextual Logging works
 
-Note that because Flint has the ability to log when actions are performed, including the inputs passed, this eliminates a lot of logging you would normally write to debug what is happening in your UI.
+Every action that is performed is passed its own contextual logger interface, which encapsulates information about the context of the action. This includes the *feature to which it belongs*, as well as the *input* passed to the action.
 
-Context Logging in Flint is also built to allow you to change logging levels at runtime — typically while you are debugging — and to filter logging to include only information from specific features. You can even set log levels per feature. We strongly believe that statically compiled in logging thresholds make logging useless in most cases - it's either the full firehose or nothing useful without recompiling.
+There's also information about the original "user activity" that ultimately resulted in the log entry, essentially providing a form of conversational threading to logging. For example if you get an error in the log about sharing a document, it can show you that the start of this user activity was them importing a document in a specific format from another app. 
+
+Note that because Flint has the ability to log when actions are performed, including the inputs passed, this eliminates a lot of logging you would normally write to debug what is happening in your UI. 
+
+Contextual Logging in Flint is also built to allow you to **change logging levels at runtime** — typically while you are debugging — and to filter logging to include only information from specific features. You can even set log levels per feature. 
+
+We strongly believe that statically compiled in logging thresholds make logging useless in many real-world cases — it's either the full firehose or nothing useful without recompiling. Runtime-enabled logging can increase compiled code size but the benefit in being able to capture logging without rebuilding is valuable.
 
 ## Yet another logging system?!
 
-No, not really. Just a thin layer on top of whatever logging you want to use. Flint's logging APIs allow your preferred logging subsystem to include this information so you can get far more contextual detail about e.g. why a network request is happening. 
+That’s a good question and the answer is a reluctant “sort of”. Flint’s logging can be adapted as a layer on top of whatever logging you already use. Flint's logging APIs allow your preferred logging subsystem to include this information so you can get far more contextual detail about e.g. why a network request is happening. 
 
 If you carry the context logger from your actions through to your subsystems, you can disambiguate all this internal activity in your logs.
 
+However, Flint has `stdout`, OSLog and File based logging supplied out of the box without any other dependencies.
+
 ## Development vs. Production logging
 
-Flint has a simple new twist on logging to deal with the problem of logs that contain too much or too little details in production releases versus development.
+Flint has a simple new twist on logging to deal with the problem of logs that contain too much or too little information in production releases versus development.
 
 In development you want as much as possible, but only on the topic you're working on (contextual logging!). In production you want as little as possible but it needs to be relevant to crash reporting and mustn't include confidential data.
 
-Flint addresses this problem by separating the loggers for development and production. In your code you see which of the two is being used to it is harder to make mistakes and easier to see what the intention of the logging is.
+Flint addresses this problem by separating the loggers for development and production. In your code you see which of the two is being used, so it is harder to make mistakes and easier to see what the intention of the logging is.
+
+You can also nil the development logger and all development-level logging never even gets evaluated.
 
 ## Using logging inside Actions
 
@@ -66,7 +76,7 @@ You can take these loggers and pass them into subsystems your actions call into,
 Often you need to perform logging from code that is not called as a result of an action, or where it is too cumbersome to
 pass the logs from an `Action` all the way down the call stack. In this situation you can still log contextually relative to a feature.
 
-Each feature type conforming to `Feature` or `ConditionalFeature` in your application provides a static function called `log(for:)` that you can use to get a reference to contextual loggers:
+Each feature type conforming to `Feature` or `ConditionalFeature` in your application provides a static function called `logs(for:)` that you can use to get a reference to contextual loggers:
 
 ```swift
 import FlintCore
@@ -108,20 +118,98 @@ Flint maps a feature's `identifier` type `FeaturePath` to `TopicPath` under the 
 
 ## Changing log levels at runtime
 
-Documentation TBD. See [`Logging`](https://github.com/MontanaFlossCo/Flint/blob/master/FlintCore/Logging/Logging.swift).
+Documentation TBD. See [`Logging`]
+(https://github.com/MontanaFlossCo/Flint/blob/master/FlintCore/Logging/Logging.swift).
 
 ## Using the built in loggers
 
-Flint ships with a simple `print` logger and an `OSLog` logging output implementation that sends entries to `Console.app`. These are configured out of the box when you run `Flint.quickSetup` but you can customise their behaviours.
+Flint ships with a simple `print` logger, a file logger, and an `OSLog` logging output implementation that sends entries to `Console.app`. 
 
-For now, [see the source for details](https://github.com/MontanaFlossCo/Flint/blob/master/FlintCore/Core/Flint.swift#L120).
+A print logger is configured out of the box when you run `Flint.quickSetup` but you can customise this behaviour.
 
-## Wiring up your own logging output
+The Flint-supplied loggers all have options to change the text produced from log entries by specifying your own [`LogEventFormattingStrategy`](https://github.com/MontanaFlossCo/Flint/blob/master/FlintCore/Logging/LogEventFormatttingStrategy.swift).
 
-For now, please see how the [default logging is configured here](https://github.com/MontanaFlossCo/Flint/blob/master/FlintCore/Logging/DefaultLoggerFactory.swift#L68).
+### Using the Print Logger
+
+The `print` logger writes logging to the `stdout` of the process, and is only really useful in development.
+
+A print logger is configured out of the box when you run `Flint.quickSetup` but if you want to change anything like the formatting or the prefix, you can manually set up Flint.
+
+```swift
+let printOutputDev = try! PrintLoggerOutput(prefix: "🐞 ", timeOnly: true)
+Logging.setLoggerOutputs(development: [printOutputDev], level: .debug, production: nil, level: .none)
+FlintAppInfo.associatedDomains = ["mysite.com"]
+Flint.setup(AppFeatures.self)
+```
+
+The standard `PrintLoggerOutput` can render the full date time or just the time of the event, to reduce log noise. There are other initialisers that can use a custom date pattern, and one that takes a completely custom `LogEventFormatttingStrategy`.
+
+### Using persistent File logging
+
+File logging avoids clogging up your console but also allows you to capture log files for crash reporting or support using Flint's report gathering features.
+
+To specify file-based logging, you'll need to configure your loggers at startup and setup Flint with them:
+
+```swift
+let fileOutputDev = try! FileLoggerOutput(appGroupIdentifier: nil, name: "myapp-dev")
+let fileOutputProd = try! FileLoggerOutput(appGroupIdentifier: nil, name: "myapp-prod")
+Logging.setLoggerOutputs(development: [fileOutputDev], level: .debug, production: [fileOutputProd], level: .none)
+FlintAppInfo.associatedDomains = ["mysite.com"]
+Flint.setup(AppFeatures.self)
+```
+
+☝️Note that if your app has extensions, such as a Siri Intent Extension where you will use Flint and want to capture logging, you'll need to use a shared app group container for your logs and pass the App Group Identifier to the file logger instances in the `appGroupIdentifier` argument. You'll want to use different log file names for each extension you have, so that if the extensions and apps run concurrently they do not have issues writing to the same file.
+
+### Using OSLog for logging
+
+The operating system's `os_log` API allows category-based logging to the system's aggregated logging system, which you can view using `Console.app`. Advantages include high performance, realtime UI and filtering, and basic grouping by topics as well as processes. You can see your app's logging in amongst everything the system is doing which can help troubleshoot some difficult integration issues.
+
+You'll need to manually setup Flint instead of using `Flint.quickSetup`:
+
+```swift
+let osOutputDev = try! OSLogOutput()
+Logging.setLoggerOutputs(development: [osOutputDev], level: .debug, production: nil, level: .none)
+FlintAppInfo.associatedDomains = ["mysite.com"]
+Flint.setup(AppFeatures.self)
+```
+
+## Exporting a Flint Debug Report ZIP
+
+Flint’s debug-related features [Action Stacks](action_stacks.md), [Timeline](timeline.md) and the `LoggerOutput` implementations all integrate with the Debug Reporting subsystem. This enables you to gather a Zip file at any point containing all the information for export.
+
+There’s support for human-readable and machine-readable formats where it makes sense — so you can build tools that take a JSON Timeline representation to build up a picture of usage patterns that lead to problems, or QA repro scripts.
+
+To export a report:
+
+```swift
+let url = DebugReporting.gatherReportZip(options: [])
+// You must delete this url when you are done
+```
+
+On iOS, to show a share sheet from your UI for this file you can do this:
+
+```swift
+    @objc public func shareReport() {
+        let url = DebugReporting.gatherReportZip(options: [])
+        let shareViewController = UIActivityViewController(activityItems: [url], applicationActivities: nil)
+        shareViewController.completionWithItemsHandler = { _, _, _, _ in
+            try? FileManager.default.removeItem(at: url)
+        }
+        present(shareViewController, animated: true)
+    }
+```
+
+When extracted, the Zip can look something like this:
+
+```
+/flint-debug-report
+	/action_stacks.txt
+	/flintdemo-dev-2019-01-25.log
+	/timeline.json
+```
 
 ## Next steps
 
-* See the [Focus](focus.md) feature of Flint to screen out everything from logs except the stuff that matters to you
+* See the [Focus](focus.md) feature of Flint to screen out everything from logs except the stuff that matters to you, at  runtime
 
 
