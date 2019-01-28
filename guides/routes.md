@@ -65,6 +65,7 @@ class DocumentManagementFeature: Feature, URLMapped {
 That's all — you have now defined some URLs that will invoke actions for all custom URL schemes and associates domains. If your app has configured a custom URL scheme `x-your-app` and an associated domain `your-app-domain.com`, your URLs might look like this:
 
 * `x-your-app://create?name=MyFile1`
+* `x-your-app:create?name=MyFile1`
 * `https://your-app-domain.com/open?docRef=456643564563634643643`
 
 ## Creating advanced URL patterns using wildcards and named parameters
@@ -98,7 +99,7 @@ Any named path parameters in the route pattern will supercede these. You can hav
 To actually make this work, there are a few more one-off things to do:
 
 1. If you haven't done so already you have to declare your App's custom URL schemes in your `Info.plist`
-2. For universal link / associated domains you need to set up the entitlements and a file on your server. [See the Apple docs for this](https://developer.apple.com/library/content/documentation/General/Conceptual/AppSearch/UniversalLinks.html#//apple_ref/doc/uid/TP40016308-CH12-SW1).
+2. For universal link or associated domains you need to set up the entitlements and a file on your server. [See the Apple docs for this](https://developer.apple.com/library/content/documentation/General/Conceptual/AppSearch/UniversalLinks.html#//apple_ref/doc/uid/TP40016308-CH12-SW1).
 3. You need your application delegate to handle requests to open URLs and pass them to Flint.
 4. Implement an object to get your UI ready and return a presenter.
 
