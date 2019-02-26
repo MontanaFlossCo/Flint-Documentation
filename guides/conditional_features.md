@@ -99,7 +99,7 @@ public class LevelBuilderFeature: ConditionalFeature {
     public static func constraints(requirements: FeatureConstraintsBuilder) {
     	requirements.userToggled(defaultValue: true)
     	requirements.runtimeEnabled()
-        requirements.purchase(PurchaseRequirement(premiumSubscription))
+        requirements.purchase(premiumSubscription)
     }
 
     static var isEnabled: Bool? = MyPlayerProgressTracker.shared.tutorialCompleted
@@ -117,6 +117,8 @@ The user toggling precondition will read from the user's defaults, and if there 
 The `.runtimeEnabled` test will always check the static `isEnabled` property on the feature to verify it is `true`. You can use this for any kind of app-supplied runtime determination of the feature availability. You can also declare it as a writable property and just assign it `true`/`false` in the source file or at runtime to flag internal features that are perhaps not yet ready to ship.
 
 Only if all the preconditions are `true` and all the other constraints are also met will the Feature be available.
+
+See [In-App Purchases](purchases.md) for more details on setting up a `PurchaseTracker` to determine what has been purchased, and to use the debug purchase tracker to allow you to easily test different purchasing combinations at runtime.
 
 ## Defining required permissions
 

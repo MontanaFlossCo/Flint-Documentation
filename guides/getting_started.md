@@ -16,6 +16,8 @@ tags:
 
 In order to use Flint you need to build the framework and add it and its dependency to your project.
 
+## Carthage — the recommended way
+
 The easiest way to use Flint in your own project is via [Carthage](https://github.com/Carthage/Carthage). You add the dependency to your `Cartfile` like this:
 
 ```
@@ -29,8 +31,7 @@ Then run `carthage bootstrap` to build it for all platforms. For faster builds y
 ```
 carthage bootstrap --platform iOS --cache-builds
 ```
-
-## Adding the frameworks to your project
+### Adding the frameworks to your project
 
 Once you have built the frameworks, you'll need to add them to your project.
 
@@ -38,6 +39,16 @@ Once you have built the frameworks, you'll need to add them to your project.
 2. If you need `FlintUI` for iOS then also do the same for that framework
 3. Verify on your Build Phases tab that those frameworks are listed in the "Link Binary With Libraries" section
 4. Ensure that your project is set up properly for Carthage's `copy-frameworks` build phase, so that it copies the frameworks `FlintCore`, and if you're using it, `FlintUI`. See the [Carthage Quick Setup](https://github.com/Carthage/Carthage#quick-start)
+
+## Cocoapods — the not so recommended way
+
+You can also use Cocoapods if your project already requires this. Add the dependency to your `Podfile`:
+
+```
+pod 'FlintCore', '{{site.flint.release_tag}}'
+```
+
+Then run `pod install` to install the dependency into your project.
 
 ## Next steps
 
