@@ -45,7 +45,7 @@ Once you have built the frameworks, you'll need to add them to your project.
 You can also use Cocoapods if your project already requires this. Add the dependency to your `Podfile`:
 
 ```
-pod 'FlintCore', '{{site.flint.release_tag}}'
+pod 'FlintCore', '~> {{site.flint.release_tag}}'
 ```
 
 Then run `pod install` to install the dependency into your project.
