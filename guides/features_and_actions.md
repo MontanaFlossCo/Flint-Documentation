@@ -154,8 +154,8 @@ class DocumentManagementFeature: Feature {
     static func prepare(actions: FeatureActionsBuilder) {
         actions.declare(openDocument)
     }
- }
- ```
+}
+```
 
 Things to note about this:
 
@@ -199,6 +199,28 @@ bgProcessionSession.perform(MachineLearningFeature.processImages, input: imageSt
 ```
 
 All of the previous code samples just declare actions and allow you to perform them. However, all action dispatch goes through Flint's `ActionDispatcher` which is observable. This means that even at this level of simplicity, if an `ActionDispatchObserver` is registered, it will be able to do something whenever these actions are performed – such as emitting an analytics tracking event for each action. Flint provides such an observer called `AnalyticsReporting` which you can use to route analytics to whatever backend you use.
+
+## Convenience types for "terminating" Actions
+
+Once you start working with Actions in your code, you will often find that you have something like a "show" and a "dismiss" action for many Features, especially for UI interactions that show a new screen. While these "done" Actions may seem annoying to implement as they are typically empty it provides clarity, analytics and the benefits of Flint's Action-based logging and timeline for debugging.
+
+To save you from having to define all the convention properties and `perform` function on your Actions that simply terminate use of a feature, Flint provides two convenience types that your action can conform to, to receive default implementations.
+
+The type `TerminatingAction` has an empty `perform` and takes no input or presenter. It will complete and indicate feature termination. Conform to this for simple "no-operation" terminating actions.
+
+On iOS and tvOS, there is also a `DimissingUIAction` that will take a `UIViewController` as presenter and dismiss it, and then complete with success and feature termination. The input indicates whether or not to dismiss with animation:
+
+```swift
+final class ShowProfileFeature: Feature {
+    let dismiss = action(DismissShowProfileAction.self)
+    ...
+}
+
+final class DismissShowProfileAction: DismissUIAction {
+}
+
+ShowProfileFeature.dismiss.perform(input: .animated(true))
+```
 
 ## Next steps
 
