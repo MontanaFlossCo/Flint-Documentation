@@ -37,7 +37,7 @@ import FlintCore
 enum MyInAppPurchases {
     static let attachments = Product(name: "Media Attachments",
                                      description: "Add photos to notes",
-                                     productID: "NONCONSUMABLE-0001")
+                                     productID: "NONCONSUMABLE0001")
 }
 
 final class PhotoAttachmentsFeature: ConditionalFeature {
