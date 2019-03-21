@@ -19,12 +19,12 @@ Using Flint’s [`Conditional Features`](conditional_features.md) you can specif
 
 The purchase constraints allow you to specify the purchases that can unlock each feature in terms of the user purchasing product “X”, products “A or B” or “A and B” or “(A or B) and C”. 
 
-Support is included for the different purchase types offered by StoreKit but is not restricted to that API so can connect any purchase verification implementation you like. Flint does not attempt to provide a full implementation of purchase tracking, merely the wiring you need for the enabling of features based on purchase status. Specifically, Flint provides no APIs for implementing an in-app purchase store.
+Support is included for the different purchase types offered by StoreKit but is not restricted to that API so you can connect any purchase verification implementation you like. Flint does not attempt to provide a full implementation of purchase tracking, merely the wiring you need for the enabling of features based on purchase status. Specifically, Flint provides no APIs for implementing an in-app purchase store UI.
 
 The types of purchases supported are:
 
-* Non-Consumable: these are a simple `true`/`false` unlock that does not change once purchased — once you buy it you have it. Flint supplies a default StoreKit purchase tracker implementation that tracks this kind of purchase for you
-* Consumable purchases: features can specify that a certain number of a “product” representing a type of credits is required to unlock the feature. This is purely informational and the app is always responsible for indicating whether this feature is unlocked at the current point in time. Your debug or store UI code can use the information about the number of credits for informational purposes
+* Non-Consumable: these are a simple `true`/`false` unlock that does not change once purchased — once you buy it you have it. Flint supplies a default StoreKit purchase tracker implementation that tracks this kind of purchase for you.
+* Consumable: features can specify that a certain number of a “product” representing a type of credits is required to unlock the feature. This is purely informational and the app is always responsible for indicating whether this feature is unlocked at the current point in time. Your debug or store UI code can use the information about the number of credits for informational purposes.
 * Subscriptions: features can specify the type of subscription products that will unlock the feature, but again the app must indicate whether or not the subscription is currently active and track expiration. This applies for non-renewing (season pass) and auto-renewing subscriptions.
 
 Whenever you [make a request](conditional_features.md) to perform an action of a conditional feature, the constraints evaluator will evaluate all the constraints and check with your `PurchaseTracker` implementation to see if the feature’s purchase constraints are currently met.
@@ -51,16 +51,16 @@ There is a base type [`Product`]() that contains the basic information about a p
 ```swift
 enum MyInAppPurchases {
 	let oneOffPurchaseProduct = NonConsumableProduct(name: "💎 Premium",
-													description: "Unlock premium features",
-													productID: "PREM0001")
+							description: "Unlock premium features",
+                            productID: "PREM0001")
 	
 	let monthlySubscriptionProduct = AutoRenewingSubscriptionProduct(name: "💫 Monthly Subscription", 
-																	 description: "Unlock everything",
-																	 productID: "SUB0001")
+												 description: "Unlock everything",
+												 productID: "SUB0001")
 	
 	let creditsZBucksProduct = ConsumableProduct(name: "A Z Buck",
-														description: "We saw you coming, whale",
-														productID: "CREDIT-ZBUCK")
+							   description: "We saw you coming, whale",
+							   productID: "CREDIT-ZBUCK")
 }
 ```
 
@@ -78,20 +78,20 @@ final class PhotoAttachmentsFeature: ConditionalFeature {
         requirements.permissions(.photos, .camera)
         requirements.permission(.contacts(entity: .contacts))    
 				
-				// Require the one off purchase. Multiple calls to
-				// `purchase` or passing a list of arguments will
-				// create an "AND" of all the requirements,
-				// so this is not a realistic example
-				requirements.purchase(MyInAppPurchases.oneOffPurchaseProduct)
+		// Require the one off purchase. Multiple calls to
+		// `purchase` or passing a list of arguments will
+		// create an "AND" of all the requirements,
+		// so this is not a realistic example
+		requirements.purchase(MyInAppPurchases.oneOffPurchaseProduct)
 
-				// Require 5 credits. This is just returned as 
-				// information about what is needed, they are not 
-				// automatically deducted or the unlock tracked.
-				requirements.purchase(MyInAppPurchases.creditsZBucksProduct, quantity: 5)
+		// Require 5 credits. This is just returned as 
+		// information about what is needed, they are not 
+		// automatically deducted or the unlock tracked.
+		requirements.purchase(MyInAppPurchases.creditsZBucksProduct, quantity: 5)
 
-				// Alternatively, you could require either that or subscription
+		// Alternatively, you could require either that or subscription
 				
-		requirements.purchase(anyOf:
+        requirements.purchase(anyOf:
 			MyInAppPurchases.oneOffPurchaseProduct,
 			MyInAppPurchases.monthlySubscriptionProduct
 		)
