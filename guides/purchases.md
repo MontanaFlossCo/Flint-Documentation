@@ -15,7 +15,7 @@ tags:
 
 ## Overview
 
-Using Flint’s [`Conditional Features`](conditional_features.md) you can specify which purchases or subscriptions are required to unlock features in your app. The first step is to make the relevant features conform to [`ConditionalFeature`](conditional_features.md) and add constraints that specify which purchases are required. Because you are using the conditional feature request mechanism to perform actions, you have no code changes to make to control access to these features. You just need to handle the case where the request is denied and prompt the user to purchase if desired.
+Using Flint’s [`Conditional Features`](conditional_features.md) you can specify which purchases or subscriptions are required to unlock features in your app. The first step is to make the relevant features conform to [`ConditionalFeature`](conditional_features.md) and add constraints that specify which purchases are required. Because you are using the conditional feature request mechanism to perform actions, you have no code changes to make to control access to these features. If you want to also prompt the user to purchase, you just need to handle the case where the request is denied and show your store UI.
 
 The purchase constraints allow you to specify the purchases that can unlock each feature in terms of the user purchasing product “X”, products “A or B” or “A and B” or “(A or B) and C”. 
 
