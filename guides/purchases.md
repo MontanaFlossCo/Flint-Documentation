@@ -51,16 +51,16 @@ There is a base type [`Product`]() that contains the basic information about a p
 ```swift
 enum MyInAppPurchases {
     let oneOffPurchaseProduct = NonConsumableProduct(name: "💎 Premium",
-                            description: "Unlock premium features",
-                            productID: "PREM0001")
+                                                     description: "Unlock premium features",
+                                                     productID: "PREM0001")
     
     let monthlySubscriptionProduct = AutoRenewingSubscriptionProduct(name: "💫 Monthly Subscription", 
-                                                 description: "Unlock everything",
-                                                 productID: "SUB0001")
+                                                                     description: "Unlock everything",
+                                                                     productID: "SUB0001")
     
     let creditsZBucksProduct = ConsumableProduct(name: "A Z Buck",
-                               description: "We saw you coming, whale",
-                               productID: "CREDIT-ZBUCK")
+                                                 description: "We saw you coming, whale",
+                                                 productID: "CREDIT-ZBUCK")
 }
 ```
 
@@ -95,13 +95,12 @@ final class PhotoAttachmentsFeature: ConditionalFeature {
             MyInAppPurchases.oneOffPurchaseProduct,
             MyInAppPurchases.monthlySubscriptionProduct
         )
-    }
 
-                // You could also require the one off purchase plus some credits
-                
+        // You could also require the one off purchase plus some credits
+        
         requirements.purchase(allOf:
             .init(MyInAppPurchases.oneOffPurchaseProduct),
-            .innit(MyInAppPurchases.creditsZBucksProduct, quantity: 5)
+            .init(MyInAppPurchases.creditsZBucksProduct, quantity: 5)
         )
     }
 
