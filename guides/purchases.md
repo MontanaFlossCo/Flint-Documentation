@@ -41,12 +41,12 @@ Flint also provides a debug UI for iOS that lets you quickly view and override t
 
 ## Defining purchase requirements
 
-There is a base type [`Product`]() that contains the basic information about a product that you use as a purchase requirement. You will use the appropriate subclass of this to define your product. The base types to choose from are:
+There is a base type [`Product`](https://github.com/MontanaFlossCo/Flint/blob/master/FlintCore/Purchases/Product.swift) that contains the basic information about a product that you use as a purchase requirement. You will use the appropriate subclass of this to define your product. The base types to choose from are:
 
-* [`NonConsumableProduct`]()
-* [`ConsumableProduct`]()
-* [`AutoRenewingSubscriptionProduct`]()
-* [`NonRenewingSubscriptionProduct`]()
+* [`NonConsumableProduct`](https://github.com/MontanaFlossCo/Flint/blob/master/FlintCore/Purchases/NonConsumableProduct.swift)
+* [`ConsumableProduct`](https://github.com/MontanaFlossCo/Flint/blob/master/FlintCore/Purchases/ConsumableProduct.swift)
+* [`AutoRenewingSubscriptionProduct`](https://github.com/MontanaFlossCo/Flint/blob/master/FlintCore/Purchases/AutoRenewingSubscriptionProduct.swift)
+* [`NonRenewingSubscriptionProduct`](https://github.com/MontanaFlossCo/Flint/blob/master/FlintCore/Purchases/NonRenewingSubscriptionProduct.swift)
 
 ```swift
 enum MyInAppPurchases {
