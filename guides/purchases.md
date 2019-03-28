@@ -50,23 +50,23 @@ There is a base type [`Product`](https://github.com/MontanaFlossCo/Flint/blob/ma
 
 ```swift
 enum MyInAppPurchases {
-    let oneOffPurchaseProduct = NonConsumableProduct(name: "💎 Premium",
-                                                     description: "Unlock premium features",
-                                                     productID: "PREM0001")
+    static let oneOffPurchaseProduct = NonConsumableProduct(name: "💎 Premium",
+                                                            description: "Unlock premium features",
+                                                            productID: "PREM0001")
     
-    let monthlySubscriptionProduct = AutoRenewingSubscriptionProduct(name: "💫 Monthly Subscription", 
-                                                                     description: "Unlock everything",
-                                                                     productID: "SUB0001")
+    static let monthlySubscriptionProduct = AutoRenewingSubscriptionProduct(name: "💫 Monthly Subscription", 
+                                                                            description: "Unlock everything",
+                                                                            productID: "SUB0001")
     
-    let creditsZBucksProduct = ConsumableProduct(name: "A Z Buck",
-                                                 description: "We saw you coming, whale",
-                                                 productID: "CREDIT-ZBUCK")
+    static let creditsZBucksProduct = ConsumableProduct(name: "A Z Buck",
+                                                        description: "We saw you coming, whale",
+                                                        productID: "CREDIT-ZBUCK")
 }
 ```
 
-It is cleaner to specify these as static properties within and `enum` or other type so you can refer to them easily. 
+It is cleaner to specify these as static properties within an `enum` or other type so you can refer to them easily. 
 
-Once you have these product defined, you can use them to create one or more [`PurchaseRequirement`]() in the constraints of your feature. There are various ways to add one or more purchases, with AND/OR combinations.
+Once you have these products defined, you can use them to create one or more [`PurchaseRequirement`](https://github.com/MontanaFlossCo/Flint/blob/master/FlintCore/Purchases/PurchaseRequirement.swift) in the constraints of your feature. There are various ways to add one or more purchases, with AND/OR combinations:
 
 ```swift
 import FlintCore
@@ -89,15 +89,13 @@ final class PhotoAttachmentsFeature: ConditionalFeature {
         // automatically deducted or the unlock tracked.
         requirements.purchase(MyInAppPurchases.creditsZBucksProduct, quantity: 5)
 
-        // Alternatively, you could require either that or subscription
-                
+        // Alternatively, you could require either a one-off purchase or subscription                
         requirements.purchase(anyOf:
             MyInAppPurchases.oneOffPurchaseProduct,
             MyInAppPurchases.monthlySubscriptionProduct
         )
 
-        // You could also require the one off purchase plus some credits
-        
+        // You could also require the one off purchase plus some credits        
         requirements.purchase(allOf:
             .init(MyInAppPurchases.oneOffPurchaseProduct),
             .init(MyInAppPurchases.creditsZBucksProduct, quantity: 5)
@@ -110,17 +108,17 @@ final class PhotoAttachmentsFeature: ConditionalFeature {
 
 ## Using StoreKitPurchaseTracker
 
-This default purchase tracker observes the StoreKit purchase queue and stores the transaction status of non-consumable products in a JSON file on the device. There is no receipt validation provided by this implementation and support is only provided for non-consumable purchases. You can subclass `StoreKitPurchaseTracker` to provide implementations of the functions required for subscription and consumable purchase checking.
+This default purchase tracker observes the StoreKit purchase queue and stores the transaction status of non-consumable products in a JSON file on the device. There is no **receipt validation provided by this implementation** and support is only provided for non-consumable purchases. You can subclass [`StoreKitPurchaseTracker`](https://github.com/MontanaFlossCo/Flint/blob/master/FlintCore/Purchases/StoreKitPurchaseTracker.swift) to provide implementations of the functions required for subscription and consumable purchase checking.
 
 You have nothing else to do once this tracker is set up and your purchase constraints have been defined. You can see the status of the purchases using the debug UI, described in the next section.
 
-If you are developing an app with Extensions that also require access to the information about active purchases, you must assign your app's shared group container ID to `FlintAppInfo.appGroupIdentifier` at startup, or construct the `StoreKitPurchaseTracker` instance yourself with the appropriate ID.
+If you are developing an app with Extensions that also require access to the information about active purchases, you must assign your app's shared group container ID to [`FlintAppInfo.appGroupIdentifier`](https://github.com/MontanaFlossCo/Flint/blob/master/FlintCore/Core/FlintAppInfo.swift) at startup, or construct the [`StoreKitPurchaseTracker`](https://github.com/MontanaFlossCo/Flint/blob/master/FlintCore/Purchases/StoreKitPurchaseTracker.swift) instance yourself with the appropriate ID.
 
-**NOTE**: If you really need receipt validation you can implement this yourself, as recommended by Apple. Our philosophy is that the out of the box experience should be simple for developers, and people who go to the effort to hack their devices or tamper with your app's files are never going to pay you whatever you do. You may disagree, and you can channel that energy into your own implementation — but you should also take care to ensure it is not trivial for hackers to bypass Flint's logic for feature availability. This notwithstanding, just implement your own `PurchaseTracker` and assign it to `Flint.purchaseTracker` at start up and you're good to go. However, support for subscriptions will require the extraction of the expiration date from the current receipt file so you must implement this yourself.
+**NOTE**: If you really need receipt validation you can implement this yourself, as recommended by Apple. Our philosophy is that the out of the box experience should be simple for developers, and people who go to the effort to hack their devices or tamper with your app's files are never going to pay you whatever you do. You may disagree, and you can channel that energy into your own implementation — but you should also take care to ensure it is not trivial for hackers to bypass Flint's logic for feature availability. This notwithstanding, just implement your own [`PurchaseTracker`](https://github.com/MontanaFlossCo/Flint/blob/master/FlintCore/Purchases/PurchaseTracker.swift) and assign it to [`Flint.purchaseTracker`](https://github.com/MontanaFlossCo/Flint/blob/master/FlintCore/Core/Flint.swift) at start up and you're good to go. However, support for subscriptions will require the extraction of the expiration date from the current receipt file so you must implement this yourself.
 
 ## Adding the Purchase Browser debug UI for iOS
 
-Adding the `FlintUI` dependency to your app, you can then use the `PurchaseBrowserFeature` to show a view controller which will show purchase status:
+Adding the `FlintUI` dependency to your app, you can then use the [`PurchaseBrowserFeature`](https://github.com/MontanaFlossCo/Flint/blob/master/FlintUI/Features/PurchaseBrowserFeature.swift) to show a view controller which will show purchase status:
 
 ![Purchase Browser screenshot](images/PurchaseTracker-unknown.png){:width="300px"}
 
@@ -140,7 +138,7 @@ let storeKitTracker = try! StoreKitPurchaseTracker(appGroupIdentifier: FlintAppI
 Flint.purchaseTracker = DebugPurchaseTracker(targetPurchaseTracker: storeKitTracker)
 ```
 
-That's all there is to it!
+That's all there is to it! If you are not ready to track purchases yet and just want to try out purchase mechanisms in your app, do the above but with no target purchase tracker.
 
 ## Next steps
 
