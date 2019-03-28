@@ -50,17 +50,17 @@ There is a base type [`Product`]() that contains the basic information about a p
 
 ```swift
 enum MyInAppPurchases {
-	let oneOffPurchaseProduct = NonConsumableProduct(name: "💎 Premium",
-							description: "Unlock premium features",
+    let oneOffPurchaseProduct = NonConsumableProduct(name: "💎 Premium",
+                            description: "Unlock premium features",
                             productID: "PREM0001")
-	
-	let monthlySubscriptionProduct = AutoRenewingSubscriptionProduct(name: "💫 Monthly Subscription", 
-												 description: "Unlock everything",
-												 productID: "SUB0001")
-	
-	let creditsZBucksProduct = ConsumableProduct(name: "A Z Buck",
-							   description: "We saw you coming, whale",
-							   productID: "CREDIT-ZBUCK")
+    
+    let monthlySubscriptionProduct = AutoRenewingSubscriptionProduct(name: "💫 Monthly Subscription", 
+                                                 description: "Unlock everything",
+                                                 productID: "SUB0001")
+    
+    let creditsZBucksProduct = ConsumableProduct(name: "A Z Buck",
+                               description: "We saw you coming, whale",
+                               productID: "CREDIT-ZBUCK")
 }
 ```
 
@@ -77,32 +77,32 @@ final class PhotoAttachmentsFeature: ConditionalFeature {
         
         requirements.permissions(.photos, .camera)
         requirements.permission(.contacts(entity: .contacts))    
-				
-		// Require the one off purchase. Multiple calls to
-		// `purchase` or passing a list of arguments will
-		// create an "AND" of all the requirements,
-		// so this is not a realistic example
-		requirements.purchase(MyInAppPurchases.oneOffPurchaseProduct)
+                
+        // Require the one off purchase. Multiple calls to
+        // `purchase` or passing a list of arguments will
+        // create an "AND" of all the requirements,
+        // so this is not a realistic example
+        requirements.purchase(MyInAppPurchases.oneOffPurchaseProduct)
 
-		// Require 5 credits. This is just returned as 
-		// information about what is needed, they are not 
-		// automatically deducted or the unlock tracked.
-		requirements.purchase(MyInAppPurchases.creditsZBucksProduct, quantity: 5)
+        // Require 5 credits. This is just returned as 
+        // information about what is needed, they are not 
+        // automatically deducted or the unlock tracked.
+        requirements.purchase(MyInAppPurchases.creditsZBucksProduct, quantity: 5)
 
-		// Alternatively, you could require either that or subscription
-				
+        // Alternatively, you could require either that or subscription
+                
         requirements.purchase(anyOf:
-			MyInAppPurchases.oneOffPurchaseProduct,
-			MyInAppPurchases.monthlySubscriptionProduct
-		)
+            MyInAppPurchases.oneOffPurchaseProduct,
+            MyInAppPurchases.monthlySubscriptionProduct
+        )
     }
 
-				// You could also require the one off purchase plus some credits
-				
-		requirements.purchase(allOf:
-			.init(MyInAppPurchases.oneOffPurchaseProduct),
-			.innit(MyInAppPurchases.creditsZBucksProduct, quantity: 5)
-		)
+                // You could also require the one off purchase plus some credits
+                
+        requirements.purchase(allOf:
+            .init(MyInAppPurchases.oneOffPurchaseProduct),
+            .innit(MyInAppPurchases.creditsZBucksProduct, quantity: 5)
+        )
     }
 
     ...
