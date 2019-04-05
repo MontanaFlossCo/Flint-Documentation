@@ -13,9 +13,25 @@ tags:
 
 ## Overview
 
-We provide a set of powerful tools for looking inside your Flint-based app on iOS to verify that your Features and Actions are set up correctly, to browse Timeline and Focus logs for problems, generate debug reports and so on.
+We provide a set of powerful tools for looking inside your Flint-based app on iOS and tvOS to verify that your Features and Actions are set up correctly, to browse Timeline and Focus logs for problems, generate debug reports and so on.
 
-Once again FlintUI uses Flint itself to expose its features. Dogfooding through and through!
+Once again FlintUI uses Flint itself to expose these features. Dogfooding through and through!
+
+## Installing FlintUI
+
+You'll need to add the dependency to your project. With Carthage:
+
+```
+github "MontanaFlossCo/FlintUI" "{{site.flint.release_tag}}"
+```
+
+or with Cocoapods:
+
+```ruby
+pod 'FlintUI', '~> {{site.flint.release_tag}}'
+```
+
+Remember to update your dependencies after doing this and make any appropriate project changes.
 
 ## Registering the FlintUI features
 

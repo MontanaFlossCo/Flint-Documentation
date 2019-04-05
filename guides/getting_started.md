@@ -28,7 +28,7 @@ github "MontanaFlossCo/Flint" "{{site.flint.release_tag}}"
 
 Then run `carthage bootstrap` to build it for all platforms. For faster builds you can limit to one platform and use caching to avoid rebuilding if there are no changes to the version you already have, e.g.:
 
-```
+```sh
 carthage bootstrap --platform iOS --cache-builds
 ```
 ### Adding the frameworks to your project
@@ -44,7 +44,7 @@ Once you have built the frameworks, you'll need to add them to your project.
 
 You can also use Cocoapods if your project already requires this. Add the dependency to your `Podfile`:
 
-```
+```ruby
 pod 'FlintCore', '~> {{site.flint.release_tag}}'
 ```
 

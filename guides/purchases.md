@@ -17,7 +17,7 @@ tags:
 
 Using Flint’s [`Conditional Features`](conditional_features.md) you can specify which purchases or subscriptions are required to unlock features in your app. The first step is to make the relevant features conform to [`ConditionalFeature`](conditional_features.md) and add constraints that specify which purchases are required. Because you are using the conditional feature request mechanism to perform actions, you have no code changes to make to control access to these features. If you want to also prompt the user to purchase, you just need to handle the case where the request is denied and show your store UI.
 
-The purchase constraints allow you to specify the purchases that can unlock each feature in terms of the user purchasing product “X”, products “A or B” or “A and B” or “(A or B) and C”. 
+The purchase constraints allow you to specify the purchases that can unlock each feature in terms of the user purchasing product `X`, products `A or B` or `A and B` or `(A or B) and C` and all combinations thereof.
 
 Support is included for the different purchase types offered by StoreKit but is not restricted to that API so you can connect any purchase verification implementation you like. Flint does not attempt to provide a full implementation of purchase tracking, merely the wiring you need for the enabling of features based on purchase status. Specifically, Flint provides no APIs for implementing an in-app purchase store UI.
 
@@ -28,6 +28,8 @@ The types of purchases supported are:
 * Subscriptions: features can specify the type of subscription products that will unlock the feature, but again the app must indicate whether or not the subscription is currently active and track expiration. This applies for non-renewing (season pass) and auto-renewing subscriptions.
 
 Whenever you [make a request](conditional_features.md) to perform an action of a conditional feature, the constraints evaluator will evaluate all the constraints and check with your `PurchaseTracker` implementation to see if the feature’s purchase constraints are currently met.
+
+This documentation assumes you already have an app set up to use Flint that calls `Flint.quickSetup` or `Flint.setup` at start up. If you've not got that far yet, see the [getting started guide](getting_started.md).
 
 ## How purchases are detected
 
@@ -108,7 +110,16 @@ final class PhotoAttachmentsFeature: ConditionalFeature {
 
 ## Using StoreKitPurchaseTracker
 
-This default purchase tracker observes the StoreKit purchase queue and stores the transaction status of non-consumable products in a JSON file on the device. There is no **receipt validation provided by this implementation** and support is only provided for non-consumable purchases. You can subclass [`StoreKitPurchaseTracker`](https://github.com/MontanaFlossCo/Flint/blob/master/FlintCore/Purchases/StoreKit-Specific/StoreKitPurchaseTracker.swift) to provide implementations of the functions required for subscription and consumable purchase checking.
+This purchase tracker observes the StoreKit purchase queue and stores the transaction status of non-consumable products in a JSON file on the device. There is no **receipt validation provided by this implementation** and support is only provided for non-consumable purchases. You can subclass [`StoreKitPurchaseTracker`](https://github.com/MontanaFlossCo/Flint/blob/master/FlintCore/Purchases/StoreKit-Specific/StoreKitPurchaseTracker.swift) to provide implementations of the functions required for subscription and consumable purchase checking.
+
+If you set up Flint using `Flint.quickSetup`, this tracker will be set up for you automatically. If you want to customise this or use it with `Flint.setup` for custom configuration, you can do so:
+
+```swift
+Flint.setup(MyFeatures.self) { dependencies in
+    let storeKitTracker = try! StoreKitPurchaseTracker(appGroupIdentifier: FlintAppInfo.appGroupIdentifier)
+    dependencies.purchaseTracker = storeKitTracker
+}
+```
 
 You have nothing else to do once this tracker is set up and your purchase constraints have been defined. You can see the status of the purchases using the debug UI, described in the next section.
 
@@ -134,8 +145,10 @@ The debug tracker can be used standalone without a real tracker — useful for 
 To use the debug tracker to proxy the store tracker, you do something like this before setting up Flint in your app delegate:
 
 ```swift
-let storeKitTracker = try! StoreKitPurchaseTracker(appGroupIdentifier: FlintAppInfo.appGroupIdentifier)
-Flint.purchaseTracker = DebugPurchaseTracker(targetPurchaseTracker: storeKitTracker)
+Flint.setup(MyFeatures.self) { dependencies in
+    let storeKitTracker = try! StoreKitPurchaseTracker(appGroupIdentifier: FlintAppInfo.appGroupIdentifier)
+    dependencies.purchaseTracker = DebugPurchaseTracker(targetPurchaseTracker: storeKitTracker)
+}
 ```
 
 That's all there is to it! If you are not ready to track purchases yet and just want to try out purchase mechanisms in your app, do the above but with no target purchase tracker.
