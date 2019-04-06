@@ -6,6 +6,7 @@ tags:
     - iap
     - conditional
     - store
+    - featured
 ---
 
 #### In this article:
@@ -138,7 +139,6 @@ Adding the `FlintUI` dependency to your app, you can then use the [`PurchaseBrow
 ![Purchase Browser screenshot](images/PurchaseTracker-unknown.png){:width="300px"}
 
 You can show this UI in debug builds of your app using this code:
-
 ```swift
 import FlintUI
 
@@ -158,7 +158,6 @@ The debug tracker can be used standalone without a real tracker — useful for 
 ![Purchase Browser purchased screenshot](images/PurchaseTracker-purchased.png){:width="300px"}
 
 To use the debug tracker to proxy the store tracker, you do something like this when setting up Flint in your app delegate:
-
 ```swift
 Flint.quickSetup(MyFeatures.self) { dependencies in
     let storeKitTracker = try! StoreKitPurchaseTracker(appGroupIdentifier: FlintAppInfo.appGroupIdentifier)
@@ -167,7 +166,6 @@ Flint.quickSetup(MyFeatures.self) { dependencies in
 ```
 
 That's all there is to it. If you are not ready to track purchases yet and just want to try out purchase mechanisms in your app, do the above but with no target purchase tracker:
-
 ```swift
 Flint.quickSetup(MyFeatures.self) { dependencies in
     dependencies.purchaseTracker = DebugPurchaseTracker()
