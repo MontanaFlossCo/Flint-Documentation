@@ -38,7 +38,7 @@ Once you have built the frameworks, you'll need to add them to your project.
 1. Drag the FlintCore.framework from `./Carthage/Build/iOS` (or whatever platform folder your project requires) onto your "Linked Frameworks & Libraries" section of your app target's General tab in Xcode
 2. If you need `FlintUI` for iOS then also do the same for that framework
 3. Verify on your Build Phases tab that those frameworks are listed in the "Link Binary With Libraries" section
-4. Ensure that your project is set up properly for Carthage's `copy-frameworks` build phase, so that it copies the frameworks `FlintCore`, and if you're using it, `FlintUI`. See the [Carthage Quick Setup](https://github.com/Carthage/Carthage#quick-start)
+4. Ensure that your main app target is set up properly for Carthage's `copy-frameworks` build phase, so that it correctly copies the frameworks `FlintCore`, and if you're using it, `FlintUI`. Add a `Run Script` build phase that runs the command `carthage copy-frameworks`, and add each Framework as an input file e.g. `$(SRCROOT)/Carthage/Build/iOS/FlintCore.framework` and as an output file such as `$(SRCROOT)/Carthage/Build/iOS/FlintCore.framework` so it only processes modified frameworks for quicker build times.
 
 ## Cocoapods — the not so recommended way
 
