@@ -110,8 +110,8 @@ final class DocumentOpenAction: UIAction {
 
     static var description = "Open a document"
     
-    static func perform(with context: ActionContext<DocumentRef>,
-            using presenter: DocumentPresenter,
+    static func perform(context: ActionContext<DocumentRef>,
+            presenter: DocumentPresenter,
             completion: Completion) -> Completion.Status {
         presenter.openDocument(documentRef)
         return completion.completedSync(.success)
@@ -132,7 +132,7 @@ final class BeepAction: Action {
     typealias InputType = NoInput
     typealias PresenterType = NoPresenter
 
-    static func perform(with context: ActionContext<InputType>, using presenter: PresenterType, completion: Completion) -> Completion.Status {
+    static func perform(context: ActionContext<InputType>, presenter: PresenterType, completion: Completion) -> Completion.Status {
         print("Beep!")
         return completion.completedSync(.success)
     }
@@ -170,7 +170,7 @@ Now comes the really easy part! In your app, you need to perform this action. Ac
 Somewhere in a view controller, you can add:
 
 ```swift
-DocumentManagementFeature.openDocument.perform(input: document, presenter: self)
+DocumentManagementFeature.openDocument.perform(withInput: document, presenter: self)
 ```
 
 What we are doing here is calling a convenience function called `perform` on the action binding stored in the static property `openDocument` that we defined on the feature.
@@ -219,7 +219,7 @@ final class ShowProfileFeature: Feature {
 final class DismissShowProfileAction: DismissUIAction {
 }
 
-ShowProfileFeature.dismiss.perform(input: .animated(true))
+ShowProfileFeature.dismiss.perform(withInput: .animated(true))
 ```
 
 ## Next steps

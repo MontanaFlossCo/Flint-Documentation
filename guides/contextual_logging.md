@@ -132,7 +132,7 @@ A print logger is configured out of the box when you run `Flint.quickSetup` but 
 
 ```swift
 let printOutputDev = try! PrintLoggerOutput(prefix: "🐞 ", timeOnly: true)
-Logging.setLoggerOutputs(development: [printOutputDev], level: .debug, production: nil, level: .none)
+Logging.setLoggerOutputs(development: [printOutputDev], level: .debug, production: nil, level: .off)
 FlintAppInfo.associatedDomains = ["mysite.com"]
 Flint.setup(AppFeatures.self)
 ```
@@ -148,7 +148,7 @@ To specify file-based logging, you'll need to configure your loggers at startup 
 ```swift
 let fileOutputDev = try! FileLoggerOutput(appGroupIdentifier: nil, name: "myapp-dev")
 let fileOutputProd = try! FileLoggerOutput(appGroupIdentifier: nil, name: "myapp-prod")
-Logging.setLoggerOutputs(development: [fileOutputDev], level: .debug, production: [fileOutputProd], level: .none)
+Logging.setLoggerOutputs(development: [fileOutputDev], level: .debug, production: [fileOutputProd], level: .off)
 FlintAppInfo.associatedDomains = ["mysite.com"]
 Flint.setup(AppFeatures.self)
 ```
@@ -163,7 +163,7 @@ You'll need to manually setup Flint instead of using `Flint.quickSetup`:
 
 ```swift
 let osOutputDev = try! OSLogOutput()
-Logging.setLoggerOutputs(development: [osOutputDev], level: .debug, production: nil, level: .none)
+Logging.setLoggerOutputs(development: [osOutputDev], level: .debug, production: nil, level: .off)
 FlintAppInfo.associatedDomains = ["mysite.com"]
 Flint.setup(AppFeatures.self)
 ```

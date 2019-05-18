@@ -26,7 +26,7 @@ To change focus you perform the `focus` or `defocus` actions on `FocusFeature`, 
 
 ```swift
 if let request = FocusFeature.focus.request() {
-    request.perform(input: FocusArea(feature: MyBuggyFeature.self)))
+    request.perform(withInput: FocusArea(feature: MyBuggyFeature.self)))
 }
 
 ...
@@ -34,7 +34,7 @@ if let request = FocusFeature.focus.request() {
 
 // Revert back to previous focus - probably the firehose
 if let request = FocusFeature.defocus.request() {
-    request.perform(input: FocusArea(feature: MyBuggyFeature.self)))
+    request.perform(withInput: FocusArea(feature: MyBuggyFeature.self)))
 }
 ```
 

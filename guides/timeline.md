@@ -30,7 +30,7 @@ import FlintUI
 guard let request = TimelineBrowserFeature.request(TimelineBrowserFeature.show) else {
     preconditionFailure("Timeline is not enabled")
 }
-request.perform(presenter: self)
+request.perform(withPresenter: self)
 ```
 
 This will show the modal UI listing a live-updating timeline of actions performed. You can tap items to get more details.

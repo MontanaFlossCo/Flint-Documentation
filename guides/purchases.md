@@ -145,7 +145,7 @@ import FlintUI
 guard let request = PurchaseBrowserFeature.show.request() else {
     preconditionFailure("Purchase Browser is not enabled")
 }
-request.perform(presenter: myNavigationController)
+request.perform(withPresenter: myNavigationController)
 ```
 
 If you have used the debug purchase tracker, you can also tap purchases and override their current status to faake the purchase, non-purchase or "unknown" status of each purchase. See below for details.

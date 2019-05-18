@@ -68,7 +68,7 @@ import FlintUI
 ...
 
 @IBAction func userTappedYourDebugButton(_ sender: Any) {
-	FeatureBrowserFeature.show.perform(presenter: self)
+	FeatureBrowserFeature.show.perform(withPresenter: self)
 }
 ```
 
@@ -84,7 +84,7 @@ To use it, just perform the show action from a `UIViewController`:
 
 ```swift
 if let request = TimelineBrowserFeature.show.request() {    
-   request.perform(presenter: self)
+   request.perform(withPresenter: self)
 }
 ```
 
@@ -100,7 +100,7 @@ To use it, just perform the show action from a `UIViewController`:
 
 ```swift
 if let request = LogBrowserFeature.show.request() {    
-    request.perform(presenter: self)
+    request.perform(withPresenter: self)
 }
 ```
 
@@ -117,7 +117,7 @@ You can drill down into the stacks to see what actions have occurred so far on t
 To use it, just perform the show action from a `UIViewController`:
 
 ```swift
-ActionStacksBrowserFeature.show.perform(presenter: self)
+ActionStacksBrowserFeature.show.perform(withPresenter: self)
 ```
 
 

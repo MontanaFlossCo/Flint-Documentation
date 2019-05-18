@@ -43,7 +43,7 @@ final class CancelPhotoSelectionAction: UIAction {
     
     typealias PresenterType = PhotoSelectionPresenter
     
-    public static func perform(with context: ActionContext<NoInput>, using presenter: PresenterType, completion: Completion) -> Completion.Status {
+    public static func perform(context: ActionContext<NoInput>, presenter: PresenterType, completion: Completion) -> Completion.Status {
         presenter.dismissPhotoSelection()
         return completion.completedSync(.successWithFeatureTermination)
     }
@@ -62,7 +62,7 @@ import FlintUI
 
 // ... in some action or gesture handler of a UIViewController ...
 
-ActionStackBrowserFeature.show.perform(presenter: self)
+ActionStackBrowserFeature.show.perform(withPresenter: self)
 ```
 
 ## Generating a debug report containing the stacks

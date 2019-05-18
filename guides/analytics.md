@@ -32,7 +32,7 @@ final class DocumentCreateAction: UIAction {
     /// Set this to your desired analytics event ID for this action
     static var analyticsID: String? = "document-create"
 
-    static func perform(with context: ActionContext<NoInput>, using presenter: DocumentCreatePresenter, completion: Completion) -> Completion.Status {
+    static func perform(context: ActionContext<NoInput>, presenter: DocumentCreatePresenter, completion: Completion) -> Completion.Status {
         presenter.showCreate(suggestedTitle: "Untitled")
         return completion.completedSync(.success)
     }
@@ -53,7 +53,7 @@ final class DocumentOpenAction: UIAction {
     static var analyticsID: String? = "document-open"
 
     /// Customize the data sent to analytics
-    static func analyticsAttributes<F>(for request: ActionRequest<F, Self>) -> [String:Any?]? {
+    static func analyticsAttributes<FetureType>(for request: ActionRequest<FetureType, Self>) -> [String:Any?]? {
         return [
             "doc-type": request.context.input.documentTypeUTI
         ]

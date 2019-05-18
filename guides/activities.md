@@ -73,7 +73,7 @@ final class DocumentOpenAction: UIAction {
     /// - note: You must specify the set type or Swift will assume it is an array
     static var activityEligibility: Set<ActivityEligibility> = [.handoff, .prediction]
     
-    static func perform(with context: ActionContext<InputType>, using presenter: PresenterType, Completion) -> Completion.Status {
+    static func perform(context: ActionContext<InputType>, presenter: PresenterType, completion: Completion) -> Completion.Status {
         // … here we would open the document as normal
     }
 }
@@ -169,7 +169,7 @@ final class DocumentOpenAction: Action {
     
     static var activityEligibility: Set<ActivityEligibility> = [.handoff, .search]
 
-    static func perform(with context: ActionContext<DocumentRef>, using presenter: DocumentPresenter, completion: Completion) -> Completion.Status {
+    static func perform(context: ActionContext<DocumentRef>, presenter: DocumentPresenter, completion: Completion) -> Completion.Status {
         // …
     }
     
