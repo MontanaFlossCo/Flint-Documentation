@@ -122,7 +122,7 @@ See [In-App Purchases](purchases.md) for more details on setting up a `PurchaseT
 
 ## Defining required permissions
 
-Permissions can be fiddly to deal with in apps. Your goal is to get people to authorise permissions so that they can use what you've implemented, but to improve the probability of this happening you have to explain what is happening and why. You shouldn't spam users at startup with authorisation requests for every permission your app might ever need. 
+Permissions can be fiddly to deal with in apps. Your goal is to get people to authorise permissions so that they can use what you've implemented, but to improve the probability of this happening you have to explain what is happening and why. You shouldn't spam users at startup with authorisation requests for every permission your app might ever need. Apple provide a bunch of [documentation about the various permissions](https://developer.apple.com/documentation/uikit/core_app/protecting_the_user_s_privacy/accessing_protected_resources).
 
 Associating permissions with the features that require them instantly solves the "don't spam the user with requests" part. If you only prompt for permissions when the feature is used, and only the permissions that feature needs, they already have some idea of what might be required, e.g. a mapping feature requires location access. They are primed to allow the permissions.
 
@@ -151,8 +151,10 @@ The permissions you pass to this function are any values from the [`SystemPermis
 * **.calendarEvents** — EventKit access to calendar events
 * **.reminders** — EventKit access to reminders
 * **.motion** — Access to CoreMotion motion and fitness data
-
-All the other permissions including those such as HealthKit, Bluetooth etc. are [coming soon](https://github.com/MontanaFlossCo/Flint/issues/65).
+* **.speechRecognition** — Speech Recognition
+* **.siriKit** — Permission to integrate SiriKit extensions
+* **.blueteooth** — Access to Core Bluetooth peripherals
+* **.mediaLibrary** — Access to the user's media library and Apple Music
 
 Once you add multiple permissions into the mix, and some features require different combinations of those permissions, things get complicated quickly. Using conditional features with permission constraints solves this problem in a way that makes it easy for you to provide the best experience for the user, using Flint's tools for requesting the permissions. It also makes it very clear what your app's permission behaviours should be for testing and QA of the various features in all permutations with and without the permissions granted.
 
