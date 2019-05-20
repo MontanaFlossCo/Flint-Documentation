@@ -235,15 +235,15 @@ Note that some properties are not always appropriate to pass straight through to
 In this example we'll fix the `title` of the activity to include the verb `Open`, and not just the default `title` from the metadata, and all the rest — search attributes, keywords, thumbnail and so on are automatically populated from the input's metadata:
 
 ```swift
-    static func prepareActivity(_ activity: ActivityBuilder<InputType>) {
-        guard let document = DocumentStore.shared.documentInfo(activity.input.name) else {
-            activity.cancel()
-            return
-        }
-
-        activity.title = "Open \(activity.metadata!.title)"
-        activity.subtitle = document.summary
+static func prepareActivity(_ activity: ActivityBuilder<InputType>) {
+    guard let document = DocumentStore.shared.documentInfo(activity.input.name) else {
+        activity.cancel()
+        return
     }
+
+    activity.title = "Open \(activity.metadata!.title)"
+    activity.subtitle = document.summary
+}
 ```
 
 This then shows a Siri result with the title "Open MyProject" instead of just "MyProject".
