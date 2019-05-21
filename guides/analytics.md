@@ -1,6 +1,6 @@
 ---
 title: Analytics
-subtitle: Track events when actions are performed using your preferred analytics back end
+subtitle: Track events when actions are performed using your preferred analytics back end.
 tags:
     - integration
     - actions

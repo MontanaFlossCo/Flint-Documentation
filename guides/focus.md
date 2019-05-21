@@ -1,6 +1,6 @@
 ---
 title: Focus
-subtitle: Debug specific features with Focus
+subtitle: Debug specific features with Focus, narrowing down the debug output to only the information you need.
 tags:
     - debug
     - logging

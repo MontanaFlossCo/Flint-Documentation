@@ -1,6 +1,6 @@
 ---
 title: Contextual Logging
-subtitle: Get more information about what log entries related to, and use smart filtering
+subtitle: Use Flint's logging to find out what users were actually doing when things go wrong.
 tags:
     - coreconcepts
     - logging
@@ -31,11 +31,11 @@ We strongly believe that statically compiled in logging thresholds make logging 
 
 ## Yet another logging system?!
 
-That’s a good question and the answer is a reluctant “sort of”. Flint’s logging can be adapted as a layer on top of whatever logging you already use. Flint's logging APIs allow your preferred logging subsystem to include this information so you can get far more contextual detail about e.g. why a network request is happening. 
+That’s a good question and the answer is a reluctant “sort of”. Flint’s logging can be adapted as a layer on top of whatever logging you already use. Flint's logging APIs allow your preferred logging subsystem to include this extra information so you can get far more contextual detail about e.g. why a network request is happening. 
 
 If you carry the context logger from your actions through to your subsystems, you can disambiguate all this internal activity in your logs.
 
-However, Flint has `stdout`, OSLog and File based logging supplied out of the box without any other dependencies.
+However, Flint has basic `stdout`, OSLog and File based logging supplied out of the box without any other dependencies.
 
 ## Development vs. Production logging
 
@@ -45,7 +45,7 @@ In development you want as much as possible, but only on the topic you're workin
 
 Flint addresses this problem by separating the loggers for development and production. In your code you see which of the two is being used, so it is harder to make mistakes and easier to see what the intention of the logging is.
 
-You can also nil the development logger and all development-level logging never even gets evaluated.
+You can also nil the development logger and all development-level logging never even gets evaluated thanks to optional chaining.
 
 ## Using logging inside Actions
 

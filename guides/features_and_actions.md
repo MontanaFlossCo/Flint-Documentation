@@ -1,6 +1,6 @@
 ---
 title: Creating your Features and Actions
-subtitle: Learn how to define your app's functionality in terms of features and how to perform the actions.
+subtitle: Once you've created your first feature and actions you'll be able to perform the actions and then move quickly on to the fun part.
 tags:
     - coreconcepts
     - actions

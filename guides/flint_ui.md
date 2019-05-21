@@ -1,5 +1,6 @@
 ---
 title: Using the FlintUI framework for debugging
+subtitle: Enabling debugging tools for iOS.
 tags:
     - debug
     - logging

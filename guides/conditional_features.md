@@ -1,6 +1,6 @@
 ---
 title: Conditional Features
-subtitle: Make your features available only if permissions, purchases and other requirements are met
+subtitle: Flint forces your code to verify that a feature is enabled before you can perform its actions, with one consistent mechanism. If it isn't enabled, you can take the user through the steps required to enable it, by making purchases or enabling the necessary permissions.
 tags:
     - coreconcepts
     - actions

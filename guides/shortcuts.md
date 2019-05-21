@@ -1,6 +1,6 @@
 ---
 title: Siri Shortcuts
-subtitle: Learn how to expose your Actions as Siri Shortcuts
+subtitle: Using actions, it is easy to create Siri Shortcuts in Intent Extensions and to donate shortcuts to the system.
 tags:
     - integration
     - useractivity

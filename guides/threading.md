@@ -1,6 +1,6 @@
 ---
 title: Threading
-subtitle: How actions are performed in a concurrent environment
+subtitle: How actions are performed in a concurrent environment.
 tags:
     - help
     - actions
@@ -66,11 +66,13 @@ By default in Flint 1.0 all the action completion handlers assume the simple cas
 If you need to alter this behaviour, you must call one of the `ActionSession.perform(...)` functions and pass in a `completionQueue` argument or an entire `Action.Completion` (a [`CompletionRequirement`]()) that you have created. You can do this via your `ActionSession` or via your Action's `defaultSession` convention:
 
 ```swift
-ActionSession.main.perform(MyFeature.myAction, completion: { outcome in  }, completionQueue: anotherQueue)
+ActionSession.main.perform(MyFeature.myAction, completion: { outcome in  }, 
+                           completionQueue: anotherQueue)
 
 // - or -
 
-MyFeature.myAction.defaultSession.perform(MyFeature.myAction, completion: { outcome in  }, completionQueue: anotherQueue)
+MyFeature.myAction.defaultSession.perform(MyFeature.myAction, completion: { outcome in  }, 
+                           completionQueue: anotherQueue)
 ```
 
 ## Actions that complete asynchronously

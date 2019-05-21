@@ -1,6 +1,6 @@
 ---
 title: Testing
-subtitle: Unit testing your Flint Apps and Flint itself
+subtitle: Unit testing your Flint Apps and Flint itself.
 tags:
     - debug
 ---

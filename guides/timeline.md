@@ -1,6 +1,6 @@
 ---
 title: Timeline
-subtitle: Find out what your user was doing in the run up to a problem
+subtitle: Find out what your user was doing in the run up to a problem by using the Timline feature of Flint.
 tags:
     - coreconcepts
     - logging

@@ -1,6 +1,6 @@
 ---
 title: Purchases
-subtitle: Using purchase requirements to limit access to features
+subtitle: Purchase constraints on Conditional Features enable you to lock down access to a feature until certain products have been paid for.
 tags:
     - purchases
     - iap

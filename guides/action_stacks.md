@@ -1,6 +1,6 @@
 ---
 title: Action Stacks
-subtitle: See what the user is doing right now
+subtitle: See what the user is doing right now.
 tags:
     - debug
     - logging

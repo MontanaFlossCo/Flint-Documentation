@@ -1,6 +1,6 @@
 ---
 title: Getting Started
-subtitle: Learn how to integrate Flint into your project
+subtitle: The first step is adding Flint to your Xcode project with Carthage or Cocoapods. 
 tags:
     - coreconcepts
     - help
@@ -15,6 +15,8 @@ tags:
 ## Overview
 
 In order to use Flint you need to build the framework and add it and its dependency to your project.
+
+If you're not ready to start using Flint in your own projects, you can check out the [FlintDemo](https://github.com/MontanaFlossCo/FlintDemo-iOS) iOS sample project with support for Handoff, Siri Prediction & Siri Shortcuts, as well as the Flint UI debug feature browser, timeline browser and so on.
 
 ## Carthage — the recommended way
 
