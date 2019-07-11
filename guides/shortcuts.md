@@ -98,7 +98,7 @@ Once the user has performed this action, it will begin to show up in Siri sugges
 
 For testing, you can go to a device's Settings app and in the "Developer" section you will find a range of settings under the heading "Shortcuts Testing" that can show all the recently registered shortcuts, not just the ones Siri thinks are relevant. This is useful in debugging shortcut-related issues reliably.
 
-## Showing the system UI for adding or editingg a voice shortcut
+## Showing the system UI for adding or editing a voice shortcut
 
 Once you have an action with a suggested voice phrase you can add code to your application that will let the user add a voice shortcut directly in your app. Flint will present the system UI to record their custom phrase, using your phrase as inspiration. Many apps also have settings UIs where the user can add or edit shortcuts from a list of available actions.
 
