@@ -71,6 +71,22 @@ final class CancelPhotoSelectionAction: UIAction {
 
 You can take these loggers and pass them into subsystems your actions call into, to gain contextual logging deeper in your code.
 
+## Changing log levels
+
+Logging levels are set at the scope of Features, and levels are inherited by sub-features.
+
+Any time you want to change your log levels from the defaults you configured when setting up `Flint`, you can do so like this:
+
+```swift
+// Change a single feature's level
+BlogPostingFeature.setLoggingLevel(.warning)
+
+// Same API, but on a FeatureGroup will affect all subfeatures too
+ContentEditingFeatures.setLoggingLevel(.debug)
+```
+
+Remember that because Flint's logging is filtered at runtime, you don't need to kill your app and rebuild to change logging level in the middle of debugging a problem. You can call these functions in the debugger or add a simple UI to your app to tweak log levels as needed.
+
 ## Using logging in subsystems where you don't have an Action
 
 Often you need to perform logging from code that is not called as a result of an action, or where it is too cumbersome to
@@ -202,10 +218,6 @@ When extracted, the Zip can look something like this:
 	/flintdemo-dev-2019-01-25.log
 	/timeline.json
 ```
-
-## Changing log levels at runtime
-
-Documentation TBD. See [`Logging`](https://github.com/MontanaFlossCo/Flint/blob/master/FlintCore/Logging/Logging.swift).
 
 ## Next steps
 
