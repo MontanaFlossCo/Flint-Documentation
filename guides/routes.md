@@ -1,6 +1,6 @@
 ---
 title: URL Routes
-subtitle: Learn to use Flint's powerful routes to direct incoming URLs to your actions with minimal code
+subtitle: Calling your actions from custom URL schemes or deep linking is just a matter of defining the mappings and moving to the correct UI state to perform the action.
 tags:
     - coreconcepts
     - actions

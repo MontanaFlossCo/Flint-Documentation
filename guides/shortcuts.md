@@ -1,6 +1,6 @@
 ---
 title: Siri Shortcuts
-subtitle: Learn how to expose your Actions as Siri Shortcuts
+subtitle: Using actions, it is easy to create Siri Shortcuts in Intent Extensions and to donate shortcuts to the system.
 tags:
     - integration
     - useractivity
@@ -42,6 +42,11 @@ Users can trigger your app's `NSUserActivity` or custom `INIntent`-based shortcu
 
 Your app can "donate" specific shortcuts it thinks the user will find useful. This feeds the prediction system and the list of shortcuts available to the user in Shortcuts app and Settings.
 
+### Register common shortcuts with the system
+
+Your app can pre-register shortcuts that you think the user will find useful in the Shortcuts app. This will make
+them visible to the user in "Settings > Siri & Search > Shortcuts" without requiring donation.
+
 ### Show relevant shortcuts on Apple Watch
 
 Your app can also donate "relevant shortcuts" that may be shown on the Siri watch face on an Apple Watch based on time, location or user activity.
@@ -64,7 +69,7 @@ To turn an `Action` that supports activities into an activity that the system ca
 
 1. Include `.prediction` in your Action’s `activityEligibility`
 2. Add a value for `suggestedInvocationPhrase` — or set this property on the activity in your Action’s `prepareActivity()` function
-3. *Optional*: show the Add Voice Shortcut UI by calling `addVoiceShortcut(for:presenter:)` on the action binding
+3. *Optional*: show the Add Voice Shortcut UI by calling `addVoiceShortcut(forInput:,presenter:,completion:)` on the action binding
 4. Make sure you have support for Activities in your app delegate; namely your `application(continueActivity:...)` implementation must call `Flint.continueActivity(...)` (see [Activities](activities.md))
 
 We’ll also assume you have the [Activities](activities.md) feature of Flint enabled.
@@ -93,13 +98,13 @@ Once the user has performed this action, it will begin to show up in Siri sugges
 
 For testing, you can go to a device's Settings app and in the "Developer" section you will find a range of settings under the heading "Shortcuts Testing" that can show all the recently registered shortcuts, not just the ones Siri thinks are relevant. This is useful in debugging shortcut-related issues reliably.
 
-## Showing the system UI for adding a voice shortcut
+## Showing the system UI for adding or editing a voice shortcut
 
-Once you have an action with a suggested voice phrase you can add code to your application that will let the user add a voice shortcut directly in your app. Flint will present the system UI to record their custom phrase, using your phrase as inspiration.
+Once you have an action with a suggested voice phrase you can add code to your application that will let the user add a voice shortcut directly in your app. Flint will present the system UI to record their custom phrase, using your phrase as inspiration. Many apps also have settings UIs where the user can add or edit shortcuts from a list of available actions.
 
-You call the Flint-provided `addVoiceShortcut(for:presenter:)` function on your feature's action binding and pass in the input the action should use with the shortcut and a `UIViewController` to present the UI.
+You call the Flint-provided `addVoiceShortcut(forInput:,presenter:,completion:)` function on your feature's action binding and pass in the input the action should use with the shortcut and a `UIViewController` to present the UI.
 
-Note that creating a shortcut to an action does so for a specific input to that `Action`. In iOS 12 you cannot create a shortcut that takes a different input each time. You can think of it as a frozen snapshot of an action you performed on a given input, that you can repeat later.
+Note that creating a shortcut for an action does so for a specific input to that `Action`. In iOS 12 you cannot create a shortcut that takes a different input each time. You can think of it as a frozen snapshot of an action you performed on a given input, that you can repeat later.
 
 By way of example, if your feature is called `ProFeatures` and it has an action bound as `showInPresentationMode` you would show the Add Siri Voice Shortcut UI like this:
 
@@ -109,7 +114,20 @@ class YourViewController: UIViewController {
 
     func yourAddToSiriButtonTapped(_ sender: Any) {
         // Show the Siri UI for adding a voice shortcut for this specific document
-        ProFeatures.showInPresentationMode.addVoiceShortcut(for: currentDocument!, presenter:self)
+        do {
+            try ProFeatures.showInPresentationMode.addVoiceShortcut(forInput: currentDocument!, presenter: self, completion: { result in
+                switch result {
+                    case .added(let shortcut):
+                        ...
+                    case .failed(let error):
+                        ...
+                    case .cancelled:
+                        break
+                }
+            })
+        } catch {
+            // Handle case where an intent could not be created from the input
+        }
     }
 }
 ```
@@ -119,6 +137,32 @@ You can call this function at any time to register shortcuts without actually pe
 Once the user has added a shortcut in this way, your app can be invoked by voice with Siri, or inside the Shortcuts app.
 
 Note that this will allow the user to create a shortcut to an Action via `NSUserActivity` or `INIntent` that will invoke the action with the `documentRef` input supplied. For intent-based actions, it will always create a shortcut to the Intent if it can.
+
+You can also show the edit UI for an existing `INVoiceShortcut` that you received from the system using `INVoiceShortcutCenter` APIs to query the shortcuts that the user has already created:
+
+```swift
+class YourViewController: UIViewController {
+    func yourEditShortcutButtonTapped(_ sender: Any) {  
+        let shortcut: INVoiceShortcut = ... // Get the shortcut
+
+        // Show the Siri UI for editing a voice shortcut for this specific document
+        ProFeatures.showInPresentationMode.editVoiceShortcut(shortcut, presenter: self, completion: { result in
+            switch result {
+                case .updated(let updatedShortcut):
+                    ...
+                case .deleted(let identifier):
+                    ...
+                case .failed(let error):
+                    ...
+                case .cancelled:
+                    break
+            }
+        })
+    }
+}
+```
+
+Note that technically you can call `editVoiceShortcut` on any action binding, as the existing shortcut is passed in.
 
 ## Implementing a custom Siri Intent extension with Flint
 
@@ -130,7 +174,7 @@ In this latter case, common if permissions or login credentials are missing, Sir
  
 Flint provides conventions for creating the `INIntent` instance for a given `Action` input, and creating the input to the action from a received `INIntent` instance containing parameters. Your action needs to implemnent thes.
 
-You can "donate" intent-based Actions to Siri explicitly with `donateToSiri(for:)` on the action binding, or automatically via the `associatedIntents` function on other `Action`s.
+You can "donate" intent-based Actions to Siri explicitly with `donateToSiri(forInput:)` on the action binding, or automatically via the `associatedIntents` function on other `Action`s.
 
 There’s a lot to cover there, so let’s break it down. Creating a custom Intent requires the following steps:
 
@@ -166,7 +210,7 @@ final class GetNoteAction: IntentAction {
     
     /// Return an intent instance to execute the action with
     /// the supplied input. Used when donating intents that invoke this action.
-    static func intent(for input: DocumentRef) -> GetNoteIntent? {
+    static func intent(forInput input: DocumentRef) throws -> GetNoteIntent? {
         let result = GetNoteIntent()
         result.documentName = input.name
         result.setImage(INImage(named: "GetNoteIcon"), forParameterNamed: \.documentName)
@@ -176,7 +220,7 @@ final class GetNoteAction: IntentAction {
     /// Return an input instance to pass to the action with
     /// when the intent is received. Used when executing the action when the user performs the Intent
     /// via an Intent extension.
-    static func input(for intent: GetNoteIntent) -> DocumentRef? {
+    static func input(forIntent intent: GetNoteIntent) throws -> DocumentRef? {
         guard let name = intent.documentName else {
             return nil
         }
@@ -259,13 +303,17 @@ import FlintCore
 class GetNoteIntentHandler: NSObject, GetNoteIntentHandling {
     @objc(handleGetNote:completion:)
     func handle(intent: GetNoteIntent, completion: @escaping (GetNoteIntentResponse) -> Void) {
-        let outcome = SiriFeature.getNote.perform(intent: intent, completion: completion)
-        assert(outcome == .success, "Intent failed: \(outcome)")
+        do {
+            let outcome = try SiriFeature.getNote.perform(withIntent: intent, completion: completion)
+            assert(outcome == .success, "Intent failed: \(outcome)")
+        } catch {
+            completion(.init(code: .failure, userActivity: nil))
+        }
     }
 }
 ```
 
-Flint’s `perform(intent:completion:)` function exists on all your `IntentAction`-conforming actions’ bindings. It will create an `IntentResultPresenter` that is passed to your action’s `perform(coontext:,presenter:,completion:)` function so that your action can set the appropriate intent response.
+Flint’s `perform(withIntent:completion:)` function exists on all your `IntentAction`-conforming actions’ bindings. It will create an `IntentResultPresenter` that is passed to your action’s `perform(context:,presenter:,completion:)` function so that your action can set the appropriate intent response.
 
 ## Automatically donating shortcuts when other `Action`s are performed
 
@@ -273,7 +321,7 @@ Much like the Activities feature of Flint, the Intent support can auto-donate on
 
 For example a Podcast player app might want to donate both a "Toggle trim silence for Connected podcast" shortcut and a "Toggle fast speed for Connected podcast" shortcut, when you play one episode of "Connected" podcast. This obviously shouldn't be abused, but can prove very useful as people increasingly use automation with Shortcuts app.
 
-All you need to do to achieve this is to add a function `associatedIntents(for:)` to your `Action` implementation:
+All you need to do to achieve this is to add a function `associatedIntents(forInput:)` to your `Action` implementation:
 
 ```swift
 final class PlayPodcastAction: UIAction {
@@ -282,7 +330,7 @@ final class PlayPodcastAction: UIAction {
 
     // The donateToSiri() functionality will call this. 
     @available(iOS 12, *)
-    static func associatedIntents(for input: InputType) -> [FlintIntent]? {
+    static func associatedIntents(forInput input: InputType) -> [FlintIntent]? {
         let trimSilenceIntent = ToggleTrimSilenceIntent()
         trimSilenceIntent.podcast = input
         trimSilenceIntent.setImage(INImage(named: "ToggleSilenceIcon"), \.podcast)
@@ -307,10 +355,29 @@ To do this you "donate" the shortcuts explicitly. In Flint this is easy — you 
 
 ```swift
 /// Automatically register the "play and sleep for 50 minutes" intent with Siri
-SiriFeatures.playPodcastAndSleep.donateToSiri(for: 50)
+SiriFeatures.playPodcastAndSleep.donateToSiri(withInput: 50)
 ```
 
 This will allow the user to create a shortcut to an `NSUserActivity` that will invoke the action with the `currentDocument` input supplied.
+
+## Registering suggested shortcuts
+
+Often you will want to register some shortcuts in advance in your app, that the system Settings and Shortcuts apps will offer to users. You do this using the `Intents` framework's `INVoiceShortcutCenter.setShortcutSuggestions(_)` function. Flint adds a `shortcut(withInput:)` function on action bindings you use to create `INShortcut` instances for your actions:
+
+```swiftt
+public func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey : Any]? = nil) -> Bool {
+    Flint.quickSetup(AppFeatures.self)
+
+    INVoiceShortcutCenter.shared.setShortcutSuggestions([
+        MyFeature.getNewestNote.shortcut(withInput: .noInput),
+        MyFeature.createNote.shortcut(withInput: .noInput)
+    ].compactMap({ $0 }))
+
+    ...
+}
+```
+
+This system API replaces the current list of suggested shortcuts with whatever you pass in here. Not that creating a shortcut is optional, hence the use of `compactMap` to remove the nil optionals.
 
 ## Declaring "relevant shortcuts" for Siri support on Apple Watch
 

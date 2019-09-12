@@ -1,6 +1,6 @@
 ---
 title: Activities
-subtitle: Flint's automatic Activities feature will publish actions as the current NSUserActivity and will continue these activities later by calling your associated Action.
+subtitle: The automatic Activities feature will publish actions as the current NSUserActivity and will continue these activities later by calling your associated Action.
 tags:
     - integration
     - useractivity
@@ -73,7 +73,7 @@ final class DocumentOpenAction: UIAction {
     /// - note: You must specify the set type or Swift will assume it is an array
     static var activityEligibility: Set<ActivityEligibility> = [.handoff, .prediction]
     
-    static func perform(with context: ActionContext<InputType>, using presenter: PresenterType, Completion) -> Completion.Status {
+    static func perform(context: ActionContext<InputType>, presenter: PresenterType, completion: Completion) -> Completion.Status {
         // … here we would open the document as normal
     }
 }
@@ -169,7 +169,7 @@ final class DocumentOpenAction: Action {
     
     static var activityEligibility: Set<ActivityEligibility> = [.handoff, .search]
 
-    static func perform(with context: ActionContext<DocumentRef>, using presenter: DocumentPresenter, completion: Completion) -> Completion.Status {
+    static func perform(context: ActionContext<DocumentRef>, presenter: DocumentPresenter, completion: Completion) -> Completion.Status {
         // …
     }
     
@@ -235,15 +235,15 @@ Note that some properties are not always appropriate to pass straight through to
 In this example we'll fix the `title` of the activity to include the verb `Open`, and not just the default `title` from the metadata, and all the rest — search attributes, keywords, thumbnail and so on are automatically populated from the input's metadata:
 
 ```swift
-    static func prepareActivity(_ activity: ActivityBuilder<InputType>) {
-        guard let document = DocumentStore.shared.documentInfo(activity.input.name) else {
-            activity.cancel()
-            return
-        }
-
-        activity.title = "Open \(activity.metadata!.title)"
-        activity.subtitle = document.summary
+static func prepareActivity(_ activity: ActivityBuilder<InputType>) {
+    guard let document = DocumentStore.shared.documentInfo(activity.input.name) else {
+        activity.cancel()
+        return
     }
+
+    activity.title = "Open \(activity.metadata!.title)"
+    activity.subtitle = document.summary
+}
 ```
 
 This then shows a Siri result with the title "Open MyProject" instead of just "MyProject".

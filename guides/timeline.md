@@ -1,6 +1,6 @@
 ---
 title: Timeline
-subtitle: Find out what your user was doing in the run up to a problem
+subtitle: Find out what your user was doing in the run up to a problem by using the Timline feature of Flint.
 tags:
     - coreconcepts
     - logging
@@ -30,7 +30,7 @@ import FlintUI
 guard let request = TimelineBrowserFeature.request(TimelineBrowserFeature.show) else {
     preconditionFailure("Timeline is not enabled")
 }
-request.perform(presenter: self)
+request.perform(withPresenter: self)
 ```
 
 This will show the modal UI listing a live-updating timeline of actions performed. You can tap items to get more details.

@@ -1,6 +1,6 @@
 ---
 title: Conditional Features
-subtitle: Make your features available only if permissions, purchases and other requirements are met
+subtitle: Flint forces your code to verify that a feature is enabled before you can perform its actions, with one consistent mechanism. If it isn't enabled, you can take the user through the steps required to enable it, by making purchases or enabling the necessary permissions.
 tags:
     - coreconcepts
     - actions
@@ -122,7 +122,7 @@ See [In-App Purchases](purchases.md) for more details on setting up a `PurchaseT
 
 ## Defining required permissions
 
-Permissions can be fiddly to deal with in apps. Your goal is to get people to authorise permissions so that they can use what you've implemented, but to improve the probability of this happening you have to explain what is happening and why. You shouldn't spam users at startup with authorisation requests for every permission your app might ever need. 
+Permissions can be fiddly to deal with in apps. Your goal is to get people to authorise permissions so that they can use what you've implemented, but to improve the probability of this happening you have to explain what is happening and why. You shouldn't spam users at startup with authorisation requests for every permission your app might ever need. Apple provide a bunch of [documentation about the various permissions](https://developer.apple.com/documentation/uikit/core_app/protecting_the_user_s_privacy/accessing_protected_resources).
 
 Associating permissions with the features that require them instantly solves the "don't spam the user with requests" part. If you only prompt for permissions when the feature is used, and only the permissions that feature needs, they already have some idea of what might be required, e.g. a mapping feature requires location access. They are primed to allow the permissions.
 
@@ -151,8 +151,10 @@ The permissions you pass to this function are any values from the [`SystemPermis
 * **.calendarEvents** — EventKit access to calendar events
 * **.reminders** — EventKit access to reminders
 * **.motion** — Access to CoreMotion motion and fitness data
-
-All the other permissions including those such as HealthKit, Bluetooth etc. are [coming soon](https://github.com/MontanaFlossCo/Flint/issues/65).
+* **.speechRecognition** — Speech Recognition
+* **.siriKit** — Permission to integrate SiriKit extensions
+* **.blueteooth** — Access to Core Bluetooth peripherals
+* **.mediaLibrary** — Access to the user's media library and Apple Music
 
 Once you add multiple permissions into the mix, and some features require different combinations of those permissions, things get complicated quickly. Using conditional features with permission constraints solves this problem in a way that makes it easy for you to provide the best experience for the user, using Flint's tools for requesting the permissions. It also makes it very clear what your app's permission behaviours should be for testing and QA of the various features in all permutations with and without the permissions granted.
 
@@ -202,7 +204,7 @@ Instead you must first obtain a `VerifiedActionBinding` by calling `request()` o
 
 ```swift
 if let request = DeepLinkingFeature.performIncomingURL.request() {
-    request.perform(input: url, presenter: presenter)
+    request.perform(withInput: url, presenter: presenter)
 } else {
     // This often means there was a programmer error - 
     // your UI probably should not allow people to invoke actions from
@@ -306,7 +308,7 @@ Whatever the situation, you should usually only ask for one thing at a time to a
 ```swift
 func selectPhoto() {
     if let request = PhotoAttachmentsFeature.request(PhotoAttachmentsFeature.showPhotoSelection) {
-        request.perform(presenter: self)
+        request.perform(withPresenter: self)
     } else {
         handleUnsatisfiedConstraints(for: PhotoAttachmentsFeature.self, retry: { [weak self] in self?.selectPhoto() })
     }

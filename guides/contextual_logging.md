@@ -1,6 +1,6 @@
 ---
 title: Contextual Logging
-subtitle: Get more information about what log entries related to, and use smart filtering
+subtitle: Use Flint's logging to find out what users were actually doing when things go wrong.
 tags:
     - coreconcepts
     - logging
@@ -31,11 +31,11 @@ We strongly believe that statically compiled in logging thresholds make logging 
 
 ## Yet another logging system?!
 
-That’s a good question and the answer is a reluctant “sort of”. Flint’s logging can be adapted as a layer on top of whatever logging you already use. Flint's logging APIs allow your preferred logging subsystem to include this information so you can get far more contextual detail about e.g. why a network request is happening. 
+That’s a good question and the answer is a reluctant “sort of”. Flint’s logging can be adapted as a layer on top of whatever logging you already use. Flint's logging APIs allow your preferred logging subsystem to include this extra information so you can get far more contextual detail about e.g. why a network request is happening. 
 
 If you carry the context logger from your actions through to your subsystems, you can disambiguate all this internal activity in your logs.
 
-However, Flint has `stdout`, OSLog and File based logging supplied out of the box without any other dependencies.
+However, Flint has basic `stdout`, OSLog and File based logging supplied out of the box without any other dependencies.
 
 ## Development vs. Production logging
 
@@ -45,7 +45,7 @@ In development you want as much as possible, but only on the topic you're workin
 
 Flint addresses this problem by separating the loggers for development and production. In your code you see which of the two is being used, so it is harder to make mistakes and easier to see what the intention of the logging is.
 
-You can also nil the development logger and all development-level logging never even gets evaluated.
+You can also nil the development logger and all development-level logging never even gets evaluated thanks to optional chaining.
 
 ## Using logging inside Actions
 
@@ -70,6 +70,22 @@ final class CancelPhotoSelectionAction: UIAction {
 ```
 
 You can take these loggers and pass them into subsystems your actions call into, to gain contextual logging deeper in your code.
+
+## Changing log levels
+
+Logging levels are set at the scope of Features, and levels are inherited by sub-features.
+
+Any time you want to change your log levels from the defaults you configured when setting up `Flint`, you can do so like this:
+
+```swift
+// Change a single feature's level
+BlogPostingFeature.setLoggingLevel(.warning)
+
+// Same API, but on a FeatureGroup will affect all subfeatures too
+ContentEditingFeatures.setLoggingLevel(.debug)
+```
+
+Remember that because Flint's logging is filtered at runtime, you don't need to kill your app and rebuild to change logging level in the middle of debugging a problem. You can call these functions in the debugger or add a simple UI to your app to tweak log levels as needed.
 
 ## Using logging in subsystems where you don't have an Action
 
@@ -132,7 +148,7 @@ A print logger is configured out of the box when you run `Flint.quickSetup` but 
 
 ```swift
 let printOutputDev = try! PrintLoggerOutput(prefix: "🐞 ", timeOnly: true)
-Logging.setLoggerOutputs(development: [printOutputDev], level: .debug, production: nil, level: .none)
+Logging.setLoggerOutputs(development: [printOutputDev], level: .debug, production: nil, level: .off)
 FlintAppInfo.associatedDomains = ["mysite.com"]
 Flint.setup(AppFeatures.self)
 ```
@@ -148,7 +164,7 @@ To specify file-based logging, you'll need to configure your loggers at startup 
 ```swift
 let fileOutputDev = try! FileLoggerOutput(appGroupIdentifier: nil, name: "myapp-dev")
 let fileOutputProd = try! FileLoggerOutput(appGroupIdentifier: nil, name: "myapp-prod")
-Logging.setLoggerOutputs(development: [fileOutputDev], level: .debug, production: [fileOutputProd], level: .none)
+Logging.setLoggerOutputs(development: [fileOutputDev], level: .debug, production: [fileOutputProd], level: .off)
 FlintAppInfo.associatedDomains = ["mysite.com"]
 Flint.setup(AppFeatures.self)
 ```
@@ -163,7 +179,7 @@ You'll need to manually setup Flint instead of using `Flint.quickSetup`:
 
 ```swift
 let osOutputDev = try! OSLogOutput()
-Logging.setLoggerOutputs(development: [osOutputDev], level: .debug, production: nil, level: .none)
+Logging.setLoggerOutputs(development: [osOutputDev], level: .debug, production: nil, level: .off)
 FlintAppInfo.associatedDomains = ["mysite.com"]
 Flint.setup(AppFeatures.self)
 ```
@@ -202,10 +218,6 @@ When extracted, the Zip can look something like this:
 	/flintdemo-dev-2019-01-25.log
 	/timeline.json
 ```
-
-## Changing log levels at runtime
-
-Documentation TBD. See [`Logging`](https://github.com/MontanaFlossCo/Flint/blob/master/FlintCore/Logging/Logging.swift).
 
 ## Next steps
 
