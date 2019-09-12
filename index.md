@@ -9,4 +9,4 @@ Try the [Getting Started](guides/getting_started.md) guide to add Flint to your 
 
 You can find a sample application built with Flint in the [FlintDemo-iOS repository](https://github.com/MontanaFlossCo/FlintDemo-iOS).
 
-View the [community](guides/community.md) page for details of how to find help from humans, and to contribute!
+View the [community](guides/community.md) page for details of how to find help from humans, and how to contribute!
